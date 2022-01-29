@@ -7,32 +7,12 @@
     tools:context=".MainActivity">
 
     <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flex"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:alignContent="stretch"
-        app:alignItems="stretch"
+        app:alignContent="flex_start"
+        app:alignItems="flex_start"
         app:flexWrap="wrap">
-
-        <TextView
-            android:id="@+id/textview1"
-            android:layout_width="120dp"
-            android:layout_height="80dp"
-            android:background="@color/purple_200"
-            app:layout_flexBasisPercent="50%" />
-
-        <TextView
-            android:id="@+id/textview2"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@color/purple_500"
-            app:layout_alignSelf="center" />
-
-        <TextView
-            android:id="@+id/textview3"
-            android:layout_width="160dp"
-            android:layout_height="80dp"
-            android:background="@color/purple_700"
-            app:layout_alignSelf="flex_end" />
     </com.google.android.flexbox.FlexboxLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
