@@ -1,6 +1,5 @@
 package eyeq.alchemy
 
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ViewGroup
@@ -13,10 +12,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val layout = findViewById<FlexboxLayout>(R.id.flex)
-        val image = ImageView(this)
-        image.setImageResource(R.drawable.dummy)
-        image.setColorFilter(Color.parseColor("#000000"))
-        layout.addView(image, ViewGroup.LayoutParams(100.dpToPx(), 100.dpToPx()))
+        for (item in Item.values()) {
+            val image = ImageView(this)
+            image.setImageResource(item.resId)
+            image.setColorFilter(item.color)
+
+            var layoutParams: ViewGroup.MarginLayoutParams = ViewGroup.MarginLayoutParams(80.dpToPx(), 80.dpToPx())
+            layoutParams.setMargins(10.dpToPx(), 10.dpToPx(), 10.dpToPx(), 10.dpToPx())
+            layout.addView(image, layoutParams)
+        }
     }
 
     private fun Int.pxToDp(): Int = (this / resources.displayMetrics.density).toInt()
