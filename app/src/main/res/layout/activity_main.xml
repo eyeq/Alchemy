@@ -13,7 +13,13 @@
         android:padding="8dp"
         app:alignContent="flex_start"
         app:alignItems="flex_start"
-        app:flexWrap="wrap">
-    </com.google.android.flexbox.FlexboxLayout>
+        app:flexWrap="wrap"></com.google.android.flexbox.FlexboxLayout>
 
+    <LinearLayout
+        android:id="@+id/pot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"></LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
