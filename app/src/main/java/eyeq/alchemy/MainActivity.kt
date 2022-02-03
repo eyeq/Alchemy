@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import com.google.android.flexbox.FlexboxLayout
 
 class MainActivity : AppCompatActivity() {
+    private val unlocked = mutableListOf<Recipe>()
     private var item1 = Item.EMPTY
     private var item2 = Item.EMPTY
 
@@ -29,17 +30,19 @@ class MainActivity : AppCompatActivity() {
         layout.setBackgroundColor(Color.BLACK)
 
         for (item in Item.values()) {
-            val image = generateImageView(item.resId, item.color)
-            image.isClickable = true
-            image.setOnClickListener { view ->
-                if (item1 == Item.EMPTY) {
-                    item1 = item
-                } else if (item2 == Item.EMPTY) {
-                    item2 = item
+            if (unlocked.any { it.result == item }) {
+                val image = generateImageView(item.resId, item.color)
+                image.isClickable = true
+                image.setOnClickListener {
+                    if (item1 == Item.EMPTY) {
+                        item1 = item
+                    } else if (item2 == Item.EMPTY) {
+                        item2 = item
+                    }
+                    updatePot()
                 }
-                updatePot()
+                layout.addView(image, layoutParams)
             }
-            layout.addView(image, layoutParams)
         }
     }
 
@@ -52,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
         val image1 = generateImageView(item1.resId, item1.color)
         image1.isClickable = true
-        image1.setOnClickListener { view ->
+        image1.setOnClickListener {
             item1 = Item.EMPTY
             updatePot()
         }
@@ -62,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
         val image2 = generateImageView(item2.resId, item2.color)
         image2.isClickable = true
-        image2.setOnClickListener { view ->
+        image2.setOnClickListener {
             item2 = Item.EMPTY
             updatePot()
         }
@@ -72,8 +75,16 @@ class MainActivity : AppCompatActivity() {
 
         val reload = generateImageView(R.drawable.symbol_reload, Color.WHITE)
         reload.isClickable = true
-        reload.setOnClickListener { view ->
+        reload.setOnClickListener {
+            val results = Recipe.alchemise(item1, item2)
+            if (results.isNotEmpty()) {
+                unlocked.addAll(results)
+                updateFlex()
 
+                item1 = Item.EMPTY
+                item2 = Item.EMPTY
+                updatePot()
+            }
         }
         layout.addView(reload, layoutParams)
     }
