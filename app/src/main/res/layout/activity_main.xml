@@ -6,14 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/flex"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
-        app:alignContent="flex_start"
-        app:alignItems="flex_start"
-        app:flexWrap="wrap"></com.google.android.flexbox.FlexboxLayout>
+        android:fillViewport="true">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/flex"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            app:alignContent="flex_start"
+            app:alignItems="flex_start"
+            app:flexWrap="wrap"></com.google.android.flexbox.FlexboxLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/pot"
