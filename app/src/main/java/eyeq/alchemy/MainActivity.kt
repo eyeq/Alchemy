@@ -3,9 +3,12 @@ package eyeq.alchemy
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import com.google.android.flexbox.FlexboxLayout
 
 class MainActivity : AppCompatActivity() {
@@ -22,8 +25,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateFlex() {
-        val layoutParams = ViewGroup.MarginLayoutParams(48.dpToPx(), 48.dpToPx())
-        layoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
+        val imageLayoutParams = ViewGroup.MarginLayoutParams(64.dpToPx(), 64.dpToPx())
+        imageLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
+
+        val textLayoutParams = ViewGroup.MarginLayoutParams(64.dpToPx(), 28.dpToPx())
+        textLayoutParams.setMargins(8.dpToPx(), 0.dpToPx(), 8.dpToPx(), 8.dpToPx())
 
         val layout = findViewById<FlexboxLayout>(R.id.flex)
         layout.removeAllViews()
@@ -41,14 +47,27 @@ class MainActivity : AppCompatActivity() {
                     }
                     updatePot()
                 }
-                layout.addView(image, layoutParams)
+
+                val text = TextView(this)
+                text.setText(item.textId)
+                text.setTextColor(Color.parseColor("#FFFFFF"))
+                text.textSize = 12f
+
+                val sub = LinearLayout(this)
+                sub.orientation = LinearLayout.VERTICAL
+                sub.addView(image, imageLayoutParams)
+                sub.addView(text, textLayoutParams)
+                layout.addView(sub)
             }
         }
     }
 
     private fun updatePot() {
-        val layoutParams = ViewGroup.MarginLayoutParams(48.dpToPx(), 48.dpToPx())
-        layoutParams.setMargins(2.dpToPx(), 2.dpToPx(), 2.dpToPx(), 2.dpToPx())
+        val imageLayoutParams = ViewGroup.MarginLayoutParams(32.dpToPx(), 32.dpToPx())
+        imageLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
+
+        val symbolLayoutParams = ViewGroup.MarginLayoutParams(16.dpToPx(), 16.dpToPx())
+        symbolLayoutParams.setMargins(0.dpToPx(), 12.dpToPx(), 0.dpToPx(), 12.dpToPx())
 
         val layout = findViewById<LinearLayout>(R.id.pot)
         layout.removeAllViews()
@@ -59,9 +78,9 @@ class MainActivity : AppCompatActivity() {
             item1 = Item.EMPTY
             updatePot()
         }
-        layout.addView(image1, layoutParams)
+        layout.addView(image1, imageLayoutParams)
 
-        layout.addView(generateImageView(R.drawable.symbol_plus, Color.WHITE), layoutParams)
+        layout.addView(generateImageView(R.drawable.symbol_plus, Color.WHITE), symbolLayoutParams)
 
         val image2 = generateImageView(item2.resId, item2.color)
         image2.isClickable = true
@@ -69,16 +88,24 @@ class MainActivity : AppCompatActivity() {
             item2 = Item.EMPTY
             updatePot()
         }
-        layout.addView(image2, layoutParams)
+        layout.addView(image2, imageLayoutParams)
 
-        layout.addView(generateImageView(R.drawable.symbol_arrow, Color.WHITE), layoutParams)
+        layout.addView(generateImageView(R.drawable.symbol_arrow, Color.WHITE), symbolLayoutParams)
 
         val reload = generateImageView(R.drawable.symbol_reload, Color.WHITE)
         reload.isClickable = true
         reload.setOnClickListener {
             val results = Recipe.alchemise(item1, item2)
             if (results.isNotEmpty()) {
-                unlocked.addAll(results)
+                for (recipe in results) {
+                    if (!unlocked.contains(recipe)) {
+                        val toast = Toast.makeText(this, getString(recipe.result.textId), Toast.LENGTH_LONG)
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
+
+                        unlocked.add(recipe)
+                    }
+                }
                 updateFlex()
 
                 item1 = Item.EMPTY
@@ -86,7 +113,7 @@ class MainActivity : AppCompatActivity() {
                 updatePot()
             }
         }
-        layout.addView(reload, layoutParams)
+        layout.addView(reload, imageLayoutParams)
     }
 
     private fun generateImageView(resId: Int, color: Int): ImageView {

@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Alchemy</string>
+    <string name="item_empty" />
+    <string name="item_elemental_void">Elemental V</string>
+    <string name="item_elemental_earth">Elemental E</string>
+    <string name="item_elemental_water">Elemental W</string>
+    <string name="item_elemental_air">Elemental A</string>
+    <string name="item_elemental_fire">Elemental F</string>
+    <string name="item_elemental_metal">Elemental M</string>
+    <string name="item_elemental_ice">Elemental I</string>
+    <string name="item_elemental_plant">Elemental P</string>
+    <string name="item_elemental_thunder">Elemental T</string>
+    <string name="item_elemental_light">Elemental L</string>
+    <string name="item_elemental_dark">Elemental D</string>
 </resources>
