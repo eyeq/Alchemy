@@ -10,6 +10,16 @@
     <string name="item_elemental_ice">Elemental I</string>
     <string name="item_elemental_plant">Elemental P</string>
     <string name="item_elemental_thunder">Elemental T</string>
-    <string name="item_elemental_light">Elemental L</string>
     <string name="item_elemental_dark">Elemental D</string>
+    <string name="item_elemental_light">Elemental L</string>
+    <string name="item_earth">Earth</string>
+    <string name="item_water">Water</string>
+    <string name="item_air">Air</string>
+    <string name="item_fire">Fire</string>
+    <string name="item_metal">Metal</string>
+    <string name="item_ice">Ice</string>
+    <string name="item_plant">Plant</string>
+    <string name="item_thunder">Thunder</string>
+    <string name="item_space">Space</string>
+    <string name="item_time">Time</string>
 </resources>
