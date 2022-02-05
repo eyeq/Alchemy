@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
 
         for (item in Item.values()) {
             if (unlocked.any { it.result == item }) {
-                val image = generateImageView(item.resId, item.color)
+                val image = generateImageView(item.resId, getColor(item.colorId))
                 image.isClickable = true
                 image.setOnClickListener {
                     if (item1 == Item.EMPTY) {
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
 
                 val text = TextView(this)
                 text.setText(item.textId)
-                text.setTextColor(Color.parseColor("#FFFFFF"))
+                text.setTextColor(Color.WHITE)
                 text.textSize = 12f
 
                 val sub = LinearLayout(this)
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         val layout = findViewById<LinearLayout>(R.id.pot)
         layout.removeAllViews()
 
-        val image1 = generateImageView(item1.resId, item1.color)
+        val image1 = generateImageView(item1.resId, getColor(item1.colorId))
         image1.isClickable = true
         image1.setOnClickListener {
             item1 = Item.EMPTY
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
 
         layout.addView(generateImageView(R.drawable.symbol_plus, Color.WHITE), symbolLayoutParams)
 
-        val image2 = generateImageView(item2.resId, item2.color)
+        val image2 = generateImageView(item2.resId, getColor(item2.colorId))
         image2.isClickable = true
         image2.setOnClickListener {
             item2 = Item.EMPTY
