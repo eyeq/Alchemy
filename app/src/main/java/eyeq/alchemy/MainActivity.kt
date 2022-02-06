@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val countTextView = findViewById<TextView>(R.id.count)
+        countTextView.textSize = 24f
+
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
         tabLayout.setBackgroundColor(getColor(R.color.sumi))
         tabLayout.setTabTextColors(getColor(R.color.silver), getColor(R.color.white))
@@ -40,7 +43,7 @@ class MainActivity : AppCompatActivity() {
                         selectedTab = group
                     }
                 }
-                updateFlex(tabLayout, flexboxLayout, linearLayout)
+                updateFlex(countTextView, tabLayout, flexboxLayout, linearLayout)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -49,8 +52,8 @@ class MainActivity : AppCompatActivity() {
         })
 
         updateTabs(tabLayout)
-        updateFlex(tabLayout, flexboxLayout, linearLayout)
-        updatePot(tabLayout, flexboxLayout, linearLayout)
+        updateFlex(countTextView, tabLayout, flexboxLayout, linearLayout)
+        updatePot(countTextView, tabLayout, flexboxLayout, linearLayout)
     }
 
     private fun updateTabs(tabLayout: TabLayout) {
@@ -81,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateFlex(tabLayout: TabLayout, flexboxLayout: FlexboxLayout, linearLayout: LinearLayout) {
+    private fun updateFlex(countTextView: TextView, tabLayout: TabLayout, flexboxLayout: FlexboxLayout, linearLayout: LinearLayout) {
         val imageLayoutParams = ViewGroup.MarginLayoutParams(64.dpToPx(), 64.dpToPx())
         imageLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
 
@@ -90,36 +93,40 @@ class MainActivity : AppCompatActivity() {
 
         flexboxLayout.removeAllViews()
 
-        for (item in Item.values()) {
-            if (selectedTab == Group.ALL || selectedTab == item.group) {
-                if (unlocked.any { it.result == item }) {
-                    val image = generateImageView(item.resId, getColor(item.colorId))
-                    image.isClickable = true
-                    image.setOnClickListener {
-                        if (item1 == Item.EMPTY) {
-                            item1 = item
-                        } else if (item2 == Item.EMPTY) {
-                            item2 = item
-                        }
-                        updatePot(tabLayout, flexboxLayout, linearLayout)
-                    }
+        val filteredItem = Item.values()
+            .filter { it.group != Group.ALL }
+            .filter { selectedTab == Group.ALL || selectedTab == it.group }
+        val unlockedItem = filteredItem
+            .filter { item -> unlocked.any { it.result == item } }
 
-                    val text = TextView(this)
-                    text.setText(item.textId)
-                    text.setTextColor(getColor(R.color.white))
-                    text.textSize = 12f
+        countTextView.text = "${unlockedItem.count()}/${filteredItem.count()}"
 
-                    val sub = LinearLayout(this)
-                    sub.orientation = LinearLayout.VERTICAL
-                    sub.addView(image, imageLayoutParams)
-                    sub.addView(text, textLayoutParams)
-                    flexboxLayout.addView(sub)
+        for (item in unlockedItem) {
+            val image = generateImageView(item.resId, getColor(item.colorId))
+            image.isClickable = true
+            image.setOnClickListener {
+                if (item1 == Item.EMPTY) {
+                    item1 = item
+                } else if (item2 == Item.EMPTY) {
+                    item2 = item
                 }
+                updatePot(countTextView, tabLayout, flexboxLayout, linearLayout)
             }
+
+            val text = TextView(this)
+            text.setText(item.textId)
+            text.setTextColor(getColor(R.color.white))
+            text.textSize = 12f
+
+            val sub = LinearLayout(this)
+            sub.orientation = LinearLayout.VERTICAL
+            sub.addView(image, imageLayoutParams)
+            sub.addView(text, textLayoutParams)
+            flexboxLayout.addView(sub)
         }
     }
 
-    private fun updatePot(tabLayout: TabLayout, flexboxLayout: FlexboxLayout, linearLayout: LinearLayout) {
+    private fun updatePot(countTextView: TextView, tabLayout: TabLayout, flexboxLayout: FlexboxLayout, linearLayout: LinearLayout) {
         val imageLayoutParams = ViewGroup.MarginLayoutParams(32.dpToPx(), 32.dpToPx())
         imageLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
 
@@ -132,7 +139,7 @@ class MainActivity : AppCompatActivity() {
         image1.isClickable = true
         image1.setOnClickListener {
             item1 = Item.EMPTY
-            updatePot(tabLayout, flexboxLayout, linearLayout)
+            updatePot(countTextView, tabLayout, flexboxLayout, linearLayout)
         }
         linearLayout.addView(image1, imageLayoutParams)
 
@@ -142,7 +149,7 @@ class MainActivity : AppCompatActivity() {
         image2.isClickable = true
         image2.setOnClickListener {
             item2 = Item.EMPTY
-            updatePot(tabLayout, flexboxLayout, linearLayout)
+            updatePot(countTextView, tabLayout, flexboxLayout, linearLayout)
         }
         linearLayout.addView(image2, imageLayoutParams)
 
@@ -163,11 +170,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 updateTabs(tabLayout)
-                updateFlex(tabLayout, flexboxLayout, linearLayout)
+                updateFlex(countTextView, tabLayout, flexboxLayout, linearLayout)
 
                 item1 = Item.EMPTY
                 item2 = Item.EMPTY
-                updatePot(tabLayout, flexboxLayout, linearLayout)
+                updatePot(countTextView, tabLayout, flexboxLayout, linearLayout)
             }
         }
         linearLayout.addView(reload, imageLayoutParams)
