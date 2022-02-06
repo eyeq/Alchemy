@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Alchemy</string>
+
+    <string name="group_all">All</string>
+    <string name="group_elemental">Elemental</string>
+    <string name="group_material">Material</string>
+
     <string name="item_empty" />
     <string name="item_elemental_void">Elemental V</string>
     <string name="item_elemental_earth">Elemental E</string>
