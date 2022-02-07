@@ -56,9 +56,17 @@ class MainActivity : AppCompatActivity() {
         menu.isClickable = true
         menu.setOnClickListener {
             val popup = PopupMenu(this@MainActivity, menu)
-            popup.menu.add(1, 1, 1, "TEST1")
-            popup.menu.add(2, 2, 2, "TEST2")
-            popup.menu.add(3, 3, 3, "TEST3")
+            popup.menu.add(1, 1, 1, "VERSION")
+            popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
+                when(it!!.itemId) {
+                    1 -> {
+                        VersionDialogFragment().show(supportFragmentManager, "simple")
+                    }
+                }
+
+                true
+            })
+
             popup.show()
         }
 
