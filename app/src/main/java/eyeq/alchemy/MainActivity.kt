@@ -1,18 +1,16 @@
 package eyeq.alchemy
 
 import android.graphics.drawable.StateListDrawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.tabs.TabLayout
+
 
 class MainActivity : AppCompatActivity() {
     private val unlocked = mutableListOf<Recipe>()
@@ -35,8 +33,13 @@ class MainActivity : AppCompatActivity() {
         flexboxLayout.setBackgroundColor(getColor(R.color.black))
 
         val image1 = findViewById<ImageView>(R.id.image1)
+        val image1Shadow = findViewById<ImageView>(R.id.image1_shadow)
+
         val image2 = findViewById<ImageView>(R.id.image2)
+        val image2Shadow = findViewById<ImageView>(R.id.image2_shadow)
+
         val convert = findViewById<ImageView>(R.id.convert)
+        val convertShadow = findViewById<ImageView>(R.id.convert_shadow)
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -45,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                         selectedTab = group
                     }
                 }
-                updateFlex(countTextView, tabLayout, flexboxLayout, image1, image2, convert)
+                updateFlex(countTextView, flexboxLayout, image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -56,13 +59,13 @@ class MainActivity : AppCompatActivity() {
         image1.isClickable = true
         image1.setOnClickListener {
             item1 = Item.EMPTY
-            updatePot(image1, image2, convert)
+            updatePot(image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
         }
 
         image2.isClickable = true
         image2.setOnClickListener {
             item2 = Item.EMPTY
-            updatePot(image1, image2, convert)
+            updatePot(image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
         }
 
         convert.isClickable = true
@@ -79,17 +82,17 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 updateTabs(tabLayout)
-                updateFlex(countTextView, tabLayout, flexboxLayout, image1, image2, convert)
+                updateFlex(countTextView, flexboxLayout, image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
 
                 item1 = Item.EMPTY
                 item2 = Item.EMPTY
-                updatePot(image1, image2, convert)
+                updatePot(image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
             }
         }
 
         updateTabs(tabLayout)
-        updateFlex(countTextView, tabLayout, flexboxLayout, image1, image2, convert)
-        updatePot(image1, image2, convert)
+        updateFlex(countTextView, flexboxLayout, image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
+        updatePot(image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
     }
 
     private fun updateTabs(tabLayout: TabLayout) {
@@ -120,9 +123,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateFlex(countTextView: TextView, tabLayout: TabLayout, flexboxLayout: FlexboxLayout, image1: ImageView, image2: ImageView, convert: ImageView) {
+    private fun updateFlex(
+        countTextView: TextView,
+        flexboxLayout: FlexboxLayout,
+        image1: ImageView, image1Shadow: ImageView,
+        image2: ImageView, image2Shadow: ImageView,
+        convert: ImageView, convertShadow: ImageView
+    ) {
         val imageLayoutParams = ViewGroup.MarginLayoutParams(64.dpToPx(), 64.dpToPx())
         imageLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
+
+        val shadowLayoutParams = ViewGroup.MarginLayoutParams(64.dpToPx(), 64.dpToPx())
+        shadowLayoutParams.setMargins(12.dpToPx(), 12.dpToPx(), 0.dpToPx(), 0.dpToPx())
 
         val textLayoutParams = ViewGroup.MarginLayoutParams(64.dpToPx(), 28.dpToPx())
         textLayoutParams.setMargins(8.dpToPx(), 0.dpToPx(), 8.dpToPx(), 8.dpToPx())
@@ -138,7 +150,15 @@ class MainActivity : AppCompatActivity() {
         countTextView.text = "${unlockedItem.count()}/${filteredItem.count()}"
 
         for (item in unlockedItem) {
-            val image = generateImageView(item.resId, getColor(item.colorId))
+            val image = ImageView(this)
+            image.setImageResource(item.resId)
+            image.setColorFilter(getColor(item.colorId))
+
+            val shadow = ImageView(this)
+            shadow.setImageResource(item.resId)
+            shadow.setColorFilter(getColor(item.colorId))
+            shadow.alpha = 0.5f
+
             image.isClickable = true
             image.setOnClickListener {
                 if (item1 == Item.EMPTY) {
@@ -146,8 +166,12 @@ class MainActivity : AppCompatActivity() {
                 } else if (item2 == Item.EMPTY) {
                     item2 = item
                 }
-                updatePot(image1, image2, convert)
+                updatePot(image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
             }
+
+            val frame = FrameLayout(this)
+            frame.addView(image, imageLayoutParams)
+            frame.addView(shadow, shadowLayoutParams)
 
             val text = TextView(this)
             text.setText(item.textId)
@@ -156,28 +180,37 @@ class MainActivity : AppCompatActivity() {
 
             val sub = LinearLayout(this)
             sub.orientation = LinearLayout.VERTICAL
-            sub.addView(image, imageLayoutParams)
+            sub.addView(frame)
             sub.addView(text, textLayoutParams)
             flexboxLayout.addView(sub)
         }
     }
 
-    private fun updatePot(image1: ImageView, image2: ImageView, convert: ImageView) {
+    private fun updatePot(
+        image1: ImageView, image1Shadow: ImageView,
+        image2: ImageView, image2Shadow: ImageView,
+        convert: ImageView, convertShadow: ImageView
+    ) {
         image1.setImageResource(item1.resId)
         image1.setColorFilter(getColor(item1.colorId))
+
+        image1Shadow.setImageResource(item1.resId)
+        image1Shadow.setColorFilter(getColor(item1.colorId))
+        image1Shadow.alpha = 0.5f
 
         image2.setImageResource(item2.resId)
         image2.setColorFilter(getColor(item2.colorId))
 
+        image2Shadow.setImageResource(item2.resId)
+        image2Shadow.setColorFilter(getColor(item2.colorId))
+        image2Shadow.alpha = 0.5f
+
         convert.setImageResource(R.drawable.symbol_reload)
         convert.setColorFilter(getColor(R.color.white))
-    }
 
-    private fun generateImageView(resId: Int, color: Int): ImageView {
-        val image = ImageView(this)
-        image.setImageResource(resId)
-        image.setColorFilter(color)
-        return image
+        convertShadow.setImageResource(R.drawable.symbol_reload)
+        convertShadow.setColorFilter(getColor(R.color.white))
+        convertShadow.alpha = 0.5f
     }
 
     private fun Int.pxToDp(): Int = (this / resources.displayMetrics.density).toInt()

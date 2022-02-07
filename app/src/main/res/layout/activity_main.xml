@@ -54,11 +54,23 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
-            android:id="@+id/image1"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_margin="8dp" />
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/image1"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="8dp" />
+
+            <ImageView
+                android:id="@+id/image1_shadow"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp" />
+        </FrameLayout>
 
         <ImageView
             android:layout_width="16dp"
@@ -66,11 +78,23 @@
             android:layout_margin="8dp"
             android:src="@drawable/symbol_plus" />
 
-        <ImageView
-            android:id="@+id/image2"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_margin="8dp" />
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/image2"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="8dp" />
+
+            <ImageView
+                android:id="@+id/image2_shadow"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp" />
+        </FrameLayout>
 
         <ImageView
             android:layout_width="16dp"
@@ -78,10 +102,22 @@
             android:layout_margin="8dp"
             android:src="@drawable/symbol_arrow" />
 
-        <ImageView
-            android:id="@+id/convert"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_margin="8dp" />
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/convert"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="8dp" />
+
+            <ImageView
+                android:id="@+id/convert_shadow"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp" />
+        </FrameLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
