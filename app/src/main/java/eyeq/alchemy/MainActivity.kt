@@ -38,6 +38,9 @@ class MainActivity : AppCompatActivity() {
         val image2 = findViewById<ImageView>(R.id.image2)
         val image2Shadow = findViewById<ImageView>(R.id.image2_shadow)
 
+        val clean = findViewById<ImageView>(R.id.clean)
+        val cleanShadow = findViewById<ImageView>(R.id.clean_shadow)
+
         val convert = findViewById<ImageView>(R.id.convert)
         val convertShadow = findViewById<ImageView>(R.id.convert_shadow)
 
@@ -48,7 +51,8 @@ class MainActivity : AppCompatActivity() {
                         selectedTab = group
                     }
                 }
-                updateFlex(countTextView, flexboxLayout, image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
+                updateFlex(countTextView, flexboxLayout,
+                    image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -59,13 +63,20 @@ class MainActivity : AppCompatActivity() {
         image1.isClickable = true
         image1.setOnClickListener {
             item1 = Item.EMPTY
-            updatePot(image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
+            updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         }
 
         image2.isClickable = true
         image2.setOnClickListener {
             item2 = Item.EMPTY
-            updatePot(image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
+            updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+        }
+
+        clean.isClickable = true
+        clean.setOnClickListener {
+            item1 = Item.EMPTY
+            item2 = Item.EMPTY
+            updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         }
 
         convert.isClickable = true
@@ -82,17 +93,19 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 updateTabs(tabLayout)
-                updateFlex(countTextView, flexboxLayout, image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
+                updateFlex(countTextView, flexboxLayout,
+                    image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
 
                 item1 = Item.EMPTY
                 item2 = Item.EMPTY
-                updatePot(image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
+                updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
             }
         }
 
         updateTabs(tabLayout)
-        updateFlex(countTextView, flexboxLayout, image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
-        updatePot(image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
+        updateFlex(countTextView, flexboxLayout,
+            image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+        updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
     }
 
     private fun updateTabs(tabLayout: TabLayout) {
@@ -128,6 +141,7 @@ class MainActivity : AppCompatActivity() {
         flexboxLayout: FlexboxLayout,
         image1: ImageView, image1Shadow: ImageView,
         image2: ImageView, image2Shadow: ImageView,
+        clean: ImageView, cleanShadow: ImageView,
         convert: ImageView, convertShadow: ImageView
     ) {
         val imageLayoutParams = ViewGroup.MarginLayoutParams(64.dpToPx(), 64.dpToPx())
@@ -166,7 +180,7 @@ class MainActivity : AppCompatActivity() {
                 } else if (item2 == Item.EMPTY) {
                     item2 = item
                 }
-                updatePot(image1, image1Shadow, image2, image2Shadow, convert, convertShadow)
+                updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
             }
 
             val frame = FrameLayout(this)
@@ -190,6 +204,7 @@ class MainActivity : AppCompatActivity() {
     private fun updatePot(
         image1: ImageView, image1Shadow: ImageView,
         image2: ImageView, image2Shadow: ImageView,
+        clean: ImageView, cleanShadow: ImageView,
         convert: ImageView, convertShadow: ImageView
     ) {
         image1.setImageResource(item1.resId)
@@ -205,6 +220,13 @@ class MainActivity : AppCompatActivity() {
         image2Shadow.setImageResource(item2.resId)
         image2Shadow.setColorFilter(getColor(item2.colorId))
         image2Shadow.alpha = 0.5f
+
+        clean.setImageResource(R.drawable.symbol_clean)
+        clean.setColorFilter(getColor(R.color.silver))
+
+        cleanShadow.setImageResource(R.drawable.symbol_clean)
+        cleanShadow.setColorFilter(getColor(R.color.silver))
+        cleanShadow.alpha = 0.5f
 
         convert.setImageResource(R.drawable.symbol_reload)
         convert.setColorFilter(getColor(R.color.white))
