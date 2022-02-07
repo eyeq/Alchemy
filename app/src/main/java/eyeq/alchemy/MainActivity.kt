@@ -177,6 +177,7 @@ class MainActivity : AppCompatActivity() {
             text.setText(item.textId)
             text.setTextColor(getColor(R.color.white))
             text.textSize = 12f
+            text.gravity = Gravity.CENTER_HORIZONTAL
 
             val sub = LinearLayout(this)
             sub.orientation = LinearLayout.VERTICAL
