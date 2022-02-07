@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val countTextView = findViewById<TextView>(R.id.count)
-        countTextView.textSize = 24f
+        countTextView.textSize = 14f
 
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
         tabLayout.setBackgroundColor(getColor(R.color.sumi))
@@ -34,7 +34,9 @@ class MainActivity : AppCompatActivity() {
         val flexboxLayout = findViewById<FlexboxLayout>(R.id.flex)
         flexboxLayout.setBackgroundColor(getColor(R.color.black))
 
-        val linearLayout = findViewById<LinearLayout>(R.id.pot)
+        val image1 = findViewById<ImageView>(R.id.image1)
+        val image2 = findViewById<ImageView>(R.id.image2)
+        val convert = findViewById<ImageView>(R.id.convert)
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -43,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                         selectedTab = group
                     }
                 }
-                updateFlex(countTextView, tabLayout, flexboxLayout, linearLayout)
+                updateFlex(countTextView, tabLayout, flexboxLayout, image1, image2, convert)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -51,9 +53,43 @@ class MainActivity : AppCompatActivity() {
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
 
+        image1.isClickable = true
+        image1.setOnClickListener {
+            item1 = Item.EMPTY
+            updatePot(image1, image2, convert)
+        }
+
+        image2.isClickable = true
+        image2.setOnClickListener {
+            item2 = Item.EMPTY
+            updatePot(image1, image2, convert)
+        }
+
+        convert.isClickable = true
+        convert.setOnClickListener {
+            val results = Recipe.alchemise(item1, item2)
+            if (results.isNotEmpty()) {
+                for (recipe in results) {
+                    if (!unlocked.contains(recipe)) {
+                        val toast = Toast.makeText(this, getString(recipe.result.textId), Toast.LENGTH_LONG)
+                        toast.setGravity(Gravity.CENTER, 0, 0)
+                        toast.show()
+
+                        unlocked.add(recipe)
+                    }
+                }
+                updateTabs(tabLayout)
+                updateFlex(countTextView, tabLayout, flexboxLayout, image1, image2, convert)
+
+                item1 = Item.EMPTY
+                item2 = Item.EMPTY
+                updatePot(image1, image2, convert)
+            }
+        }
+
         updateTabs(tabLayout)
-        updateFlex(countTextView, tabLayout, flexboxLayout, linearLayout)
-        updatePot(countTextView, tabLayout, flexboxLayout, linearLayout)
+        updateFlex(countTextView, tabLayout, flexboxLayout, image1, image2, convert)
+        updatePot(image1, image2, convert)
     }
 
     private fun updateTabs(tabLayout: TabLayout) {
@@ -84,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateFlex(countTextView: TextView, tabLayout: TabLayout, flexboxLayout: FlexboxLayout, linearLayout: LinearLayout) {
+    private fun updateFlex(countTextView: TextView, tabLayout: TabLayout, flexboxLayout: FlexboxLayout, image1: ImageView, image2: ImageView, convert: ImageView) {
         val imageLayoutParams = ViewGroup.MarginLayoutParams(64.dpToPx(), 64.dpToPx())
         imageLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
 
@@ -110,7 +146,7 @@ class MainActivity : AppCompatActivity() {
                 } else if (item2 == Item.EMPTY) {
                     item2 = item
                 }
-                updatePot(countTextView, tabLayout, flexboxLayout, linearLayout)
+                updatePot(image1, image2, convert)
             }
 
             val text = TextView(this)
@@ -126,58 +162,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updatePot(countTextView: TextView, tabLayout: TabLayout, flexboxLayout: FlexboxLayout, linearLayout: LinearLayout) {
-        val imageLayoutParams = ViewGroup.MarginLayoutParams(32.dpToPx(), 32.dpToPx())
-        imageLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
+    private fun updatePot(image1: ImageView, image2: ImageView, convert: ImageView) {
+        image1.setImageResource(item1.resId)
+        image1.setColorFilter(getColor(item1.colorId))
 
-        val symbolLayoutParams = ViewGroup.MarginLayoutParams(16.dpToPx(), 16.dpToPx())
-        symbolLayoutParams.setMargins(0.dpToPx(), 12.dpToPx(), 0.dpToPx(), 12.dpToPx())
+        image2.setImageResource(item2.resId)
+        image2.setColorFilter(getColor(item2.colorId))
 
-        linearLayout.removeAllViews()
-
-        val image1 = generateImageView(item1.resId, getColor(item1.colorId))
-        image1.isClickable = true
-        image1.setOnClickListener {
-            item1 = Item.EMPTY
-            updatePot(countTextView, tabLayout, flexboxLayout, linearLayout)
-        }
-        linearLayout.addView(image1, imageLayoutParams)
-
-        linearLayout.addView(generateImageView(R.drawable.symbol_plus, getColor(R.color.white)), symbolLayoutParams)
-
-        val image2 = generateImageView(item2.resId, getColor(item2.colorId))
-        image2.isClickable = true
-        image2.setOnClickListener {
-            item2 = Item.EMPTY
-            updatePot(countTextView, tabLayout, flexboxLayout, linearLayout)
-        }
-        linearLayout.addView(image2, imageLayoutParams)
-
-        linearLayout.addView(generateImageView(R.drawable.symbol_arrow, getColor(R.color.white)), symbolLayoutParams)
-
-        val reload = generateImageView(R.drawable.symbol_reload, getColor(R.color.white))
-        reload.isClickable = true
-        reload.setOnClickListener {
-            val results = Recipe.alchemise(item1, item2)
-            if (results.isNotEmpty()) {
-                for (recipe in results) {
-                    if (!unlocked.contains(recipe)) {
-                        val toast = Toast.makeText(this, getString(recipe.result.textId), Toast.LENGTH_LONG)
-                        toast.setGravity(Gravity.CENTER, 0, 0)
-                        toast.show()
-
-                        unlocked.add(recipe)
-                    }
-                }
-                updateTabs(tabLayout)
-                updateFlex(countTextView, tabLayout, flexboxLayout, linearLayout)
-
-                item1 = Item.EMPTY
-                item2 = Item.EMPTY
-                updatePot(countTextView, tabLayout, flexboxLayout, linearLayout)
-            }
-        }
-        linearLayout.addView(reload, imageLayoutParams)
+        convert.setImageResource(R.drawable.symbol_reload)
+        convert.setColorFilter(getColor(R.color.white))
     }
 
     private fun generateImageView(resId: Int, color: Int): ImageView {

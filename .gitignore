@@ -1,5 +1,5 @@
 *.iml
-/.idea
+.idea
 .gradle
 /local.properties
 .DS_Store
@@ -8,3 +8,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/release/
+/app/src/main/res/drawable-v24/
