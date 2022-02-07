@@ -25,6 +25,15 @@ class MainActivity : AppCompatActivity() {
         val countTextView = findViewById<TextView>(R.id.count)
         countTextView.textSize = 14f
 
+        val menu = findViewById<ImageView>(R.id.menu)
+        menu.setImageResource(R.drawable.symbol_menu)
+        menu.setColorFilter(getColor(R.color.white))
+
+        val menuShadow = findViewById<ImageView>(R.id.menu_shadow)
+        menuShadow.setImageResource(R.drawable.symbol_menu)
+        menuShadow.setColorFilter(getColor(R.color.white))
+        menuShadow.alpha = 0.5f
+
         val tabLayout = findViewById<TabLayout>(R.id.tabs)
         tabLayout.setBackgroundColor(getColor(R.color.sumi))
         tabLayout.setTabTextColors(getColor(R.color.silver), getColor(R.color.white))
@@ -43,6 +52,15 @@ class MainActivity : AppCompatActivity() {
 
         val convert = findViewById<ImageView>(R.id.convert)
         val convertShadow = findViewById<ImageView>(R.id.convert_shadow)
+
+        menu.isClickable = true
+        menu.setOnClickListener {
+            val popup = PopupMenu(this@MainActivity, menu)
+            popup.menu.add(1, 1, 1, "TEST1")
+            popup.menu.add(2, 2, 2, "TEST2")
+            popup.menu.add(3, 3, 3, "TEST3")
+            popup.show()
+        }
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -85,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             if (results.isNotEmpty()) {
                 for (recipe in results) {
                     if (!unlocked.contains(recipe)) {
-                        val toast = Toast.makeText(this, getString(recipe.result.textId), Toast.LENGTH_LONG)
+                        val toast = Toast.makeText(this@MainActivity, getString(recipe.result.textId), Toast.LENGTH_LONG)
                         toast.setGravity(Gravity.CENTER, 0, 0)
                         toast.show()
 
