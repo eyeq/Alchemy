@@ -56,10 +56,14 @@ class MainActivity : AppCompatActivity() {
         menu.isClickable = true
         menu.setOnClickListener {
             val popup = PopupMenu(this@MainActivity, menu)
-            popup.menu.add(1, 1, 1, "VERSION")
+            popup.menu.add(1, 1, 1, "CREDIT")
+            popup.menu.add(2, 2, 2, "VERSION")
             popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
                 when(it!!.itemId) {
                     1 -> {
+                        CreditDialogFragment().show(supportFragmentManager, "simple")
+                    }
+                    2 -> {
                         VersionDialogFragment().show(supportFragmentManager, "simple")
                     }
                 }
