@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import eyeq.util.CharSequenceExtensions
+import eyeq.util.PackageManagerExtensions
 
 class VersionDialogFragment : DialogFragment() {
 
@@ -23,8 +24,8 @@ class VersionDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val html = "<p>${Constant.getApplicationName(context)}</p>" +
-                "<p>ver.${Constant.getVersionName(context)}</p>" +
+        val html = "<p>${PackageManagerExtensions.getApplicationName(context)}</p>" +
+                "<p>ver.${PackageManagerExtensions.getVersionName(context)}</p>" +
                 "<br>" +
                 "<p>Check for updates: <a href='https://github.com/eyeq/Alchemy/releases'>GitHub</a></p>"
 

@@ -1,18 +1,16 @@
-package eyeq.alchemy
+package eyeq.util
 
 import android.content.Context
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 
-
-class Constant {
+class PackageManagerExtensions {
     companion object {
         fun getApplicationName(context: Context?): String {
             return try {
                 context!!
-                val pm: PackageManager = context.packageManager
-                val info = pm.getApplicationInfo(context.packageName, 0)
-                pm.getApplicationLabel(info).toString()
+                val packageManager = context.packageManager
+                val info = packageManager.getApplicationInfo(context.packageName, 0)
+                packageManager.getApplicationLabel(info).toString()
             } catch (e: PackageManager.NameNotFoundException) {
                 ""
             }
@@ -21,8 +19,8 @@ class Constant {
         fun getVersionName(context: Context?): String {
             return try {
                 context!!
-                val pm: PackageManager = context.packageManager
-                val info: PackageInfo = pm.getPackageInfo(context.packageName, PackageManager.GET_META_DATA)
+                val packageManager = context.packageManager
+                val info = packageManager.getPackageInfo(context.packageName, PackageManager.GET_META_DATA)
                 info.versionName
             } catch (e: PackageManager.NameNotFoundException) {
                 ""

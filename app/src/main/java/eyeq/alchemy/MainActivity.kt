@@ -11,7 +11,6 @@ import androidx.core.view.children
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.tabs.TabLayout
 
-
 class MainActivity : AppCompatActivity() {
     private val unlocked = mutableListOf<Recipe>()
     private var selectedTab = Group.ALL

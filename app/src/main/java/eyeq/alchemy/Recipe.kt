@@ -1,7 +1,7 @@
 package eyeq.alchemy
 
-class Recipe(val result: Item, vararg inputs: Item) {
-    private val inputss = inputs
+class Recipe(val result: Item, vararg _inputs: Item) {
+    private val inputs = _inputs
 
     companion object {
         val recipes = mutableListOf<Recipe>(
@@ -35,7 +35,7 @@ class Recipe(val result: Item, vararg inputs: Item) {
             val inputsTrim = inputs.filter { it != Item.EMPTY }
             return recipes.filter {
                 val temp = inputsTrim.toMutableList()
-                for (input in it.inputss) {
+                for (input in it.inputs) {
                     if (!temp.contains(input)) {
                         return@filter false
                     }
