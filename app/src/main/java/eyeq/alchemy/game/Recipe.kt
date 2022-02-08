@@ -1,4 +1,4 @@
-package eyeq.alchemy
+package eyeq.alchemy.game
 
 class Recipe(val result: Item, vararg _inputs: Item) {
     private val inputs = _inputs

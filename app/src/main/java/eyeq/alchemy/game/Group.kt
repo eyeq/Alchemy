@@ -1,4 +1,6 @@
-package eyeq.alchemy
+package eyeq.alchemy.game
+
+import eyeq.alchemy.R
 
 enum class Group(val textId: Int) {
     ALL(R.string.group_all),

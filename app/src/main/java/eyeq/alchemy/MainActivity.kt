@@ -10,12 +10,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.tabs.TabLayout
+import eyeq.alchemy.game.Game
+import eyeq.alchemy.game.Group
+import eyeq.alchemy.game.Item
+import eyeq.alchemy.game.Recipe
 
 class MainActivity : AppCompatActivity() {
-    private val unlocked = mutableListOf<Recipe>()
-    private var selectedTab = Group.ALL
-    private var item1 = Item.EMPTY
-    private var item2 = Item.EMPTY
+    val game = Game()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 for (group in Group.values()) {
                     if (getText(group.textId) == tab.text) {
-                        selectedTab = group
+                        game.selectedTab = group
                     }
                 }
                 updateFlex(countTextView, flexboxLayout,
@@ -91,42 +92,42 @@ class MainActivity : AppCompatActivity() {
 
         image1.isClickable = true
         image1.setOnClickListener {
-            item1 = Item.EMPTY
+            game.item1 = Item.EMPTY
             updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         }
 
         image2.isClickable = true
         image2.setOnClickListener {
-            item2 = Item.EMPTY
+            game.item2 = Item.EMPTY
             updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         }
 
         clean.isClickable = true
         clean.setOnClickListener {
-            item1 = Item.EMPTY
-            item2 = Item.EMPTY
+            game.item1 = Item.EMPTY
+            game.item2 = Item.EMPTY
             updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         }
 
         convert.isClickable = true
         convert.setOnClickListener {
-            val results = Recipe.alchemise(item1, item2)
+            val results = Recipe.alchemise(game.item1, game.item2)
             if (results.isNotEmpty()) {
                 for (recipe in results) {
-                    if (!unlocked.contains(recipe)) {
+                    if (!game.unlocked.contains(recipe)) {
                         val toast = Toast.makeText(this@MainActivity, getString(recipe.result.textId), Toast.LENGTH_LONG)
                         toast.setGravity(Gravity.CENTER, 0, 0)
                         toast.show()
 
-                        unlocked.add(recipe)
+                        game.unlocked.add(recipe)
                     }
                 }
                 updateTabs(tabLayout)
                 updateFlex(countTextView, flexboxLayout,
                     image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
 
-                item1 = Item.EMPTY
-                item2 = Item.EMPTY
+                game.item1 = Item.EMPTY
+                game.item2 = Item.EMPTY
                 updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
             }
         }
@@ -138,7 +139,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateTabs(tabLayout: TabLayout) {
-        val temp = selectedTab
+        val temp = game.selectedTab
         tabLayout.removeAllTabs()
 
         val tabAll = tabLayout.newTab()
@@ -146,7 +147,7 @@ class MainActivity : AppCompatActivity() {
         tabLayout.addTab(tabAll)
 
         for (group in Group.values()) {
-            if (unlocked.any { it.result.group == group }) {
+            if (game.unlocked.any { it.result.group == group }) {
                 val tab = tabLayout.newTab()
                 tab.setText(group.textId)
                 tabLayout.addTab(tab)
@@ -186,9 +187,9 @@ class MainActivity : AppCompatActivity() {
 
         val filteredItem = Item.values()
             .filter { it.group != Group.ALL }
-            .filter { selectedTab == Group.ALL || selectedTab == it.group }
+            .filter { game.selectedTab == Group.ALL || game.selectedTab == it.group }
         val unlockedItem = filteredItem
-            .filter { item -> unlocked.any { it.result == item } }
+            .filter { item -> game.unlocked.any { it.result == item } }
 
         countTextView.text = "${unlockedItem.count()}/${filteredItem.count()}"
 
@@ -204,10 +205,10 @@ class MainActivity : AppCompatActivity() {
 
             image.isClickable = true
             image.setOnClickListener {
-                if (item1 == Item.EMPTY) {
-                    item1 = item
-                } else if (item2 == Item.EMPTY) {
-                    item2 = item
+                if (game.item1 == Item.EMPTY) {
+                    game.item1 = item
+                } else if (game.item2 == Item.EMPTY) {
+                    game.item2 = item
                 }
                 updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
             }
@@ -236,18 +237,18 @@ class MainActivity : AppCompatActivity() {
         clean: ImageView, cleanShadow: ImageView,
         convert: ImageView, convertShadow: ImageView
     ) {
-        image1.setImageResource(item1.resId)
-        image1.setColorFilter(getColor(item1.colorId))
+        image1.setImageResource(game.item1.resId)
+        image1.setColorFilter(getColor(game.item1.colorId))
 
-        image1Shadow.setImageResource(item1.resId)
-        image1Shadow.setColorFilter(getColor(item1.colorId))
+        image1Shadow.setImageResource(game.item1.resId)
+        image1Shadow.setColorFilter(getColor(game.item1.colorId))
         image1Shadow.alpha = 0.5f
 
-        image2.setImageResource(item2.resId)
-        image2.setColorFilter(getColor(item2.colorId))
+        image2.setImageResource(game.item2.resId)
+        image2.setColorFilter(getColor(game.item2.colorId))
 
-        image2Shadow.setImageResource(item2.resId)
-        image2Shadow.setColorFilter(getColor(item2.colorId))
+        image2Shadow.setImageResource(game.item2.resId)
+        image2Shadow.setColorFilter(getColor(game.item2.colorId))
         image2Shadow.alpha = 0.5f
 
         clean.setImageResource(R.drawable.symbol_clean)

@@ -1,4 +1,6 @@
-package eyeq.alchemy
+package eyeq.alchemy.game
+
+import eyeq.alchemy.R
 
 enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: Int) {
     EMPTY(Group.ALL, R.drawable.item_empty, R.color.black, R.string.item_empty),
