@@ -1,8 +1,12 @@
 package eyeq.alchemy
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -112,7 +116,10 @@ class MainActivity : AppCompatActivity() {
         convert.isClickable = true
         convert.setOnClickListener {
             val results = Recipe.alchemise(game.item1, game.item2)
-            if (results.isNotEmpty()) {
+            if (results.isEmpty()) {
+                vibrate(convert, 20f, 10)
+                vibrate(convertShadow, 20f, 10)
+            } else {
                 for (recipe in results) {
                     if (!game.unlocked.contains(recipe)) {
                         val toast = Toast.makeText(this@MainActivity, getString(recipe.result.textId), Toast.LENGTH_LONG)
@@ -264,6 +271,21 @@ class MainActivity : AppCompatActivity() {
         convertShadow.setImageResource(R.drawable.symbol_reload)
         convertShadow.setColorFilter(getColor(R.color.white))
         convertShadow.alpha = 0.5f
+    }
+
+    private fun vibrate(target: View, translate: Float, duration: Long) {
+        val animatorList: MutableList<Animator> = ArrayList()
+
+        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * 0.0f, translate * -1.0f).setDuration(duration * 1))
+        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * -1.0f, translate * 0.7f).setDuration(duration * 3))
+        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * 0.7f, translate * -0.5f).setDuration(duration * 6))
+        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * -0.5f, translate * 0.4f).setDuration(duration * 10))
+        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * 0.4f, translate * -0.3f).setDuration(duration * 15))
+        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * -0.3f, translate * 0.0f).setDuration(duration * 21))
+
+        val set = AnimatorSet()
+        set.playSequentially(animatorList)
+        set.start()
     }
 
     private fun Int.pxToDp(): Int = (this / resources.displayMetrics.density).toInt()
