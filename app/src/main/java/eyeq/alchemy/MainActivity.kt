@@ -20,7 +20,8 @@ import eyeq.alchemy.game.Item
 import eyeq.alchemy.game.Recipe
 
 class MainActivity : AppCompatActivity() {
-    val game = Game()
+    private val game = Game()
+    private var selectedTab = Group.ALL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,24 +58,24 @@ class MainActivity : AppCompatActivity() {
         val convert = findViewById<ImageView>(R.id.convert)
         val convertShadow = findViewById<ImageView>(R.id.convert_shadow)
 
+        val popup = PopupMenu(this@MainActivity, menu)
+        popup.menu.add(1, 1, 1, "CREDIT")
+        popup.menu.add(2, 2, 2, "VERSION")
+        popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
+            when(it!!.itemId) {
+                1 -> {
+                    CreditDialogFragment().show(supportFragmentManager, "simple")
+                }
+                2 -> {
+                    VersionDialogFragment().show(supportFragmentManager, "simple")
+                }
+            }
+
+            true
+        })
+
         menu.isClickable = true
         menu.setOnClickListener {
-            val popup = PopupMenu(this@MainActivity, menu)
-            popup.menu.add(1, 1, 1, "CREDIT")
-            popup.menu.add(2, 2, 2, "VERSION")
-            popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
-                when(it!!.itemId) {
-                    1 -> {
-                        CreditDialogFragment().show(supportFragmentManager, "simple")
-                    }
-                    2 -> {
-                        VersionDialogFragment().show(supportFragmentManager, "simple")
-                    }
-                }
-
-                true
-            })
-
             popup.show()
         }
 
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity() {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 for (group in Group.values()) {
                     if (getText(group.textId) == tab.text) {
-                        game.selectedTab = group
+                        selectedTab = group
                     }
                 }
                 updateFlex(countTextView, flexboxLayout,
@@ -121,12 +122,10 @@ class MainActivity : AppCompatActivity() {
                 vibrate(convertShadow, 20f, 10)
             } else {
                 for (recipe in results) {
-                    if (!game.unlocked.contains(recipe)) {
+                    if (!game.unlock(recipe)) {
                         val toast = Toast.makeText(this@MainActivity, getString(recipe.result.textId), Toast.LENGTH_LONG)
                         toast.setGravity(Gravity.CENTER, 0, 0)
                         toast.show()
-
-                        game.unlocked.add(recipe)
                     }
                 }
                 updateTabs(tabLayout)
@@ -146,22 +145,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateTabs(tabLayout: TabLayout) {
-        val temp = game.selectedTab
+        val temp = selectedTab
         tabLayout.removeAllTabs()
 
         val tabAll = tabLayout.newTab()
         tabAll.setText(R.string.group_all)
         tabLayout.addTab(tabAll)
 
-        for (group in Group.values()) {
-            if (game.unlocked.any { it.result.group == group }) {
-                val tab = tabLayout.newTab()
-                tab.setText(group.textId)
-                tabLayout.addTab(tab)
+        for (group in Group.values().filter { game.isUnlocked(it) }) {
+            val tab = tabLayout.newTab()
+            tab.setText(group.textId)
+            tabLayout.addTab(tab)
 
-                if (group == temp) {
-                    tab.select()
-                }
+            if (group == temp) {
+                tab.select()
             }
         }
 
@@ -194,9 +191,9 @@ class MainActivity : AppCompatActivity() {
 
         val filteredItem = Item.values()
             .filter { it.group != Group.ALL }
-            .filter { game.selectedTab == Group.ALL || game.selectedTab == it.group }
+            .filter { selectedTab == Group.ALL || selectedTab == it.group }
         val unlockedItem = filteredItem
-            .filter { item -> game.unlocked.any { it.result == item } }
+            .filter { item -> game.isUnlocked(item) }
 
         countTextView.text = "${unlockedItem.count()}/${filteredItem.count()}"
 
