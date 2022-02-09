@@ -5,6 +5,8 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +47,8 @@ class MainActivity : AppCompatActivity() {
 
         val flexboxLayout = findViewById<FlexboxLayout>(R.id.flex)
         flexboxLayout.setBackgroundColor(getColor(R.color.black))
+
+        val balloonLayout = findViewById<LinearLayout>(R.id.balloon)
 
         val image1 = findViewById<ImageView>(R.id.image1)
         val image1Shadow = findViewById<ImageView>(R.id.image1_shadow)
@@ -122,10 +126,37 @@ class MainActivity : AppCompatActivity() {
                 vibrate(convertShadow, 20f, 10)
             } else {
                 for (recipe in results) {
-                    if (!game.unlock(recipe)) {
-                        val toast = Toast.makeText(this@MainActivity, getString(recipe.result.textId), Toast.LENGTH_LONG)
-                        toast.setGravity(Gravity.CENTER, 0, 0)
-                        toast.show()
+                    if (game.unlock(recipe)) {
+                        val subLayoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                        subLayoutParams.setMargins(2.dpToPx(), 2.dpToPx(), 2.dpToPx(), 2.dpToPx())
+
+                        val imageLayoutParams = ViewGroup.MarginLayoutParams(32.dpToPx(), 32.dpToPx())
+                        imageLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
+
+                        val  textLayoutParams = ViewGroup.MarginLayoutParams(80.dpToPx(), 32.dpToPx())
+                        textLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
+
+                        val image = ImageView(this@MainActivity)
+                        image.setImageResource(recipe.result.resId)
+                        image.setColorFilter(getColor(recipe.result.colorId))
+
+                        val text = TextView(this)
+                        text.setText(recipe.result.textId)
+                        text.setTextColor(getColor(R.color.white))
+                        text.textSize = 12f
+                        text.gravity = Gravity.CENTER_VERTICAL
+
+                        val sub = LinearLayout(this@MainActivity)
+                        sub.orientation = LinearLayout.HORIZONTAL
+                        sub.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.balloon)
+                        sub.addView(image, imageLayoutParams)
+                        sub.addView(text, textLayoutParams)
+
+                        balloonLayout.addView(sub, subLayoutParams)
+
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            balloonLayout.removeView(sub)
+                        }, 4000)
                     }
                 }
                 updateTabs(tabLayout)
