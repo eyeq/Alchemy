@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Alchemy</string>
 
+    <string name="menu_restart">RESTART</string>
+    <string name="menu_credit">CREDIT</string>
+    <string name="menu_version">VERSION</string>
+
     <string name="group_all">All</string>
     <string name="group_elemental">Elemental</string>
     <string name="group_material">Material</string>

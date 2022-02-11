@@ -9,6 +9,14 @@ class Game {
     var item2 = Item.EMPTY
     var item3 = Item.EMPTY
 
+    fun clear() {
+        unlockedRecipeList.clear()
+        historyList.clear()
+        item1 = Item.EMPTY
+        item2 = Item.EMPTY
+        item3 = Item.EMPTY
+    }
+
     fun save(preferences: SharedPreferences) {
         val histories = historyList.joinToString(",") { it.toString() }
         val items = Item.values().filter { isUnlocked(it) }.joinToString(",") { it.name }
@@ -20,6 +28,8 @@ class Game {
     }
 
     fun load(preferences: SharedPreferences): List<Item> {
+        clear()
+
         val histories = preferences.getString("histories", "")!!
         for (s in histories.split(',')) {
             val history = History.parse(s)

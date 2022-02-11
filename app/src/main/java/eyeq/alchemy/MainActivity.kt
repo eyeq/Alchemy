@@ -3,6 +3,7 @@ package eyeq.alchemy
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.drawable.StateListDrawable
@@ -21,6 +22,7 @@ import com.google.android.material.tabs.TabLayout
 import eyeq.alchemy.game.Game
 import eyeq.alchemy.game.Group
 import eyeq.alchemy.game.Item
+
 
 class MainActivity : AppCompatActivity() {
     private val game = Game()
@@ -67,20 +69,39 @@ class MainActivity : AppCompatActivity() {
         val convertShadow = findViewById<ImageView>(R.id.convert_shadow)
 
         val popup = PopupMenu(this@MainActivity, menu)
-        popup.menu.add(1, 1, 1, "CREDIT")
-        popup.menu.add(2, 2, 2, "VERSION")
-        popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
-            when(it!!.itemId) {
+        popup.menu.setGroupDividerEnabled(true)
+        popup.menu.add(1, 1, 1, R.string.menu_restart)
+        popup.menu.add(2, 2, 2, R.string.menu_credit)
+        popup.menu.add(2, 3, 3, R.string.menu_version)
+        popup.setOnMenuItemClickListener {
+            when (it!!.itemId) {
                 1 -> {
-                    CreditDialogFragment().show(supportFragmentManager, "simple")
+                    val builder = AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Confirm")
+                        .setMessage("Are you sure you want to delete discovered items?")
+                        .setPositiveButton("restart", { dialog, id ->
+                            game.clear()
+
+                            updateTabs(tabLayout)
+                            updateFlex(countTextView, flexboxLayout,
+                                image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+                            updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+                        })
+                        .setNegativeButton("cancel", { dialog, id -> })
+
+                    builder.show()
                 }
                 2 -> {
+                    CreditDialogFragment().show(supportFragmentManager, "simple")
+                }
+                3 -> {
                     VersionDialogFragment().show(supportFragmentManager, "simple")
                 }
             }
 
             true
-        })
+        }
 
         menu.isClickable = true
         menu.setOnClickListener {

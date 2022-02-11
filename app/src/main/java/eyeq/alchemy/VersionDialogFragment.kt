@@ -30,7 +30,7 @@ class VersionDialogFragment : DialogFragment() {
                 "<p>Check for updates: <a href='https://github.com/eyeq/Alchemy/releases'>GitHub</a></p>"
 
         val builder = AlertDialog.Builder(activity)
-        builder.setTitle("About")
+            .setTitle("About")
             .setMessage(CharSequenceExtensions.trimTrailingWhitespace(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)))
             .setPositiveButton("close") { dialog, id -> }
 

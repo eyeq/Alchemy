@@ -28,15 +28,8 @@ class CreditDialogFragment : DialogFragment() {
                 "<p>Image provided by: <a href='https://icooon-mono.com/'>icooon-mono.com</a></p>"
 
         val builder = AlertDialog.Builder(activity)
-        builder.setTitle("Credit")
-            .setMessage(
-                CharSequenceExtensions.trimTrailingWhitespace(
-                    HtmlCompat.fromHtml(
-                        html,
-                        HtmlCompat.FROM_HTML_MODE_COMPACT
-                    )
-                )
-            )
+            .setTitle("Credit")
+            .setMessage(CharSequenceExtensions.trimTrailingWhitespace(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)))
             .setPositiveButton("close") { dialog, id -> }
 
         return builder.create()
