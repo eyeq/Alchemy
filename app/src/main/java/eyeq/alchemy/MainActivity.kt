@@ -3,6 +3,8 @@ package eyeq.alchemy
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
 import android.os.Handler
@@ -28,6 +30,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val dataStore: SharedPreferences = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
+        game.load(dataStore)
 
         val countTextView = findViewById<TextView>(R.id.count)
         countTextView.textSize = 14f
@@ -167,6 +172,8 @@ class MainActivity : AppCompatActivity() {
                 game.item2 = Item.EMPTY
                 updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
             }
+
+            game.save(dataStore)
         }
 
         updateTabs(tabLayout)
