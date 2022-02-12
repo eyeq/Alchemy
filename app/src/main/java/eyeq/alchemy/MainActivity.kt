@@ -32,6 +32,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val userSettings: SharedPreferences = getSharedPreferences("UserSettings", Context.MODE_PRIVATE)
+        val selected = Group.values().filter { it.name == userSettings.getString("selectedTab", "") }
+        if (selected.any()) {
+            selectedTab = selected.first()
+        }
+
         val dataStore: SharedPreferences = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
         game.load(dataStore)
 
@@ -113,6 +119,8 @@ class MainActivity : AppCompatActivity() {
                 for (group in Group.values()) {
                     if (getText(group.textId) == tab.text) {
                         selectedTab = group
+
+                        userSettings.edit().putString("selectedTab", selectedTab.name).apply()
                     }
                 }
                 updateFlex(countTextView, flexboxLayout,
@@ -246,7 +254,7 @@ class MainActivity : AppCompatActivity() {
         flexboxLayout.removeAllViews()
 
         val filteredItem = Item.values()
-            .filter { it.group != Group.ALL }
+            .filter { it != Item.EMPTY }
             .filter { selectedTab == Group.ALL || selectedTab == it.group }
         val unlockedItem = filteredItem
             .filter { item -> game.isUnlocked(item) }
