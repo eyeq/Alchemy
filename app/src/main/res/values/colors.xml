@@ -26,5 +26,10 @@
     <color name="reddish_blue">#FF8000FF</color>
     <color name="greenish_blue">#FF0080FF</color>
 
+    <color name="red_copper_oxide">#FFF37053</color>
+    <color name="green_copper_oxide">#FF5F836D</color>
     <color name="red_iron_oxide">#FF8A4031</color>
+    <color name="black_iron_oxide">#FF262626</color>
+    <color name="yellow_iron_oxide_hydroxide">#FFC39143</color>
+    <color name="sand">#FFC9B9a8</color>
 </resources>

@@ -21,6 +21,12 @@
     <string name="item_elemental_thunder">Elemental T</string>
     <string name="item_elemental_dark">Elemental D</string>
     <string name="item_elemental_light">Elemental L</string>
+
+    <string name="item_hot">Hot</string>
+    <string name="item_wet">Wet</string>
+    <string name="item_cold">Cold</string>
+    <string name="item_dry">Dry</string>
+
     <string name="item_earth">Earth</string>
     <string name="item_water">Water</string>
     <string name="item_air">Air</string>
@@ -31,4 +37,23 @@
     <string name="item_thunder">Thunder</string>
     <string name="item_space">Space</string>
     <string name="item_time">Time</string>
+
+    <string name="item_vibration">Vibration</string>
+    <string name="item_stone">Stone</string>
+    <string name="item_magma">Magma</string>
+    <string name="item_mud">Mud</string>
+    <string name="item_sand">Sand</string>
+    <string name="item_steam">Steam</string>
+    <string name="item_quartz">Quartz</string>
+    <string name="item_wind">Wind</string>
+    <string name="item_sound">Sound</string>
+    <string name="item_electricity">Electricity</string>
+    <string name="item_magnet">Magnet</string>
+    <string name="item_leaf">Leaf</string>
+    <string name="item_ash">Ash</string>
+    <string name="item_lye">Lye</string>
+    <string name="item_gravity">Gravity</string>
+    <string name="item_direction">Direction</string>
+    <string name="item_sky">Sky</string>
+    <string name="item_star">Star</string>
 </resources>
