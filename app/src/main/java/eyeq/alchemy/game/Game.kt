@@ -9,6 +9,10 @@ class Game {
     var item2 = Item.EMPTY
     var item3 = Item.EMPTY
 
+    fun getHistoryList(): List<History> {
+        return historyList.toList()
+    }
+
     fun clear() {
         unlockedRecipeList.clear()
         historyList.clear()
@@ -58,11 +62,7 @@ class Game {
         return unlockedRecipeList.contains(recipe)
     }
 
-    fun unlock(): List<Recipe> {
-        return unlock(History(item1, item2, item3))
-    }
-
-    private fun unlock(history: History): List<Recipe> {
+    fun unlock(history: History): List<Recipe> {
         if (historyList.contains(history)) {
             return listOf()
         }

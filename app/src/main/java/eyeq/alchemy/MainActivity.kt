@@ -17,9 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.tabs.TabLayout
-import eyeq.alchemy.game.Game
-import eyeq.alchemy.game.Group
-import eyeq.alchemy.game.Item
+import eyeq.alchemy.game.*
 import kotlin.math.abs
 
 
@@ -129,6 +127,7 @@ class MainActivity : AppCompatActivity() {
                             updateFlex(countTextView, flexboxLayout,
                                 image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
                             updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+                            updateHistory(right)
                         })
                         .setNegativeButton("cancel", { dialog, id -> })
 
@@ -189,7 +188,7 @@ class MainActivity : AppCompatActivity() {
 
         convert.isClickable = true
         convert.setOnClickListener {
-            val results = game.unlock()
+            val results = game.unlock(History(game.item1, game.item2, game.item3))
             if (results.isEmpty()) {
                 vibrate(convert, 20f, 10)
                 vibrate(convertShadow, 20f, 10)
@@ -234,6 +233,7 @@ class MainActivity : AppCompatActivity() {
                 game.item2 = Item.EMPTY
                 updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
             }
+            updateHistory(right)
 
             game.save(dataStore)
         }
@@ -242,6 +242,7 @@ class MainActivity : AppCompatActivity() {
         updateFlex(countTextView, flexboxLayout,
             image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+        updateHistory(right)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
@@ -373,6 +374,57 @@ class MainActivity : AppCompatActivity() {
         convertShadow.setImageResource(R.drawable.symbol_reload)
         convertShadow.setColorFilter(getColor(R.color.white))
         convertShadow.alpha = 0.5f
+    }
+
+    private fun updateHistory(right: LinearLayout) {
+        val imageLayoutParams = ViewGroup.MarginLayoutParams(32.dpToPx(), 32.dpToPx())
+        imageLayoutParams.setMargins(2.dpToPx(), 8.dpToPx(), 2.dpToPx(), 8.dpToPx())
+
+        val symbolLayoutParams = ViewGroup.MarginLayoutParams(16.dpToPx(), 32.dpToPx())
+        symbolLayoutParams.setMargins(0.dpToPx(), 8.dpToPx(), 0.dpToPx(), 8.dpToPx())
+
+        right.removeAllViews()
+
+        var count = 0
+        val historyList = game.getHistoryList().reversed()
+        for (history in historyList) {
+            val inputs = listOf<Item>(history.item1, history.item2, history.item3).sortedBy { it != Item.EMPTY } // 右詰め
+            val result = Recipe.alchemise(history.item1, history.item2, history.item3)
+
+            val view = LinearLayout(this)
+
+            var i = 0
+            for (item in inputs) {
+                val image = ImageView(this)
+                image.setImageResource(item.resId)
+                image.setColorFilter(getColor(item.colorId))
+
+                val symbol = ImageView(this)
+                if (i == 2) {
+                    symbol.setImageResource(R.drawable.symbol_arrow)
+                    symbol.setColorFilter(getColor(R.color.white))
+                } else if (item != Item.EMPTY) {
+                    symbol.setImageResource(R.drawable.symbol_plus)
+                    symbol.setColorFilter(getColor(R.color.white))
+                }
+
+                view.addView(image, imageLayoutParams)
+                view.addView(symbol, symbolLayoutParams)
+                i += 1
+            }
+            for (recipe in result) {
+                val image = ImageView(this)
+                image.setImageResource(recipe.result.resId)
+                image.setColorFilter(getColor(recipe.result.colorId))
+                view.addView(image, imageLayoutParams)
+            }
+            right.addView(view)
+
+            count++
+            if(count >= 20) {
+                break
+            }
+        }
     }
 
     private fun vibrate(target: View, translate: Float, duration: Long) {
