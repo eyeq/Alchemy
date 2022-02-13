@@ -208,4 +208,26 @@
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/left"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header" />
+
+    <LinearLayout
+        android:id="@+id/right"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header" />
 </androidx.constraintlayout.widget.ConstraintLayout>

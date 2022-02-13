@@ -10,9 +10,7 @@ import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,9 +20,12 @@ import com.google.android.material.tabs.TabLayout
 import eyeq.alchemy.game.Game
 import eyeq.alchemy.game.Group
 import eyeq.alchemy.game.Item
+import kotlin.math.abs
 
 
 class MainActivity : AppCompatActivity() {
+    private var mGestureDetector: GestureDetector? = null
+
     private val game = Game()
     private var selectedTab = Group.ALL
 
@@ -73,6 +74,41 @@ class MainActivity : AppCompatActivity() {
 
         val convert = findViewById<ImageView>(R.id.convert)
         val convertShadow = findViewById<ImageView>(R.id.convert_shadow)
+
+        val left = findViewById<LinearLayout>(R.id.left)
+        left.setBackgroundColor(getColor(R.color.black))
+
+        val right = findViewById<LinearLayout>(R.id.right)
+        right.setBackgroundColor(getColor(R.color.black))
+
+        mGestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            private val SWIPE_VELOCITY_THRESHOLD = 100
+            private val SWIPE_THRESHOLD = 100
+
+            override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+                val diffY = e2.y - e1.y
+                val diffX = e2.x - e1.x
+                if (abs(diffX) > abs(diffY)) {
+                    if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffX > 0) {
+                            if(right.visibility == View.VISIBLE) {
+                                right.visibility = View.GONE
+                            } else {
+                                left.visibility = View.VISIBLE
+                            }
+                        } else {
+                            if(left.visibility == View.VISIBLE) {
+                                left.visibility = View.GONE
+                            } else {
+                                right.visibility = View.VISIBLE
+                            }
+                        }
+                    }
+                }
+
+                return true
+            }
+        })
 
         val popup = PopupMenu(this@MainActivity, menu)
         popup.menu.setGroupDividerEnabled(true)
@@ -206,6 +242,11 @@ class MainActivity : AppCompatActivity() {
         updateFlex(countTextView, flexboxLayout,
             image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        mGestureDetector!!.onTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun updateTabs(tabLayout: TabLayout) {
