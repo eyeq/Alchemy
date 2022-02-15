@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 class Game {
     private val unlockedRecipeList = mutableListOf<Recipe>()
     private val historyList = mutableListOf<History>()
+    private val hintList = mutableListOf<Item>()
     var item1 = Item.EMPTY
     var item2 = Item.EMPTY
     var item3 = Item.EMPTY
@@ -13,9 +14,18 @@ class Game {
         return historyList.toList()
     }
 
+    fun getHintList(): List<Item> {
+        return hintList.filter { item -> !unlockedRecipeList.any { it.result == item } }.toList()
+    }
+
+    fun getUnlockedItemList(): List<Item> {
+        return Item.values().filter { isUnlocked(it) }.toList()
+    }
+
     fun clear() {
         unlockedRecipeList.clear()
         historyList.clear()
+        hintList.clear()
         item1 = Item.EMPTY
         item2 = Item.EMPTY
         item3 = Item.EMPTY
@@ -23,11 +33,13 @@ class Game {
 
     fun save(preferences: SharedPreferences) {
         val histories = historyList.joinToString(",") { it.toString() }
-        val items = Item.values().filter { isUnlocked(it) }.joinToString(",") { it.name }
+        val items = getUnlockedItemList().joinToString(",") { it.name }
+        val hintItemss = hintList.joinToString(",") { it.name }
 
         val editor = preferences.edit()
         editor.putString("histories", histories)
         editor.putString("items", items)
+        editor.putString("hintItemss", hintItemss)
         editor.apply()
     }
 
@@ -47,7 +59,13 @@ class Game {
         for (s in items.split(',')) {
             previousItems.addAll(Item.values().filter { it.name == s })
         }
-        return previousItems
+
+        val hintItemss = preferences.getString("hintItemss", "")!!
+        for (s in hintItemss.split(',')) {
+            hintList.addAll(Item.values().filter { it.name == s })
+        }
+
+        return getUnlockedItemList().filter { !previousItems.contains(it) }
     }
 
     fun isUnlocked(group: Group): Boolean {
@@ -68,8 +86,44 @@ class Game {
         }
         historyList.add(history)
 
-        val result = Recipe.alchemise(history.item1, history.item2, history.item3)
+        val result = Recipe.getRecipeListByInputs(history.item1, history.item2, history.item3)
         unlockedRecipeList.addAll(result)
         return result
+    }
+
+    fun getHints(preferences: SharedPreferences): Int {
+        return preferences.getInt("hints", 0)
+    }
+
+    fun addHints(preferences: SharedPreferences, amount: Int): Boolean {
+        val hints = getHints(preferences) + amount
+        if (hints < 0) {
+            return false
+        }
+
+        preferences.edit().putInt("hints", hints).apply()
+        return true
+    }
+
+    fun isHintable(): Boolean {
+        val unlocked = getUnlockedItemList()
+        return Item.values()
+            .filter { Recipe.canMake(it) }
+            .any { !unlocked.contains(it) && !hintList.contains(it) }
+    }
+
+    fun hint() {
+        val unlocked = getUnlockedItemList()
+        val target = Item.values()
+            .filter { Recipe.canMake(it) }
+            .filter { !unlocked.contains(it) && !hintList.contains(it) }
+        if (target.any()) {
+            val recipes = Recipe.getRecipeListByResult(target.first())
+            for (recipe in recipes) {
+                if (!hintList.contains(recipe.result)) {
+                    hintList.add(recipe.result)
+                }
+            }
+        }
     }
 }

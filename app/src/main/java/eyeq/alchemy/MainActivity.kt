@@ -16,13 +16,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.google.android.flexbox.FlexboxLayout
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.tabs.TabLayout
 import eyeq.alchemy.game.*
 import kotlin.math.abs
 
 
 class MainActivity : AppCompatActivity() {
+    private val adUnitID = "ca-app-pub-3940256099942544/5224354917"
+
     private var mGestureDetector: GestureDetector? = null
+
+    private var mRewardedAd: RewardedAd? = null
 
     private val game = Game()
     private var selectedTab = Group.ALL
@@ -39,6 +49,10 @@ class MainActivity : AppCompatActivity() {
 
         val dataStore: SharedPreferences = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
         game.load(dataStore)
+
+
+        val hintTextView = findViewById<TextView>(R.id.hint)
+        hintTextView.textSize = 14f
 
         val countTextView = findViewById<TextView>(R.id.count)
         countTextView.textSize = 14f
@@ -73,8 +87,13 @@ class MainActivity : AppCompatActivity() {
         val convert = findViewById<ImageView>(R.id.convert)
         val convertShadow = findViewById<ImageView>(R.id.convert_shadow)
 
+        val adsButton = findViewById<Button>(R.id.ads_button)
+        val hintButton = findViewById<Button>(R.id.hint_button)
+
         val left = findViewById<LinearLayout>(R.id.left)
         left.setBackgroundColor(getColor(R.color.black))
+
+        val hintList = findViewById<LinearLayout>(R.id.hint_list)
 
         val right = findViewById<LinearLayout>(R.id.right)
         right.setBackgroundColor(getColor(R.color.black))
@@ -120,16 +139,17 @@ class MainActivity : AppCompatActivity() {
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle("Confirm")
                         .setMessage("Are you sure you want to delete discovered items?")
-                        .setPositiveButton("restart", { dialog, id ->
+                        .setPositiveButton("restart") { dialog, id ->
                             game.clear()
 
                             updateTabs(tabLayout)
                             updateFlex(countTextView, flexboxLayout,
                                 image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
                             updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+                            updateHint(hintTextView, hintList, dataStore)
                             updateHistory(right)
-                        })
-                        .setNegativeButton("cancel", { dialog, id -> })
+                        }
+                        .setNegativeButton("cancel") { dialog, id -> }
 
                     builder.show()
                 }
@@ -195,13 +215,13 @@ class MainActivity : AppCompatActivity() {
             } else {
                 for (recipe in results) {
                     val subLayoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                    subLayoutParams.setMargins(2.dpToPx(), 2.dpToPx(), 2.dpToPx(), 2.dpToPx())
+                    subLayoutParams.setMargins(2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt())
 
-                    val imageLayoutParams = ViewGroup.MarginLayoutParams(32.dpToPx(), 32.dpToPx())
-                    imageLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
+                    val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
+                    imageLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
-                    val  textLayoutParams = ViewGroup.MarginLayoutParams(80.dpToPx(), 32.dpToPx())
-                    textLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
+                    val  textLayoutParams = ViewGroup.MarginLayoutParams(80f.dpToPx().toInt(), 32f.dpToPx().toInt())
+                    textLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
                     val image = ImageView(this@MainActivity)
                     image.setImageResource(recipe.result.resId)
@@ -225,13 +245,16 @@ class MainActivity : AppCompatActivity() {
                         balloonLayout.removeView(sub)
                     }, 4000)
                 }
-                updateTabs(tabLayout)
-                updateFlex(countTextView, flexboxLayout,
-                    image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
 
                 game.item1 = Item.EMPTY
                 game.item2 = Item.EMPTY
+
+                updateTabs(tabLayout)
+                updateFlex(countTextView, flexboxLayout,
+                    image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
                 updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+                updateHint(hintTextView, hintList, dataStore)
+                updateHistory(right)
             }
             updateHistory(right)
 
@@ -242,12 +265,160 @@ class MainActivity : AppCompatActivity() {
         updateFlex(countTextView, flexboxLayout,
             image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+        updateHint(hintTextView, hintList, dataStore)
+        updateHint(hintTextView, hintList, dataStore)
         updateHistory(right)
+
+        adsButton.isEnabled = false
+        adsButton.setOnClickListener {
+            if (mRewardedAd != null) {
+                mRewardedAd?.setFullScreenContentCallback(object : FullScreenContentCallback() {
+                    override fun onAdShowedFullScreenContent() {
+                    }
+
+                    override fun onAdDismissedFullScreenContent() {
+                        mRewardedAd = null
+                        Toast.makeText(this@MainActivity, "Failed to watch ads.", Toast.LENGTH_LONG).show()
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                        mRewardedAd = null
+                        Toast.makeText(this@MainActivity, "Failed to watch ads.", Toast.LENGTH_LONG).show()
+                    }
+                })
+
+                mRewardedAd?.show(this@MainActivity) {
+                    game.addHints(dataStore, it.amount)
+                    game.save(dataStore)
+                    updateHint(hintTextView, hintList, dataStore)
+                }
+            }
+        }
+
+        hintButton.setOnClickListener {
+            if (!game.isHintable()) {
+                Toast.makeText(this@MainActivity, "You already have all hints.", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            if (!game.addHints(dataStore, -1)) {
+                Toast.makeText(this@MainActivity, "You need to watch ads.", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
+            game.hint()
+            game.save(dataStore)
+            updateHint(hintTextView, hintList, dataStore)
+        }
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            RewardedAd.load(this, adUnitID, AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    mRewardedAd = null
+                }
+
+                override fun onAdLoaded(rewardedAd: RewardedAd) {
+                    mRewardedAd = rewardedAd
+                    adsButton.isEnabled = true
+                }
+            })
+        }, 1000)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         mGestureDetector!!.onTouchEvent(ev)
         return super.dispatchTouchEvent(ev)
+    }
+
+    private fun updateHint(hintTextView: TextView, hintList: LinearLayout, preferences: SharedPreferences) {
+        val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
+        imageLayoutParams.setMargins(2f.dpToPx().toInt(), 8f.dpToPx().toInt(), 2f.dpToPx().toInt(), 8f.dpToPx().toInt())
+
+        val symbolLayoutParams = ViewGroup.MarginLayoutParams(16f.dpToPx().toInt(), 32f.dpToPx().toInt())
+        symbolLayoutParams.setMargins(0f.dpToPx().toInt(), 8f.dpToPx().toInt(), 0f.dpToPx().toInt(), 8f.dpToPx().toInt())
+
+        val  textLayoutParams = ViewGroup.MarginLayoutParams(80f.dpToPx().toInt(), 32f.dpToPx().toInt())
+        textLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
+
+
+        hintTextView.text = game.getHints(preferences).toString()
+
+        hintList.removeAllViews()
+        for (item in game.getHintList()) {
+            val recipe = Recipe.getRecipeListByResult(item).first()
+            var inputs = recipe.inputs.toMutableList()
+            while(inputs.count() < 3) {
+                inputs.add(Item.EMPTY)
+            }
+            inputs = inputs.sortedBy { it != Item.EMPTY }.toMutableList() // 右詰め
+
+            val view = LinearLayout(this)
+            view.orientation = LinearLayout.HORIZONTAL
+
+            var i = 0
+            var alphabet = 0
+            var prevItem = Item.EMPTY
+            for (item in inputs) {
+                if (item == Item.EMPTY) {
+                    val image = ImageView(this)
+                    image.setImageResource(item.resId)
+                    image.setColorFilter(getColor(item.colorId))
+                    view.addView(image, imageLayoutParams)
+                } else {
+                    if (prevItem != item) {
+                        alphabet += 1
+                        prevItem = item
+                    }
+
+                    val text = TextView(this)
+                    text.textSize = 24f.dpToPx().pxToSp()
+                    text.gravity = Gravity.CENTER
+                    when(alphabet) {
+                        1 -> {
+                            text.setText(R.string.alpha)
+                            text.setTextColor(getColor(R.color.white))
+                        }
+                        2 -> {
+                            text.setText(R.string.beta)
+                            text.setTextColor(getColor(R.color.white))
+                        }
+                        3 -> {
+                            text.setText(R.string.gamma)
+                            text.setTextColor(getColor(R.color.white))
+                        }
+                    }
+                    view.addView(text, imageLayoutParams)
+                }
+
+                val symbol = ImageView(this)
+                if (i == 2) {
+                    symbol.setImageResource(R.drawable.symbol_arrow)
+                    symbol.setColorFilter(getColor(R.color.white))
+                } else if (item != Item.EMPTY) {
+                    symbol.setImageResource(R.drawable.symbol_plus)
+                    symbol.setColorFilter(getColor(R.color.white))
+                }
+                view.addView(symbol, symbolLayoutParams)
+
+                i += 1
+            }
+
+            if (true) {
+                val image = ImageView(this)
+                image.setImageResource(item.resId)
+                image.setColorFilter(getColor(item.colorId))
+                view.addView(image, imageLayoutParams)
+
+                val text = TextView(this)
+                text.setText(item.textId)
+                text.setTextColor(getColor(R.color.white))
+                text.textSize = 12f
+                text.gravity = Gravity.CENTER_HORIZONTAL
+                view.addView(text, textLayoutParams)
+            }
+
+            hintList.addView(view)
+        }
     }
 
     private fun updateTabs(tabLayout: TabLayout) {
@@ -284,19 +455,19 @@ class MainActivity : AppCompatActivity() {
         clean: ImageView, cleanShadow: ImageView,
         convert: ImageView, convertShadow: ImageView
     ) {
-        val imageLayoutParams = ViewGroup.MarginLayoutParams(64.dpToPx(), 64.dpToPx())
-        imageLayoutParams.setMargins(8.dpToPx(), 8.dpToPx(), 8.dpToPx(), 8.dpToPx())
+        val imageLayoutParams = ViewGroup.MarginLayoutParams(64f.dpToPx().toInt(), 64f.dpToPx().toInt())
+        imageLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
-        val shadowLayoutParams = ViewGroup.MarginLayoutParams(64.dpToPx(), 64.dpToPx())
-        shadowLayoutParams.setMargins(12.dpToPx(), 12.dpToPx(), 0.dpToPx(), 0.dpToPx())
+        val shadowLayoutParams = ViewGroup.MarginLayoutParams(64f.dpToPx().toInt(), 64f.dpToPx().toInt())
+        shadowLayoutParams.setMargins(12f.dpToPx().toInt(), 12f.dpToPx().toInt(), 0f.dpToPx().toInt(), 0f.dpToPx().toInt())
 
-        val textLayoutParams = ViewGroup.MarginLayoutParams(64.dpToPx(), 28.dpToPx())
-        textLayoutParams.setMargins(8.dpToPx(), 0.dpToPx(), 8.dpToPx(), 8.dpToPx())
+        val textLayoutParams = ViewGroup.MarginLayoutParams(64f.dpToPx().toInt(), 28f.dpToPx().toInt())
+        textLayoutParams.setMargins(8f.dpToPx().toInt(), 0f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
         flexboxLayout.removeAllViews()
 
         val filteredItem = Item.values()
-            .filter { it != Item.EMPTY }
+            .filter { Recipe.canMake(it) }
             .filter { selectedTab == Group.ALL || selectedTab == it.group }
         val unlockedItem = filteredItem
             .filter { item -> game.isUnlocked(item) }
@@ -377,11 +548,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateHistory(right: LinearLayout) {
-        val imageLayoutParams = ViewGroup.MarginLayoutParams(32.dpToPx(), 32.dpToPx())
-        imageLayoutParams.setMargins(2.dpToPx(), 8.dpToPx(), 2.dpToPx(), 8.dpToPx())
+        val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
+        imageLayoutParams.setMargins(2f.dpToPx().toInt(), 8f.dpToPx().toInt(), 2f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
-        val symbolLayoutParams = ViewGroup.MarginLayoutParams(16.dpToPx(), 32.dpToPx())
-        symbolLayoutParams.setMargins(0.dpToPx(), 8.dpToPx(), 0.dpToPx(), 8.dpToPx())
+        val symbolLayoutParams = ViewGroup.MarginLayoutParams(16f.dpToPx().toInt(), 32f.dpToPx().toInt())
+        symbolLayoutParams.setMargins(0f.dpToPx().toInt(), 8f.dpToPx().toInt(), 0f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
         right.removeAllViews()
 
@@ -389,7 +560,7 @@ class MainActivity : AppCompatActivity() {
         val historyList = game.getHistoryList().reversed()
         for (history in historyList) {
             val inputs = listOf<Item>(history.item1, history.item2, history.item3).sortedBy { it != Item.EMPTY } // 右詰め
-            val result = Recipe.alchemise(history.item1, history.item2, history.item3)
+            val result = Recipe.getRecipeListByInputs(history.item1, history.item2, history.item3)
 
             val view = LinearLayout(this)
 
@@ -442,6 +613,9 @@ class MainActivity : AppCompatActivity() {
         set.start()
     }
 
-    private fun Int.pxToDp(): Int = (this / resources.displayMetrics.density).toInt()
-    private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
+    private fun Float.pxToDp(): Float = (this / resources.displayMetrics.density)
+    private fun Float.dpToPx(): Float = (this * resources.displayMetrics.density)
+
+    private fun Float.pxToSp(): Float = (this / resources.displayMetrics.scaledDensity)
+    private fun Float.spToPx(): Float = (this * resources.displayMetrics.scaledDensity)
 }

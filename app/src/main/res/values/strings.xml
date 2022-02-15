@@ -4,10 +4,16 @@
     <string name="menu_restart">RESTART</string>
     <string name="menu_credit">CREDIT</string>
     <string name="menu_version">VERSION</string>
+    <string name="watch_ads">WATCH ADS</string>
+    <string name="give_a_hint">Give a Hint!</string>
 
     <string name="group_all">All</string>
     <string name="group_elemental">Elemental</string>
     <string name="group_material">Material</string>
+
+    <string name="alpha">α</string>
+    <string name="beta">β</string>
+    <string name="gamma">γ</string>
 
     <string name="item_empty" />
     <string name="item_elemental_void">Elemental V</string>

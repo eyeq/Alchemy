@@ -1,10 +1,10 @@
 package eyeq.alchemy.game
 
 class Recipe(val result: Item, vararg _inputs: Item) {
-    private val inputs = _inputs
+    val inputs = _inputs.toList()
 
     companion object {
-        val recipes = mutableListOf<Recipe>(
+        private val recipes = mutableListOf<Recipe>(
             Recipe(Item.ELEMENTAL_VOID),
 
             Recipe(Item.ELEMENTAL_EARTH, Item.ELEMENTAL_VOID, Item.ELEMENTAL_VOID),
@@ -69,18 +69,28 @@ class Recipe(val result: Item, vararg _inputs: Item) {
             Recipe(Item.STAR, Item.SPACE, Item.STONE),
         )
 
-        fun alchemise(vararg inputs: Item): List<Recipe> {
-            val inputsTrim = inputs.filter { it != Item.EMPTY }
-            return recipes.filter {
-                val temp = inputsTrim.toMutableList()
-                for (input in it.inputs) {
-                    if (!temp.contains(input)) {
-                        return@filter false
-                    }
-                    temp.remove(input)
+        fun canMake(item: Item): Boolean {
+            return recipes.any { it.result == item }
+        }
+
+        fun getRecipeListByResult(item: Item): List<Recipe> {
+            return recipes.filter { it.result == item }
+        }
+
+        fun getRecipeListByInputs(vararg inputs: Item): List<Recipe> {
+            return recipes.filter { isSame(it.inputs, inputs.toList()) }
+        }
+
+        private fun isSame(list1: List<Item>, list2: List<Item>): Boolean {
+            val list1Trim = list1.filter { it != Item.EMPTY }
+            val list2Trim = list2.filter { it != Item.EMPTY }.toMutableList()
+            for (input in list1Trim) {
+                if (!list2Trim.contains(input)) {
+                    return false
                 }
-                return@filter temp.isEmpty()
+                list2Trim.remove(input)
             }
+            return list2Trim.isEmpty()
         }
     }
 }
