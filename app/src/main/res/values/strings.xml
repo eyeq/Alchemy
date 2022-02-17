@@ -6,6 +6,7 @@
     <string name="menu_version">VERSION</string>
     <string name="watch_ads">WATCH ADS</string>
     <string name="give_a_hint">Give a Hint!</string>
+    <string name="history">History</string>
 
     <string name="group_all">All</string>
     <string name="group_elemental">Elemental</string>

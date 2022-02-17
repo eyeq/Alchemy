@@ -93,10 +93,12 @@ class MainActivity : AppCompatActivity() {
         val left = findViewById<LinearLayout>(R.id.left)
         left.setBackgroundColor(getColor(R.color.black))
 
-        val hintList = findViewById<LinearLayout>(R.id.hint_list)
+        val hintListView = findViewById<ListView>(R.id.hint_list)
 
         val right = findViewById<LinearLayout>(R.id.right)
         right.setBackgroundColor(getColor(R.color.black))
+
+        val historyListView = findViewById<ListView>(R.id.history_list)
 
         mGestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
             private val SWIPE_VELOCITY_THRESHOLD = 100
@@ -146,8 +148,8 @@ class MainActivity : AppCompatActivity() {
                             updateFlex(countTextView, flexboxLayout,
                                 image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
                             updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
-                            updateHint(hintTextView, hintList, dataStore)
-                            updateHistory(right)
+                            updateHint(hintTextView, hintListView, dataStore)
+                            updateHistory(historyListView)
                         }
                         .setNegativeButton("cancel") { dialog, id -> }
 
@@ -253,10 +255,10 @@ class MainActivity : AppCompatActivity() {
                 updateFlex(countTextView, flexboxLayout,
                     image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
                 updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
-                updateHint(hintTextView, hintList, dataStore)
-                updateHistory(right)
+                updateHint(hintTextView, hintListView, dataStore)
+                updateHistory(historyListView)
             }
-            updateHistory(right)
+            updateHistory(historyListView)
 
             game.save(dataStore)
         }
@@ -265,9 +267,9 @@ class MainActivity : AppCompatActivity() {
         updateFlex(countTextView, flexboxLayout,
             image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
-        updateHint(hintTextView, hintList, dataStore)
-        updateHint(hintTextView, hintList, dataStore)
-        updateHistory(right)
+        updateHint(hintTextView, hintListView, dataStore)
+        updateHint(hintTextView, hintListView, dataStore)
+        updateHistory(historyListView)
 
         adsButton.isEnabled = false
         adsButton.setOnClickListener {
@@ -290,7 +292,7 @@ class MainActivity : AppCompatActivity() {
                 mRewardedAd?.show(this@MainActivity) {
                     game.addHints(dataStore, it.amount)
                     game.save(dataStore)
-                    updateHint(hintTextView, hintList, dataStore)
+                    updateHint(hintTextView, hintListView, dataStore)
                 }
             }
         }
@@ -308,7 +310,7 @@ class MainActivity : AppCompatActivity() {
 
             game.hint()
             game.save(dataStore)
-            updateHint(hintTextView, hintList, dataStore)
+            updateHint(hintTextView, hintListView, dataStore)
         }
 
         Handler(Looper.getMainLooper()).postDelayed({
@@ -330,7 +332,7 @@ class MainActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun updateHint(hintTextView: TextView, hintList: LinearLayout, preferences: SharedPreferences) {
+    private fun updateHint(hintTextView: TextView, hintListView: ListView, preferences: SharedPreferences) {
         val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
         imageLayoutParams.setMargins(2f.dpToPx().toInt(), 8f.dpToPx().toInt(), 2f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
@@ -343,82 +345,8 @@ class MainActivity : AppCompatActivity() {
 
         hintTextView.text = game.getHints(preferences).toString()
 
-        hintList.removeAllViews()
-        for (item in game.getHintList()) {
-            val recipe = Recipe.getRecipeListByResult(item).first()
-            var inputs = recipe.inputs.toMutableList()
-            while(inputs.count() < 3) {
-                inputs.add(Item.EMPTY)
-            }
-            inputs = inputs.sortedBy { it != Item.EMPTY }.toMutableList() // 右詰め
-
-            val view = LinearLayout(this)
-            view.orientation = LinearLayout.HORIZONTAL
-
-            var i = 0
-            var alphabet = 0
-            var prevItem = Item.EMPTY
-            for (item in inputs) {
-                if (item == Item.EMPTY) {
-                    val image = ImageView(this)
-                    image.setImageResource(item.resId)
-                    image.setColorFilter(getColor(item.colorId))
-                    view.addView(image, imageLayoutParams)
-                } else {
-                    if (prevItem != item) {
-                        alphabet += 1
-                        prevItem = item
-                    }
-
-                    val text = TextView(this)
-                    text.textSize = 24f.dpToPx().pxToSp()
-                    text.gravity = Gravity.CENTER
-                    when(alphabet) {
-                        1 -> {
-                            text.setText(R.string.alpha)
-                            text.setTextColor(getColor(R.color.white))
-                        }
-                        2 -> {
-                            text.setText(R.string.beta)
-                            text.setTextColor(getColor(R.color.white))
-                        }
-                        3 -> {
-                            text.setText(R.string.gamma)
-                            text.setTextColor(getColor(R.color.white))
-                        }
-                    }
-                    view.addView(text, imageLayoutParams)
-                }
-
-                val symbol = ImageView(this)
-                if (i == 2) {
-                    symbol.setImageResource(R.drawable.symbol_arrow)
-                    symbol.setColorFilter(getColor(R.color.white))
-                } else if (item != Item.EMPTY) {
-                    symbol.setImageResource(R.drawable.symbol_plus)
-                    symbol.setColorFilter(getColor(R.color.white))
-                }
-                view.addView(symbol, symbolLayoutParams)
-
-                i += 1
-            }
-
-            if (true) {
-                val image = ImageView(this)
-                image.setImageResource(item.resId)
-                image.setColorFilter(getColor(item.colorId))
-                view.addView(image, imageLayoutParams)
-
-                val text = TextView(this)
-                text.setText(item.textId)
-                text.setTextColor(getColor(R.color.white))
-                text.textSize = 12f
-                text.gravity = Gravity.CENTER_HORIZONTAL
-                view.addView(text, textLayoutParams)
-            }
-
-            hintList.addView(view)
-        }
+        val hintList = game.getHintList().map { Recipe.getRecipeListByResult(it).first() }
+        hintListView.adapter = HintAdapter(this, hintList, imageLayoutParams, symbolLayoutParams, textLayoutParams, 24f.dpToPx().pxToSp(), 12f)
     }
 
     private fun updateTabs(tabLayout: TabLayout) {
@@ -547,55 +475,15 @@ class MainActivity : AppCompatActivity() {
         convertShadow.alpha = 0.5f
     }
 
-    private fun updateHistory(right: LinearLayout) {
+    private fun updateHistory(historyListView: ListView) {
         val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
         imageLayoutParams.setMargins(2f.dpToPx().toInt(), 8f.dpToPx().toInt(), 2f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
         val symbolLayoutParams = ViewGroup.MarginLayoutParams(16f.dpToPx().toInt(), 32f.dpToPx().toInt())
         symbolLayoutParams.setMargins(0f.dpToPx().toInt(), 8f.dpToPx().toInt(), 0f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
-        right.removeAllViews()
-
-        var count = 0
         val historyList = game.getHistoryList().reversed()
-        for (history in historyList) {
-            val inputs = listOf<Item>(history.item1, history.item2, history.item3).sortedBy { it != Item.EMPTY } // 右詰め
-            val result = Recipe.getRecipeListByInputs(history.item1, history.item2, history.item3)
-
-            val view = LinearLayout(this)
-
-            var i = 0
-            for (item in inputs) {
-                val image = ImageView(this)
-                image.setImageResource(item.resId)
-                image.setColorFilter(getColor(item.colorId))
-
-                val symbol = ImageView(this)
-                if (i == 2) {
-                    symbol.setImageResource(R.drawable.symbol_arrow)
-                    symbol.setColorFilter(getColor(R.color.white))
-                } else if (item != Item.EMPTY) {
-                    symbol.setImageResource(R.drawable.symbol_plus)
-                    symbol.setColorFilter(getColor(R.color.white))
-                }
-
-                view.addView(image, imageLayoutParams)
-                view.addView(symbol, symbolLayoutParams)
-                i += 1
-            }
-            for (recipe in result) {
-                val image = ImageView(this)
-                image.setImageResource(recipe.result.resId)
-                image.setColorFilter(getColor(recipe.result.colorId))
-                view.addView(image, imageLayoutParams)
-            }
-            right.addView(view)
-
-            count++
-            if(count >= 20) {
-                break
-            }
-        }
+        historyListView.adapter = HistoryAdapter(this, historyList, imageLayoutParams, symbolLayoutParams)
     }
 
     private fun vibrate(target: View, translate: Float, duration: Long) {
