@@ -87,13 +87,9 @@ class MainActivity : AppCompatActivity() {
         val convert = findViewById<ImageView>(R.id.convert)
         val convertShadow = findViewById<ImageView>(R.id.convert_shadow)
 
-        val adsButton = findViewById<Button>(R.id.ads_button)
-        val hintButton = findViewById<Button>(R.id.hint_button)
-
-        val left = findViewById<LinearLayout>(R.id.left)
-        left.setBackgroundColor(getColor(R.color.black))
-
-        val hintListView = findViewById<ListView>(R.id.hint_list)
+        val left = supportFragmentManager.findFragmentById(R.id.left) as HintFragment
+        left.view?.setBackgroundColor(getColor(R.color.black))
+        left.view?.visibility = View.GONE
 
         val right = findViewById<LinearLayout>(R.id.right)
         right.setBackgroundColor(getColor(R.color.black))
@@ -113,11 +109,11 @@ class MainActivity : AppCompatActivity() {
                             if(right.visibility == View.VISIBLE) {
                                 right.visibility = View.GONE
                             } else {
-                                left.visibility = View.VISIBLE
+                                left.view?.visibility = View.VISIBLE
                             }
                         } else {
-                            if(left.visibility == View.VISIBLE) {
-                                left.visibility = View.GONE
+                            if( left.view?.visibility == View.VISIBLE) {
+                                left.view?.visibility = View.GONE
                             } else {
                                 right.visibility = View.VISIBLE
                             }
@@ -148,7 +144,7 @@ class MainActivity : AppCompatActivity() {
                             updateFlex(countTextView, flexboxLayout,
                                 image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
                             updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
-                            updateHint(hintTextView, hintListView, dataStore)
+                            updateHint(hintTextView, left, dataStore)
                             updateHistory(historyListView)
                         }
                         .setNegativeButton("cancel") { dialog, id -> }
@@ -211,6 +207,8 @@ class MainActivity : AppCompatActivity() {
         convert.isClickable = true
         convert.setOnClickListener {
             val results = game.unlock(History(game.item1, game.item2, game.item3))
+            game.save(dataStore)
+
             if (results.isEmpty()) {
                 vibrate(convert, 20f, 10)
                 vibrate(convertShadow, 20f, 10)
@@ -255,24 +253,21 @@ class MainActivity : AppCompatActivity() {
                 updateFlex(countTextView, flexboxLayout,
                     image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
                 updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
-                updateHint(hintTextView, hintListView, dataStore)
+                updateHint(hintTextView, left, dataStore)
                 updateHistory(historyListView)
             }
             updateHistory(historyListView)
-
-            game.save(dataStore)
         }
 
         updateTabs(tabLayout)
         updateFlex(countTextView, flexboxLayout,
             image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
-        updateHint(hintTextView, hintListView, dataStore)
-        updateHint(hintTextView, hintListView, dataStore)
+        updateHint(hintTextView, left, dataStore)
         updateHistory(historyListView)
 
-        adsButton.isEnabled = false
-        adsButton.setOnClickListener {
+        left.setAdsEnabled(false)
+        left.setAdsOnClickListener {
             if (mRewardedAd != null) {
                 mRewardedAd?.setFullScreenContentCallback(object : FullScreenContentCallback() {
                     override fun onAdShowedFullScreenContent() {
@@ -291,26 +286,25 @@ class MainActivity : AppCompatActivity() {
 
                 mRewardedAd?.show(this@MainActivity) {
                     game.addHints(dataStore, it.amount)
-                    game.save(dataStore)
-                    updateHint(hintTextView, hintListView, dataStore)
+                    updateHint(hintTextView, left, dataStore)
                 }
             }
         }
 
-        hintButton.setOnClickListener {
+        left.setHintOnClickListener {
             if (!game.isHintable()) {
                 Toast.makeText(this@MainActivity, "You already have all hints.", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
+                return@setHintOnClickListener
             }
 
             if (!game.addHints(dataStore, -1)) {
                 Toast.makeText(this@MainActivity, "You need to watch ads.", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
+                return@setHintOnClickListener
             }
 
             game.hint()
             game.save(dataStore)
-            updateHint(hintTextView, hintListView, dataStore)
+            updateHint(hintTextView, left, dataStore)
         }
 
         Handler(Looper.getMainLooper()).postDelayed({
@@ -321,7 +315,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onAdLoaded(rewardedAd: RewardedAd) {
                     mRewardedAd = rewardedAd
-                    adsButton.isEnabled = true
+                    left.setAdsEnabled(true)
                 }
             })
         }, 1000)
@@ -332,7 +326,7 @@ class MainActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun updateHint(hintTextView: TextView, hintListView: ListView, preferences: SharedPreferences) {
+    private fun updateHint(hintTextView: TextView, hintFragment: HintFragment, preferences: SharedPreferences) {
         val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
         imageLayoutParams.setMargins(2f.dpToPx().toInt(), 8f.dpToPx().toInt(), 2f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
@@ -342,11 +336,10 @@ class MainActivity : AppCompatActivity() {
         val  textLayoutParams = ViewGroup.MarginLayoutParams(80f.dpToPx().toInt(), 32f.dpToPx().toInt())
         textLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
-
         hintTextView.text = game.getHints(preferences).toString()
 
         val hintList = game.getHintList().map { Recipe.getRecipeListByResult(it).first() }
-        hintListView.adapter = HintAdapter(this, hintList, imageLayoutParams, symbolLayoutParams, textLayoutParams, 24f.dpToPx().pxToSp(), 12f)
+        hintFragment.update(this, hintList, imageLayoutParams, symbolLayoutParams, textLayoutParams, 24f.dpToPx().pxToSp(), 12f)
     }
 
     private fun updateTabs(tabLayout: TabLayout) {

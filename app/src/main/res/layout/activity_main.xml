@@ -228,35 +228,15 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <fragment
         android:id="@+id/left"
+        android:name="eyeq.alchemy.HintFragment"
         android:layout_width="300dp"
         android:layout_height="0dp"
         android:clickable="true"
-        android:orientation="vertical"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header">
-
-        <Button
-            android:id="@+id/ads_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/watch_ads" />
-
-        <Button
-            android:id="@+id/hint_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/give_a_hint" />
-
-        <ListView
-            android:id="@+id/hint_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/header" />
 
     <LinearLayout
         android:id="@+id/right"
@@ -272,9 +252,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:text="@string/history"
-            android:textSize="16sp"
-            android:layout_margin="8dp"/>
+            android:textSize="16sp" />
 
         <ListView
             android:id="@+id/history_list"
