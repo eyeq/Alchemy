@@ -91,10 +91,9 @@ class MainActivity : AppCompatActivity() {
         left.view?.setBackgroundColor(getColor(R.color.black))
         left.view?.visibility = View.GONE
 
-        val right = findViewById<LinearLayout>(R.id.right)
-        right.setBackgroundColor(getColor(R.color.black))
-
-        val historyListView = findViewById<ListView>(R.id.history_list)
+        val right = supportFragmentManager.findFragmentById(R.id.right) as HistoryFragment
+        right.view?.setBackgroundColor(getColor(R.color.black))
+        right.view?.visibility = View.GONE
 
         mGestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
             private val SWIPE_VELOCITY_THRESHOLD = 100
@@ -106,8 +105,8 @@ class MainActivity : AppCompatActivity() {
                 if (abs(diffX) > abs(diffY)) {
                     if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffX > 0) {
-                            if(right.visibility == View.VISIBLE) {
-                                right.visibility = View.GONE
+                            if(right.view?.visibility == View.VISIBLE) {
+                                right.view?.visibility = View.GONE
                             } else {
                                 left.view?.visibility = View.VISIBLE
                             }
@@ -115,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                             if( left.view?.visibility == View.VISIBLE) {
                                 left.view?.visibility = View.GONE
                             } else {
-                                right.visibility = View.VISIBLE
+                                right.view?.visibility = View.VISIBLE
                             }
                         }
                     }
@@ -145,7 +144,7 @@ class MainActivity : AppCompatActivity() {
                                 image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
                             updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
                             updateHint(hintTextView, left, dataStore)
-                            updateHistory(historyListView)
+                            updateHistory(right)
                         }
                         .setNegativeButton("cancel") { dialog, id -> }
 
@@ -254,9 +253,9 @@ class MainActivity : AppCompatActivity() {
                     image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
                 updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
                 updateHint(hintTextView, left, dataStore)
-                updateHistory(historyListView)
+                updateHistory(right)
             }
-            updateHistory(historyListView)
+            updateHistory(right)
         }
 
         updateTabs(tabLayout)
@@ -264,7 +263,7 @@ class MainActivity : AppCompatActivity() {
             image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
         updateHint(hintTextView, left, dataStore)
-        updateHistory(historyListView)
+        updateHistory(right)
 
         left.setAdsEnabled(false)
         left.setAdsOnClickListener {
@@ -468,7 +467,7 @@ class MainActivity : AppCompatActivity() {
         convertShadow.alpha = 0.5f
     }
 
-    private fun updateHistory(historyListView: ListView) {
+    private fun updateHistory(historyFragment: HistoryFragment) {
         val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
         imageLayoutParams.setMargins(2f.dpToPx().toInt(), 8f.dpToPx().toInt(), 2f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
@@ -476,7 +475,7 @@ class MainActivity : AppCompatActivity() {
         symbolLayoutParams.setMargins(0f.dpToPx().toInt(), 8f.dpToPx().toInt(), 0f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
         val historyList = game.getHistoryList().reversed()
-        historyListView.adapter = HistoryAdapter(this, historyList, imageLayoutParams, symbolLayoutParams)
+        historyFragment.update(this, historyList, imageLayoutParams, symbolLayoutParams)
     }
 
     private fun vibrate(target: View, translate: Float, duration: Long) {
