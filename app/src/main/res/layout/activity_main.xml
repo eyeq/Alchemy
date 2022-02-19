@@ -88,11 +88,11 @@
             app:flexWrap="wrap" />
     </ScrollView>
 
-    <LinearLayout
+    <fragment
         android:id="@+id/balloon"
+        android:name="eyeq.alchemy.BalloonFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

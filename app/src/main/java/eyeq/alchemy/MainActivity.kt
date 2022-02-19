@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         val flexboxLayout = findViewById<FlexboxLayout>(R.id.flex)
         flexboxLayout.setBackgroundColor(getColor(R.color.black))
 
-        val balloonLayout = findViewById<LinearLayout>(R.id.balloon)
+        val balloon = supportFragmentManager.findFragmentById(R.id.balloon) as BalloonFragment
 
         val image1 = findViewById<ImageView>(R.id.image1)
         val image1Shadow = findViewById<ImageView>(R.id.image1_shadow)
@@ -212,37 +212,17 @@ class MainActivity : AppCompatActivity() {
                 vibrate(convert, 20f, 10)
                 vibrate(convertShadow, 20f, 10)
             } else {
+                val subLayoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                subLayoutParams.setMargins(2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt())
+
+                val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
+                imageLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
+
+                val  textLayoutParams = ViewGroup.MarginLayoutParams(80f.dpToPx().toInt(), 32f.dpToPx().toInt())
+                textLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
+
                 for (recipe in results) {
-                    val subLayoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                    subLayoutParams.setMargins(2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt())
-
-                    val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
-                    imageLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
-                    val  textLayoutParams = ViewGroup.MarginLayoutParams(80f.dpToPx().toInt(), 32f.dpToPx().toInt())
-                    textLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
-                    val image = ImageView(this@MainActivity)
-                    image.setImageResource(recipe.result.resId)
-                    image.setColorFilter(getColor(recipe.result.colorId))
-
-                    val text = TextView(this)
-                    text.setText(recipe.result.textId)
-                    text.setTextColor(getColor(R.color.white))
-                    text.textSize = 12f
-                    text.gravity = Gravity.CENTER_VERTICAL
-
-                    val sub = LinearLayout(this@MainActivity)
-                    sub.orientation = LinearLayout.HORIZONTAL
-                    sub.background = ContextCompat.getDrawable(this@MainActivity, R.drawable.balloon)
-                    sub.addView(image, imageLayoutParams)
-                    sub.addView(text, textLayoutParams)
-
-                    balloonLayout.addView(sub, subLayoutParams)
-
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        balloonLayout.removeView(sub)
-                    }, 4000)
+                    balloon.addBalloon(this, subLayoutParams, imageLayoutParams, textLayoutParams, 12f, recipe)
                 }
 
                 game.item1 = Item.EMPTY
