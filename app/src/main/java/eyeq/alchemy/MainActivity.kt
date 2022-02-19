@@ -1,21 +1,14 @@
 package eyeq.alchemy
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.children
-import com.google.android.flexbox.FlexboxLayout
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -35,21 +28,13 @@ class MainActivity : AppCompatActivity() {
     private var mRewardedAd: RewardedAd? = null
 
     private val game = Game()
-    private var selectedTab = Group.ALL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val userSettings: SharedPreferences = getSharedPreferences("UserSettings", Context.MODE_PRIVATE)
-        val selected = Group.values().filter { it.name == userSettings.getString("selectedTab", "") }
-        if (selected.any()) {
-            selectedTab = selected.first()
-        }
-
         val dataStore: SharedPreferences = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
-        game.load(dataStore)
-
 
         val hintTextView = findViewById<TextView>(R.id.hint)
         hintTextView.textSize = 14f
@@ -66,12 +51,7 @@ class MainActivity : AppCompatActivity() {
         menuShadow.setColorFilter(getColor(R.color.white))
         menuShadow.alpha = 0.5f
 
-        val tabLayout = findViewById<TabLayout>(R.id.tabs)
-        tabLayout.setBackgroundColor(getColor(R.color.sumi))
-        tabLayout.setTabTextColors(getColor(R.color.silver), getColor(R.color.white))
-
-        val flexboxLayout = findViewById<FlexboxLayout>(R.id.flex)
-        flexboxLayout.setBackgroundColor(getColor(R.color.black))
+        val main = supportFragmentManager.findFragmentById(R.id.main) as ItemFragment
 
         val balloon = supportFragmentManager.findFragmentById(R.id.balloon) as BalloonFragment
 
@@ -129,8 +109,8 @@ class MainActivity : AppCompatActivity() {
                         .setPositiveButton("restart") { dialog, id ->
                             game.clear()
 
-                            updateTabs(tabLayout)
-                            updateFlex(countTextView, flexboxLayout, fab)
+                            updateCount(countTextView, main.selectedTab)
+                            updateFlex(main)
                             updatePot(fab)
                             updateHint(hintTextView, left, dataStore)
                             updateHistory(right)
@@ -155,22 +135,27 @@ class MainActivity : AppCompatActivity() {
             popup.show()
         }
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        main.tabSelectedListener = object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                for (group in Group.values()) {
-                    if (getText(group.textId) == tab.text) {
-                        selectedTab = group
+                updateCount(countTextView, main.selectedTab)
 
-                        userSettings.edit().putString("selectedTab", selectedTab.name).apply()
-                    }
-                }
-                updateFlex(countTextView, flexboxLayout, fab)
+                userSettings.edit().putString("selectedTab", main.selectedTab.name).apply()
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
 
             override fun onTabReselected(tab: TabLayout.Tab) {}
-        })
+        }
+        main.itemClickListener = object : ItemFragment.OnItemClickListener {
+            override fun onClick(item: Item) {
+                if (game.item1 == Item.EMPTY) {
+                    game.item1 = item
+                } else if (game.item2 == Item.EMPTY) {
+                    game.item2 = item
+                }
+                updatePot(fab)
+            }
+        }
 
         fab.setImage1OnClickListener {
             game.item1 = Item.EMPTY
@@ -211,8 +196,8 @@ class MainActivity : AppCompatActivity() {
                 game.item1 = Item.EMPTY
                 game.item2 = Item.EMPTY
 
-                updateTabs(tabLayout)
-                updateFlex(countTextView, flexboxLayout, fab)
+                updateCount(countTextView, main.selectedTab)
+                updateFlex(main)
                 updatePot(fab)
                 updateHint(hintTextView, left, dataStore)
                 updateHistory(right)
@@ -220,8 +205,15 @@ class MainActivity : AppCompatActivity() {
             updateHistory(right)
         }
 
-        updateTabs(tabLayout)
-        updateFlex(countTextView, flexboxLayout, fab)
+        val selected = Group.values().filter { it.name == userSettings.getString("selectedTab", "") }
+        if (selected.any()) {
+            main.selectedTab = selected.first()
+        }
+
+        game.load(dataStore)
+
+        updateCount(countTextView, main.selectedTab)
+        updateFlex(main)
         updatePot(fab)
         updateHint(hintTextView, left, dataStore)
         updateHistory(right)
@@ -282,7 +274,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        mGestureDetector!!.onTouchEvent(ev)
+        mGestureDetector?.onTouchEvent(ev)
         return super.dispatchTouchEvent(ev)
     }
 
@@ -302,37 +294,16 @@ class MainActivity : AppCompatActivity() {
         hintFragment.update(this, hintList, imageLayoutParams, symbolLayoutParams, textLayoutParams, 24f.dpToPx().pxToSp(), 12f)
     }
 
-    private fun updateTabs(tabLayout: TabLayout) {
-        val temp = selectedTab
-        tabLayout.removeAllTabs()
+    private fun updateCount(countTextView: TextView, selectedTab: Group) {
+        val filteredItem = Item.values().filter { Recipe.canMake(it) }
+            .filter { selectedTab == Group.ALL || selectedTab == it.group }
+        val unlockedItem = game.getUnlockedItemList()
+            .filter { selectedTab == Group.ALL || selectedTab == it.group }
 
-        val tabAll = tabLayout.newTab()
-        tabAll.setText(R.string.group_all)
-        tabLayout.addTab(tabAll)
-
-        for (group in Group.values().filter { game.isUnlocked(it) }) {
-            val tab = tabLayout.newTab()
-            tab.setText(group.textId)
-            tabLayout.addTab(tab)
-
-            if (group == temp) {
-                tab.select()
-            }
-        }
-
-        for (tab in (tabLayout.getChildAt(0) as LinearLayout).children) {
-            val res = StateListDrawable()
-            res.addState(intArrayOf(android.R.attr.state_selected), ContextCompat.getDrawable(this, R.color.kuro))
-            res.addState(intArrayOf(), ContextCompat.getDrawable(this, R.color.sumi))
-            tab.background = res
-        }
+        countTextView.text = "${unlockedItem.count()}/${filteredItem.count()}"
     }
 
-    private fun updateFlex(
-        countTextView: TextView,
-        flexboxLayout: FlexboxLayout,
-        fab: FabFragment
-    ) {
+    private fun updateFlex(main: ItemFragment) {
         val imageLayoutParams = ViewGroup.MarginLayoutParams(64f.dpToPx().toInt(), 64f.dpToPx().toInt())
         imageLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
@@ -342,52 +313,7 @@ class MainActivity : AppCompatActivity() {
         val textLayoutParams = ViewGroup.MarginLayoutParams(64f.dpToPx().toInt(), 28f.dpToPx().toInt())
         textLayoutParams.setMargins(8f.dpToPx().toInt(), 0f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
-        flexboxLayout.removeAllViews()
-
-        val filteredItem = Item.values()
-            .filter { Recipe.canMake(it) }
-            .filter { selectedTab == Group.ALL || selectedTab == it.group }
-        val unlockedItem = filteredItem
-            .filter { item -> game.isUnlocked(item) }
-
-        countTextView.text = "${unlockedItem.count()}/${filteredItem.count()}"
-
-        for (item in unlockedItem) {
-            val image = ImageView(this)
-            image.setImageResource(item.resId)
-            image.setColorFilter(getColor(item.colorId))
-
-            val shadow = ImageView(this)
-            shadow.setImageResource(item.resId)
-            shadow.setColorFilter(getColor(item.colorId))
-            shadow.alpha = 0.5f
-
-            image.isClickable = true
-            image.setOnClickListener {
-                if (game.item1 == Item.EMPTY) {
-                    game.item1 = item
-                } else if (game.item2 == Item.EMPTY) {
-                    game.item2 = item
-                }
-                updatePot(fab)
-            }
-
-            val frame = FrameLayout(this)
-            frame.addView(image, imageLayoutParams)
-            frame.addView(shadow, shadowLayoutParams)
-
-            val text = TextView(this)
-            text.setText(item.textId)
-            text.setTextColor(getColor(R.color.white))
-            text.textSize = 12f
-            text.gravity = Gravity.CENTER_HORIZONTAL
-
-            val sub = LinearLayout(this)
-            sub.orientation = LinearLayout.VERTICAL
-            sub.addView(frame)
-            sub.addView(text, textLayoutParams)
-            flexboxLayout.addView(sub)
-        }
+        main.update(this, imageLayoutParams, shadowLayoutParams, textLayoutParams, 12f, game.getUnlockedGroupList(), game.getUnlockedItemList())
     }
 
     private fun updatePot(fabFragment: FabFragment) {

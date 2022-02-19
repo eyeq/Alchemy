@@ -15,11 +15,15 @@ class Game {
     }
 
     fun getHintList(): List<Item> {
-        return hintList.filter { item -> !unlockedRecipeList.any { it.result == item } }.toList()
+        return hintList.filter { item -> !unlockedRecipeList.any { it.result == item } }
+    }
+
+    fun getUnlockedGroupList(): List<Group> {
+        return Group.values().filter { isUnlocked(it) }
     }
 
     fun getUnlockedItemList(): List<Item> {
-        return Item.values().filter { isUnlocked(it) }.toList()
+        return Item.values().filter { isUnlocked(it) }
     }
 
     fun clear() {
