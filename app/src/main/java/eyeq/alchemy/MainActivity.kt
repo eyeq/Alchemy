@@ -75,17 +75,7 @@ class MainActivity : AppCompatActivity() {
 
         val balloon = supportFragmentManager.findFragmentById(R.id.balloon) as BalloonFragment
 
-        val image1 = findViewById<ImageView>(R.id.image1)
-        val image1Shadow = findViewById<ImageView>(R.id.image1_shadow)
-
-        val image2 = findViewById<ImageView>(R.id.image2)
-        val image2Shadow = findViewById<ImageView>(R.id.image2_shadow)
-
-        val clean = findViewById<ImageView>(R.id.clean)
-        val cleanShadow = findViewById<ImageView>(R.id.clean_shadow)
-
-        val convert = findViewById<ImageView>(R.id.convert)
-        val convertShadow = findViewById<ImageView>(R.id.convert_shadow)
+        val fab = supportFragmentManager.findFragmentById(R.id.fab) as FabFragment
 
         val left = supportFragmentManager.findFragmentById(R.id.left) as HintFragment
         left.view?.setBackgroundColor(getColor(R.color.black))
@@ -140,9 +130,8 @@ class MainActivity : AppCompatActivity() {
                             game.clear()
 
                             updateTabs(tabLayout)
-                            updateFlex(countTextView, flexboxLayout,
-                                image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
-                            updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+                            updateFlex(countTextView, flexboxLayout, fab)
+                            updatePot(fab)
                             updateHint(hintTextView, left, dataStore)
                             updateHistory(right)
                         }
@@ -175,8 +164,7 @@ class MainActivity : AppCompatActivity() {
                         userSettings.edit().putString("selectedTab", selectedTab.name).apply()
                     }
                 }
-                updateFlex(countTextView, flexboxLayout,
-                    image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+                updateFlex(countTextView, flexboxLayout, fab)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -184,33 +172,28 @@ class MainActivity : AppCompatActivity() {
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
 
-        image1.isClickable = true
-        image1.setOnClickListener {
+        fab.setImage1OnClickListener {
             game.item1 = Item.EMPTY
-            updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+            updatePot(fab)
         }
 
-        image2.isClickable = true
-        image2.setOnClickListener {
+        fab.setImage2OnClickListener {
             game.item2 = Item.EMPTY
-            updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+            updatePot(fab)
         }
 
-        clean.isClickable = true
-        clean.setOnClickListener {
+        fab.setCleanOnClickListener {
             game.item1 = Item.EMPTY
             game.item2 = Item.EMPTY
-            updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+            updatePot(fab)
         }
 
-        convert.isClickable = true
-        convert.setOnClickListener {
+        fab.setConvertOnClickListener {
             val results = game.unlock(History(game.item1, game.item2, game.item3))
             game.save(dataStore)
 
             if (results.isEmpty()) {
-                vibrate(convert, 20f, 10)
-                vibrate(convertShadow, 20f, 10)
+                fab.vibrate()
             } else {
                 val subLayoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 subLayoutParams.setMargins(2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt())
@@ -229,9 +212,8 @@ class MainActivity : AppCompatActivity() {
                 game.item2 = Item.EMPTY
 
                 updateTabs(tabLayout)
-                updateFlex(countTextView, flexboxLayout,
-                    image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
-                updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+                updateFlex(countTextView, flexboxLayout, fab)
+                updatePot(fab)
                 updateHint(hintTextView, left, dataStore)
                 updateHistory(right)
             }
@@ -239,9 +221,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         updateTabs(tabLayout)
-        updateFlex(countTextView, flexboxLayout,
-            image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
-        updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+        updateFlex(countTextView, flexboxLayout, fab)
+        updatePot(fab)
         updateHint(hintTextView, left, dataStore)
         updateHistory(right)
 
@@ -350,10 +331,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateFlex(
         countTextView: TextView,
         flexboxLayout: FlexboxLayout,
-        image1: ImageView, image1Shadow: ImageView,
-        image2: ImageView, image2Shadow: ImageView,
-        clean: ImageView, cleanShadow: ImageView,
-        convert: ImageView, convertShadow: ImageView
+        fab: FabFragment
     ) {
         val imageLayoutParams = ViewGroup.MarginLayoutParams(64f.dpToPx().toInt(), 64f.dpToPx().toInt())
         imageLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
@@ -391,7 +369,7 @@ class MainActivity : AppCompatActivity() {
                 } else if (game.item2 == Item.EMPTY) {
                     game.item2 = item
                 }
-                updatePot(image1, image1Shadow, image2, image2Shadow, clean, cleanShadow, convert, convertShadow)
+                updatePot(fab)
             }
 
             val frame = FrameLayout(this)
@@ -412,39 +390,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updatePot(
-        image1: ImageView, image1Shadow: ImageView,
-        image2: ImageView, image2Shadow: ImageView,
-        clean: ImageView, cleanShadow: ImageView,
-        convert: ImageView, convertShadow: ImageView
-    ) {
-        image1.setImageResource(game.item1.resId)
-        image1.setColorFilter(getColor(game.item1.colorId))
-
-        image1Shadow.setImageResource(game.item1.resId)
-        image1Shadow.setColorFilter(getColor(game.item1.colorId))
-        image1Shadow.alpha = 0.5f
-
-        image2.setImageResource(game.item2.resId)
-        image2.setColorFilter(getColor(game.item2.colorId))
-
-        image2Shadow.setImageResource(game.item2.resId)
-        image2Shadow.setColorFilter(getColor(game.item2.colorId))
-        image2Shadow.alpha = 0.5f
-
-        clean.setImageResource(R.drawable.symbol_clean)
-        clean.setColorFilter(getColor(R.color.silver))
-
-        cleanShadow.setImageResource(R.drawable.symbol_clean)
-        cleanShadow.setColorFilter(getColor(R.color.silver))
-        cleanShadow.alpha = 0.5f
-
-        convert.setImageResource(R.drawable.symbol_reload)
-        convert.setColorFilter(getColor(R.color.white))
-
-        convertShadow.setImageResource(R.drawable.symbol_reload)
-        convertShadow.setColorFilter(getColor(R.color.white))
-        convertShadow.alpha = 0.5f
+    private fun updatePot(fabFragment: FabFragment) {
+        fabFragment.update(this, game.item1, game.item2)
     }
 
     private fun updateHistory(historyFragment: HistoryFragment) {
@@ -456,21 +403,6 @@ class MainActivity : AppCompatActivity() {
 
         val historyList = game.getHistoryList().reversed()
         historyFragment.update(this, historyList, imageLayoutParams, symbolLayoutParams)
-    }
-
-    private fun vibrate(target: View, translate: Float, duration: Long) {
-        val animatorList: MutableList<Animator> = ArrayList()
-
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * 0.0f, translate * -1.0f).setDuration(duration * 1))
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * -1.0f, translate * 0.7f).setDuration(duration * 3))
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * 0.7f, translate * -0.5f).setDuration(duration * 6))
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * -0.5f, translate * 0.4f).setDuration(duration * 10))
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * 0.4f, translate * -0.3f).setDuration(duration * 15))
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * -0.3f, translate * 0.0f).setDuration(duration * 21))
-
-        val set = AnimatorSet()
-        set.playSequentially(animatorList)
-        set.start()
     }
 
     private fun Float.pxToDp(): Float = (this / resources.displayMetrics.density)
