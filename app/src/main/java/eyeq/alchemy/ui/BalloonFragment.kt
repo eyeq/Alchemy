@@ -1,4 +1,4 @@
-package eyeq.alchemy
+package eyeq.alchemy.ui
 
 import android.content.Context
 import android.os.Handler
@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import eyeq.alchemy.R
 import eyeq.alchemy.game.Recipe
 
 class BalloonFragment : Fragment(R.layout.fragment_balloon) {

@@ -1,4 +1,4 @@
-package eyeq.alchemy
+package eyeq.alchemy.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import eyeq.alchemy.R
 import eyeq.alchemy.game.History
 
 class HistoryFragment : Fragment(R.layout.fragment_history) {

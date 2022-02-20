@@ -1,4 +1,4 @@
-package eyeq.alchemy
+package eyeq.alchemy.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
 import androidx.fragment.app.Fragment
+import eyeq.alchemy.R
 import eyeq.alchemy.game.Recipe
 
 class HintFragment : Fragment(R.layout.fragment_hint) {

@@ -1,4 +1,4 @@
-package eyeq.alchemy
+package eyeq.alchemy.ui
 
 import android.content.Context
 import android.view.Gravity
@@ -8,6 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import eyeq.alchemy.R
 import eyeq.alchemy.game.Item
 import eyeq.alchemy.game.Recipe
 

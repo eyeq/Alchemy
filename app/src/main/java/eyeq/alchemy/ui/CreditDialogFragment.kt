@@ -1,4 +1,4 @@
-package eyeq.alchemy
+package eyeq.alchemy.ui
 
 import android.R
 import android.app.AlertDialog
@@ -9,9 +9,8 @@ import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import eyeq.util.CharSequenceExtensions
-import eyeq.util.PackageManagerExtensions
 
-class VersionDialogFragment : DialogFragment() {
+class CreditDialogFragment : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
@@ -24,13 +23,12 @@ class VersionDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val html = "<p>${PackageManagerExtensions.getApplicationName(context)}</p>" +
-                "<p>ver.${PackageManagerExtensions.getVersionName(context)}</p>" +
+        val html = "<p>Created by： eyeq800</p>" +
                 "<br>" +
-                "<p>Check for updates: <a href='https://github.com/eyeq/Alchemy/releases'>GitHub</a></p>"
+                "<p>Image provided by: <a href='https://icooon-mono.com/'>icooon-mono.com</a></p>"
 
         val builder = AlertDialog.Builder(activity)
-            .setTitle("About")
+            .setTitle("Credit")
             .setMessage(CharSequenceExtensions.trimTrailingWhitespace(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)))
             .setPositiveButton("close") { dialog, id -> }
 

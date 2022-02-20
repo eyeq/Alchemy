@@ -1,4 +1,4 @@
-package eyeq.alchemy
+package eyeq.alchemy.ui
 
 import android.content.Context
 import android.graphics.drawable.StateListDrawable
@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.tabs.TabLayout
+import eyeq.alchemy.R
 import eyeq.alchemy.game.Group
 import eyeq.alchemy.game.Item
 

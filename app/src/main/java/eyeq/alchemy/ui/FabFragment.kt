@@ -1,4 +1,4 @@
-package eyeq.alchemy
+package eyeq.alchemy.ui
 
 import android.animation.Animator
 import android.animation.AnimatorSet
@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.ImageView
+import eyeq.alchemy.R
 import eyeq.alchemy.game.Item
 
 class FabFragment : Fragment(R.layout.fragment_fab) {
