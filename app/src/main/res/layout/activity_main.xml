@@ -58,14 +58,15 @@
         </FrameLayout>
     </LinearLayout>
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main"
         android:name="eyeq.alchemy.ItemFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/balloon"
         android:name="eyeq.alchemy.BalloonFragment"
         android:layout_width="wrap_content"
@@ -73,7 +74,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fab"
         android:name="eyeq.alchemy.FabFragment"
         android:layout_width="wrap_content"
@@ -81,22 +82,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/left"
         android:name="eyeq.alchemy.HintFragment"
         android:layout_width="300dp"
         android:layout_height="0dp"
-        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/right"
         android:name="eyeq.alchemy.HistoryFragment"
         android:layout_width="300dp"
         android:layout_height="0dp"
-        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header" />

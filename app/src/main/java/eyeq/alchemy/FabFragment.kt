@@ -6,13 +6,11 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import eyeq.alchemy.game.Item
 
-class FabFragment : Fragment() {
+class FabFragment : Fragment(R.layout.fragment_fab) {
 
     private lateinit var image1: ImageView
     private lateinit var image1Shadow: ImageView
@@ -26,23 +24,20 @@ class FabFragment : Fragment() {
     private lateinit var convert: ImageView
     private lateinit var convertShadow: ImageView
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        val layout = inflater.inflate(R.layout.fragment_fab, container)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        image1 = layout.findViewById<ImageView>(R.id.image1)
-        image1Shadow = layout.findViewById<ImageView>(R.id.image1_shadow)
+        image1 = view.findViewById<ImageView>(R.id.image1)
+        image1Shadow = view.findViewById<ImageView>(R.id.image1_shadow)
 
-        image2 = layout.findViewById<ImageView>(R.id.image2)
-        image2Shadow = layout.findViewById<ImageView>(R.id.image2_shadow)
+        image2 = view.findViewById<ImageView>(R.id.image2)
+        image2Shadow = view.findViewById<ImageView>(R.id.image2_shadow)
 
-        clean = layout.findViewById<ImageView>(R.id.clean)
-        cleanShadow = layout.findViewById<ImageView>(R.id.clean_shadow)
+        clean = view.findViewById<ImageView>(R.id.clean)
+        cleanShadow = view.findViewById<ImageView>(R.id.clean_shadow)
 
-        convert = layout.findViewById<ImageView>(R.id.convert)
-        convertShadow = layout.findViewById<ImageView>(R.id.convert_shadow)
-
-        return layout
+        convert = view.findViewById<ImageView>(R.id.convert)
+        convertShadow = view.findViewById<ImageView>(R.id.convert_shadow)
     }
 
     fun setImage1OnClickListener(listener: View.OnClickListener) {

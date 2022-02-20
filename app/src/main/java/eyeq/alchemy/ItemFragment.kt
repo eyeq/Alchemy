@@ -5,7 +5,6 @@ import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
 import android.view.Gravity
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -19,7 +18,7 @@ import com.google.android.material.tabs.TabLayout
 import eyeq.alchemy.game.Group
 import eyeq.alchemy.game.Item
 
-class ItemFragment : Fragment() {
+class ItemFragment : Fragment(R.layout.fragment_item) {
 
     interface OnItemClickListener {
         fun onClick(item: Item)
@@ -35,11 +34,10 @@ class ItemFragment : Fragment() {
     var tabSelectedListener: TabLayout.OnTabSelectedListener? = null
     var itemClickListener: OnItemClickListener? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        val layout = inflater.inflate(R.layout.fragment_item, container)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        tabLayout = layout.findViewById<TabLayout>(R.id.tabs)
+        tabLayout = view.findViewById<TabLayout>(R.id.tabs)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 for (group in Group.values()) {
@@ -61,9 +59,7 @@ class ItemFragment : Fragment() {
             }
         })
 
-        flexboxLayout = layout.findViewById<FlexboxLayout>(R.id.flex)
-
-        return layout
+        flexboxLayout = view.findViewById<FlexboxLayout>(R.id.flex)
     }
 
     fun update(context: Context, imageLayoutParams: ViewGroup.LayoutParams, shadowLayoutParams: ViewGroup.LayoutParams, textLayoutParams: ViewGroup.LayoutParams, textSize: Float, groupList: List<Group>, itemList: List<Item>) {

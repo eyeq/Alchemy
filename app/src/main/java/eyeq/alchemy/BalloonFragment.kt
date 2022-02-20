@@ -1,13 +1,10 @@
 package eyeq.alchemy
 
 import android.content.Context
-import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -15,14 +12,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import eyeq.alchemy.game.Recipe
 
-class BalloonFragment : Fragment() {
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        super.onCreateView(inflater, container, savedInstanceState)
-        val layout = inflater.inflate(R.layout.fragment_balloon, container)
-
-        return layout
-    }
+class BalloonFragment : Fragment(R.layout.fragment_balloon) {
 
     fun addBalloon(context: Context, subLayoutParams: ViewGroup.LayoutParams, imageLayoutParams: ViewGroup.LayoutParams, textLayoutParams: ViewGroup.LayoutParams, textSize: Float, recipe: Recipe) {
         val image = ImageView(context)

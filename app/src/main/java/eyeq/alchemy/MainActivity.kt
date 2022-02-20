@@ -3,7 +3,6 @@ package eyeq.alchemy
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
@@ -20,7 +19,7 @@ import eyeq.alchemy.game.*
 import kotlin.math.abs
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val adUnitID = "ca-app-pub-3940256099942544/5224354917"
 
     private var mGestureDetector: GestureDetector? = null
@@ -29,9 +28,8 @@ class MainActivity : AppCompatActivity() {
 
     private val game = Game()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun onStart() {
+        super.onStart()
 
         val userSettings: SharedPreferences = getSharedPreferences("UserSettings", Context.MODE_PRIVATE)
         val dataStore: SharedPreferences = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
