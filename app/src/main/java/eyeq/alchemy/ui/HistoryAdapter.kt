@@ -60,4 +60,8 @@ class HistoryAdapter(val context: Context, val historyList: List<History>, val i
     override fun getCount(): Int {
         return historyList.size
     }
+
+    override fun isEnabled(position: Int): Boolean {
+        return false
+    }
 }

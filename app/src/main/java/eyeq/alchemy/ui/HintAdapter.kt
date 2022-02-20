@@ -12,9 +12,10 @@ import eyeq.alchemy.R
 import eyeq.alchemy.game.Item
 import eyeq.alchemy.game.Recipe
 
-class HintAdapter(val context: Context, val hintList: List<Recipe>, val imageLayoutParams: ViewGroup.LayoutParams, val symbolLayoutParams: ViewGroup.LayoutParams, val textLayoutParams: ViewGroup.LayoutParams, val alphabetSize: Float, val textSize: Float) : BaseAdapter() {
+class HintAdapter(val context: Context, val hintList: List<Recipe>, val enabledList: List<Boolean>, val imageLayoutParams: ViewGroup.LayoutParams, val symbolLayoutParams: ViewGroup.LayoutParams, val textLayoutParams: ViewGroup.LayoutParams, val alphabetSize: Float, val textSize: Float) : BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val recipe = hintList[position]
+        val enabled = enabledList[position]
 
         var inputs = recipe.inputs.toMutableList()
         while(inputs.count() < 3) {
@@ -24,41 +25,37 @@ class HintAdapter(val context: Context, val hintList: List<Recipe>, val imageLay
 
         val view = LinearLayout(context)
         view.orientation = LinearLayout.HORIZONTAL
+        if (!enabled) {
+            view.setBackgroundColor(context.getColor(R.color.kuro))
+        }
 
         var i = 0
         var alphabet = 0
         var prevItem = Item.EMPTY
         for (item in inputs) {
-            if (item == Item.EMPTY) {
-                val image = ImageView(context)
-                image.setImageResource(item.resId)
-                image.setColorFilter(context.getColor(item.colorId))
-                view.addView(image, imageLayoutParams)
-            } else {
-                if (prevItem != item) {
-                    alphabet += 1
-                    prevItem = item
-                }
-
-                val text = TextView(context)
-                text.textSize = alphabetSize
-                text.gravity = Gravity.CENTER
-                when(alphabet) {
-                    1 -> {
-                        text.setText(R.string.alpha)
-                        text.setTextColor(context.getColor(R.color.white))
-                    }
-                    2 -> {
-                        text.setText(R.string.beta)
-                        text.setTextColor(context.getColor(R.color.white))
-                    }
-                    3 -> {
-                        text.setText(R.string.gamma)
-                        text.setTextColor(context.getColor(R.color.white))
-                    }
-                }
-                view.addView(text, imageLayoutParams)
+            if (prevItem != item) {
+                alphabet += 1
+                prevItem = item
             }
+
+            val text = TextView(context)
+            text.textSize = alphabetSize
+            text.gravity = Gravity.CENTER
+            when(alphabet) {
+                1 -> {
+                    text.setText(R.string.alpha)
+                    text.setTextColor(context.getColor(R.color.white))
+                }
+                2 -> {
+                    text.setText(R.string.beta)
+                    text.setTextColor(context.getColor(R.color.white))
+                }
+                3 -> {
+                    text.setText(R.string.gamma)
+                    text.setTextColor(context.getColor(R.color.white))
+                }
+            }
+            view.addView(text, imageLayoutParams)
 
             val symbol = ImageView(context)
             if (i == 2) {
@@ -100,5 +97,9 @@ class HintAdapter(val context: Context, val hintList: List<Recipe>, val imageLay
 
     override fun getCount(): Int {
         return hintList.size
+    }
+
+    override fun isEnabled(position: Int): Boolean {
+        return enabledList[position]
     }
 }

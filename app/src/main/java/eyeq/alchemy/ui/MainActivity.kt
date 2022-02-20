@@ -5,9 +5,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
+import android.text.Html.ImageGetter
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.text.HtmlCompat
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -17,6 +20,7 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.tabs.TabLayout
 import eyeq.alchemy.R
 import eyeq.alchemy.game.*
+import eyeq.util.CharSequenceExtensions
 import kotlin.math.abs
 
 
@@ -129,6 +133,38 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             true
         }
 
+        val unlock = fun(history: History) {
+            val results = game.unlock(history)
+            game.save(dataStore)
+
+            if (results.isEmpty()) {
+                fab.vibrate()
+            } else {
+                val subLayoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                subLayoutParams.setMargins(2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt())
+
+                val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
+                imageLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
+
+                val  textLayoutParams = ViewGroup.MarginLayoutParams(80f.dpToPx().toInt(), 32f.dpToPx().toInt())
+                textLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
+
+                for (recipe in results) {
+                    balloon.addBalloon(this, subLayoutParams, imageLayoutParams, textLayoutParams, 12f, recipe)
+                }
+
+                game.item1 = Item.EMPTY
+                game.item2 = Item.EMPTY
+
+                updateCount(countTextView, main.selectedTab)
+                updateFlex(main)
+                updatePot(fab)
+                updateHint(hintTextView, left, dataStore)
+                updateHistory(right)
+            }
+            updateHistory(right)
+        }
+
         menu.isClickable = true
         menu.setOnClickListener {
             popup.show()
@@ -173,35 +209,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         fab.setConvertOnClickListener {
-            val results = game.unlock(History(game.item1, game.item2, game.item3))
-            game.save(dataStore)
-
-            if (results.isEmpty()) {
-                fab.vibrate()
-            } else {
-                val subLayoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                subLayoutParams.setMargins(2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt())
-
-                val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
-                imageLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
-                val  textLayoutParams = ViewGroup.MarginLayoutParams(80f.dpToPx().toInt(), 32f.dpToPx().toInt())
-                textLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
-                for (recipe in results) {
-                    balloon.addBalloon(this, subLayoutParams, imageLayoutParams, textLayoutParams, 12f, recipe)
-                }
-
-                game.item1 = Item.EMPTY
-                game.item2 = Item.EMPTY
-
-                updateCount(countTextView, main.selectedTab)
-                updateFlex(main)
-                updatePot(fab)
-                updateHint(hintTextView, left, dataStore)
-                updateHistory(right)
-            }
-            updateHistory(right)
+            unlock(History(game.item1, game.item2, game.item3))
         }
 
         val selected = Group.values().filter { it.name == userSettings.getString("selectedTab", "") }
@@ -257,6 +265,40 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             game.save(dataStore)
             updateHint(hintTextView, left, dataStore)
         }
+        left.itemClickListener = object : HintFragment.OnItemClickListener {
+            override fun onClick(recipe: Recipe) {
+                val count = recipe.inputs.distinct().count()
+                val cost = count * count
+
+                val html = "<p>Are you sure you want to see the answer?</p>" +
+                        "<img src='${R.drawable.symbol_hint}'>-${cost}"
+
+                val imageGetter = ImageGetter {
+                    val drawable = ResourcesCompat.getDrawable(resources, it.toInt(), null)
+                    drawable?.setBounds(0, 0, 40, 40)
+                    drawable
+                }
+
+                val builder = AlertDialog.Builder(this@MainActivity)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Confirm")
+                    .setMessage(CharSequenceExtensions.trimTrailingWhitespace(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT, imageGetter, null)))
+                    .setPositiveButton("unlock") { dialog, id ->
+                        if (!game.addHints(dataStore, -cost)) {
+                            Toast.makeText(this@MainActivity, "You need to watch ads.", Toast.LENGTH_LONG).show()
+                            return@setPositiveButton
+                        }
+
+                        unlock(History(
+                            recipe.inputs.getOrElse(0) { Item.EMPTY },
+                            recipe.inputs.getOrElse(1) { Item.EMPTY },
+                            recipe.inputs.getOrElse(2) { Item.EMPTY }))
+                    }
+                    .setNegativeButton("cancel") { dialog, id -> }
+
+                builder.show()
+            }
+        }
 
         Handler(Looper.getMainLooper()).postDelayed({
             RewardedAd.load(this, adUnitID, AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
@@ -290,7 +332,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         hintTextView.text = game.getHints(preferences).toString()
 
         val hintList = game.getHintList().map { Recipe.getRecipeListByResult(it).first() }
-        hintFragment.update(this, hintList, imageLayoutParams, symbolLayoutParams, textLayoutParams, 24f.dpToPx().pxToSp(), 12f)
+        val enabledList = hintList.map { it.inputs.all { item -> game.isUnlocked(item) } }
+        hintFragment.update(this, hintList, enabledList, imageLayoutParams, symbolLayoutParams, textLayoutParams, 24f.dpToPx().pxToSp(), 12f)
     }
 
     private fun updateCount(countTextView: TextView, selectedTab: Group) {

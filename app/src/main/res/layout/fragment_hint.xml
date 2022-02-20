@@ -6,17 +6,54 @@
     android:orientation="vertical"
     tools:context=".ui.HintFragment">
 
-    <Button
-        android:id="@+id/ads_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/watch_ads" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/hint_button"
-        android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/ads_button"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/watch_ads" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/symbol_hint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+11"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/give_a_hint" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/hint_button"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/give_a_hint" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/symbol_hint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-1"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/hint_list"

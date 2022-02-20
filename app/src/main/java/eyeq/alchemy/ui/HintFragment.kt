@@ -12,16 +12,26 @@ import eyeq.alchemy.game.Recipe
 
 class HintFragment : Fragment(R.layout.fragment_hint) {
 
+    interface OnItemClickListener {
+        fun onClick(recipe: Recipe)
+    }
+
     private lateinit var adsButton: Button
     private lateinit var hintButton: Button
     private lateinit var hintListView: ListView
+
+    var itemClickListener: OnItemClickListener? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         adsButton = view.findViewById<Button>(R.id.ads_button)
         hintButton = view.findViewById<Button>(R.id.hint_button)
+
         hintListView = view.findViewById<ListView>(R.id.hint_list)
+        hintListView.setOnItemClickListener { parent, view, position, l ->
+            itemClickListener?.onClick(parent.getItemAtPosition(position) as Recipe)
+        }
     }
 
     fun setAdsEnabled(value: Boolean) {
@@ -36,7 +46,7 @@ class HintFragment : Fragment(R.layout.fragment_hint) {
         hintButton.setOnClickListener(listener)
     }
 
-    fun update(context: Context, hintList: List<Recipe>, imageLayoutParams: ViewGroup.LayoutParams, symbolLayoutParams: ViewGroup.LayoutParams, textLayoutParams: ViewGroup.LayoutParams, alphabetSize: Float, textSize: Float) {
-        hintListView.adapter = HintAdapter(context, hintList, imageLayoutParams, symbolLayoutParams, textLayoutParams, alphabetSize, textSize)
+    fun update(context: Context, hintList: List<Recipe>, enabledList: List<Boolean>, imageLayoutParams: ViewGroup.LayoutParams, symbolLayoutParams: ViewGroup.LayoutParams, textLayoutParams: ViewGroup.LayoutParams, alphabetSize: Float, textSize: Float) {
+        hintListView.adapter = HintAdapter(context, hintList, enabledList, imageLayoutParams, symbolLayoutParams, textLayoutParams, alphabetSize, textSize)
     }
 }
