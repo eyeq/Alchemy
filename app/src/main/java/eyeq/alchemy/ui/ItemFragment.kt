@@ -112,8 +112,8 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
             }
 
             val frame = FrameLayout(context)
-            frame.addView(image, imageLayoutParams)
             frame.addView(shadow, shadowLayoutParams)
+            frame.addView(image, imageLayoutParams)
 
             val text = TextView(context)
             text.setText(item.textId)
