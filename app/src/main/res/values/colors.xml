@@ -7,6 +7,10 @@
     <color name="kuro">#FF2A2A2A</color>
     <color name="black">#FF000000</color>
 
+    <color name="alpha">#FFFF8080</color>
+    <color name="beta">#FF80FF80</color>
+    <color name="gamma">#FF8080FF</color>
+
     <color name="red">#FFFF0000</color>
     <color name="maroon">#FF800000</color>
     <color name="lime">#FF00FF00</color>

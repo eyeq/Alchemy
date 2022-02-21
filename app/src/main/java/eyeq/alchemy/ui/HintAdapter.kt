@@ -44,15 +44,15 @@ class HintAdapter(val context: Context, val hintList: List<Recipe>, val enabledL
             when(alphabet) {
                 1 -> {
                     text.setText(R.string.alpha)
-                    text.setTextColor(context.getColor(R.color.white))
+                    text.setTextColor(context.getColor(R.color.alpha))
                 }
                 2 -> {
                     text.setText(R.string.beta)
-                    text.setTextColor(context.getColor(R.color.white))
+                    text.setTextColor(context.getColor(R.color.beta))
                 }
                 3 -> {
                     text.setText(R.string.gamma)
-                    text.setTextColor(context.getColor(R.color.white))
+                    text.setTextColor(context.getColor(R.color.gamma))
                 }
             }
             view.addView(text, imageLayoutParams)
@@ -70,19 +70,17 @@ class HintAdapter(val context: Context, val hintList: List<Recipe>, val enabledL
             i += 1
         }
 
-        if (true) {
-            val image = ImageView(context)
-            image.setImageResource(recipe.result.resId)
-            image.setColorFilter(context.getColor(recipe.result.colorId))
-            view.addView(image, imageLayoutParams)
+        val image = ImageView(context)
+        image.setImageResource(recipe.result.resId)
+        image.setColorFilter(context.getColor(recipe.result.colorId))
+        view.addView(image, imageLayoutParams)
 
-            val text = TextView(context)
-            text.setText(recipe.result.textId)
-            text.setTextColor(context.getColor(R.color.white))
-            text.textSize = textSize
-            text.gravity = Gravity.CENTER_HORIZONTAL
-            view.addView(text, textLayoutParams)
-        }
+        val text = TextView(context)
+        text.setText(recipe.result.textId)
+        text.setTextColor(context.getColor(R.color.white))
+        text.textSize = textSize
+        text.gravity = Gravity.CENTER_HORIZONTAL
+        view.addView(text, textLayoutParams)
 
         return view
     }
