@@ -23,9 +23,21 @@ class CreditDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val html = "<p>Created by： eyeq800</p>" +
+        val html = "<h6 style='text-align: center'>Created by</h6>" +
+                "<p style='text-align: center'>eyeq</p>" +
                 "<br>" +
-                "<p>Image provided by: <a href='https://icooon-mono.com/'>icooon-mono.com</a></p>"
+                "<h6 style='text-align: center'>Image provided by</h6>" +
+                "<p style='text-align: center'>Google Note Emoji</p>" +
+                "<p style='text-align: center'><a href='https://github.com/googlefonts/noto-emoji'>github.com/googlefonts/noto-emoji</a></p>" +
+                "<p style='text-align: center'><a href='https://www.apache.org/licenses/LICENSE-2.0'>Apache License 2.0.</a></p>" +
+                "<br>" +
+                "<p style='text-align: center'>Freepik - Flaticon</p>" +
+                "<p style='text-align: center'><a href='https://www.flaticon.com/authors/freepik'>www.flaticon.com/authors/freepik</a></p>" +
+                "<p style='text-align: center'><a style='text-align: right' href='https://www.freepikcompany.com/legal'>Flaticon License</a></p>" +
+                "<br>" +
+                "<p style='text-align: center'>ICOON MONO</p>" +
+                "<p style='text-align: center'><a href='https://icooon-mono.com'>icooon-mono.com</a></p>" +
+                "<p style='text-align: center'><a style='text-align: right' href='https://icooon-mono.com/license'>License</a></p>"
 
         val builder = AlertDialog.Builder(activity)
             .setTitle("Credit")
