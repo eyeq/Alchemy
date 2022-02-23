@@ -3,6 +3,7 @@ package eyeq.alchemy.ui
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.text.Html.ImageGetter
@@ -98,7 +99,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         })
 
         val popup = PopupMenu(this@MainActivity, menu)
-        popup.menu.setGroupDividerEnabled(true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            popup.menu.setGroupDividerEnabled(true)
+        }
         popup.menu.add(1, 1, 1, R.string.menu_restart)
         popup.menu.add(2, 2, 2, R.string.menu_credit)
         popup.menu.add(2, 3, 3, R.string.menu_version)
