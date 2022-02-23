@@ -8,10 +8,12 @@ import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
+import eyeq.alchemy.BuildConfig
 import eyeq.util.CharSequenceExtensions
-import eyeq.util.PackageManagerExtensions
+import java.text.SimpleDateFormat
+import java.util.*
 
-class VersionDialogFragment : DialogFragment() {
+class VersionDialogFragment(private val recipeCount: Int, private val itemCount: Int) : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
@@ -24,8 +26,12 @@ class VersionDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val html = "<p>${PackageManagerExtensions.getApplicationName(context)}</p>" +
-                "<p>ver.${PackageManagerExtensions.getVersionName(context)}</p>" +
+        val date = Date(BuildConfig.BUILD_TIME)
+
+        val html = "<h6>${BuildConfig.APPLICATION_NAME}</6>" +
+                "<p>ver.${BuildConfig.VERSION_NAME}（Build ${SimpleDateFormat("yyyy.MM.dd").format(date)}）</p>" +
+                "<br>" +
+                "<p>Components: ${recipeCount} recipes, ${itemCount} items</p>" +
                 "<br>" +
                 "<p>Check for updates: <a href='https://github.com/eyeq/Alchemy/releases'>GitHub</a></p>"
 

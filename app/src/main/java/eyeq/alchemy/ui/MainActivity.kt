@@ -19,15 +19,13 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.tabs.TabLayout
+import eyeq.alchemy.BuildConfig
 import eyeq.alchemy.R
 import eyeq.alchemy.game.*
 import eyeq.util.CharSequenceExtensions
 import kotlin.math.abs
 
-
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
-    private val adUnitID = "ca-app-pub-3940256099942544/5224354917"
-
     private var mGestureDetector: GestureDetector? = null
 
     private var mRewardedAd: RewardedAd? = null
@@ -129,7 +127,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     CreditDialogFragment().show(supportFragmentManager, "simple")
                 }
                 3 -> {
-                    VersionDialogFragment().show(supportFragmentManager, "simple")
+                    val recipeCount = Recipe.getCount()
+                    val itemCount = Item.values().filter { item -> Recipe.canMake(item) }.count()
+                    VersionDialogFragment(recipeCount, itemCount).show(supportFragmentManager, "simple")
                 }
             }
 
@@ -304,7 +304,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         Handler(Looper.getMainLooper()).postDelayed({
-            RewardedAd.load(this, adUnitID, AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
+            RewardedAd.load(this, BuildConfig.ADS_UNIT_ID, AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     mRewardedAd = null
                 }

@@ -69,6 +69,16 @@ class Recipe(val result: Item, vararg _inputs: Item) {
             Recipe(Item.STAR, Item.SPACE, Item.STONE),
         )
 
+        fun getCount(): Int {
+            val list = mutableListOf<Recipe>()
+            for (recipe in recipes) {
+                if (list.all { !isSame(it.inputs, recipe.inputs) }) {
+                    list.add(recipe)
+                }
+            }
+            return list.count()
+        }
+
         fun canMake(item: Item): Boolean {
             return recipes.any { it.result == item }
         }

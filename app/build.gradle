@@ -14,6 +14,19 @@ android {
         versionName "1.1.0-alpha"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        def addConstant = { constantName, constantValue ->
+            manifestPlaceholders += [(constantName): constantValue]
+            buildConfigField "String", "${constantName}", "\"${constantValue}\""
+        }
+        def addConstantLong = { constantName, constantValue ->
+            manifestPlaceholders += [(constantName): constantValue]
+            buildConfigField "long", "${constantName}", "${constantValue}"
+        }
+        addConstant("APPLICATION_NAME", "Alchemy")
+        addConstantLong("BUILD_TIME", System.currentTimeMillis() + "L")
+        addConstant("ADS_APPLICATION_ID", "ca-app-pub-3940256099942544~3347511713")
+        addConstant("ADS_UNIT_ID", "ca-app-pub-3940256099942544/5224354917")
     }
 
     buildTypes {
