@@ -1,7 +1,7 @@
 package eyeq.alchemy.ui
 
 import android.R
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -18,7 +18,7 @@ class CreditDialogFragment : DialogFragment() {
         val alertDialog = dialog as AlertDialog?
         if (alertDialog != null) {
             val textView = alertDialog.findViewById<TextView>(R.id.message)
-            textView.movementMethod = LinkMovementMethod.getInstance()
+            textView?.movementMethod = LinkMovementMethod.getInstance()
         }
     }
 
@@ -39,7 +39,7 @@ class CreditDialogFragment : DialogFragment() {
                 "<p style='text-align: center'><a href='https://icooon-mono.com'>icooon-mono.com</a></p>" +
                 "<p style='text-align: center'><a style='text-align: right' href='https://icooon-mono.com/license'>License</a></p>"
 
-        val builder = AlertDialog.Builder(activity)
+        val builder = AlertDialog.Builder(requireContext())
             .setTitle("Credit")
             .setMessage(CharSequenceExtensions.trimTrailingWhitespace(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)))
             .setPositiveButton("close") { dialog, id -> }

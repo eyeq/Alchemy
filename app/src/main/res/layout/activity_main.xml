@@ -16,7 +16,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginTop="8dp"
-            android:src="@drawable/symbol_hint" />
+            app:srcCompat="@drawable/symbol_hint" />
 
         <TextView
             android:id="@+id/hint"

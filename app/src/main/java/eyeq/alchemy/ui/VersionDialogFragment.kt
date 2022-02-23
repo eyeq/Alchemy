@@ -1,7 +1,7 @@
 package eyeq.alchemy.ui
 
 import android.R
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
@@ -21,7 +21,7 @@ class VersionDialogFragment(private val recipeCount: Int, private val itemCount:
         val alertDialog = dialog as AlertDialog?
         if (alertDialog != null) {
             val textView = alertDialog.findViewById<TextView>(R.id.message)
-            textView.movementMethod = LinkMovementMethod.getInstance()
+            textView?.movementMethod = LinkMovementMethod.getInstance()
         }
     }
 
@@ -35,7 +35,7 @@ class VersionDialogFragment(private val recipeCount: Int, private val itemCount:
                 "<br>" +
                 "<p>Check for updates: <a href='https://github.com/eyeq/Alchemy/releases'>GitHub</a></p>"
 
-        val builder = AlertDialog.Builder(activity)
+        val builder = AlertDialog.Builder(requireContext())
             .setTitle("About")
             .setMessage(CharSequenceExtensions.trimTrailingWhitespace(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)))
             .setPositiveButton("close") { dialog, id -> }
