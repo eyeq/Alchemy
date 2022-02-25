@@ -161,10 +161,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                 updateCount(countTextView, main.selectedTab)
                 updateFlex(main)
-                updatePot(fab)
                 updateHint(hintTextView, left, dataStore)
-                updateHistory(right)
             }
+
+            updatePot(fab)
             updateHistory(right)
         }
 
@@ -362,7 +362,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun updatePot(fabFragment: FabFragment) {
-        fabFragment.update(this, game.item1, game.item2)
+        val isDone = game.getHistoryList().contains(History(game.item1, game.item2, game.item3))
+        val recipes = Recipe.getRecipeListByInputs(game.item1, game.item2, game.item3)
+        fabFragment.update(this, isDone, recipes.map { it.result }, game.item1, game.item2)
     }
 
     private fun updateHistory(historyFragment: HistoryFragment) {

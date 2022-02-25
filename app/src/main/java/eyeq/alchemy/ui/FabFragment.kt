@@ -13,6 +13,12 @@ import eyeq.alchemy.game.Item
 
 class FabFragment : Fragment(R.layout.fragment_fab) {
 
+    private lateinit var predict0: ImageView
+    private lateinit var predict1: ImageView
+    private lateinit var predict2: ImageView
+    private lateinit var predict3: ImageView
+    private lateinit var predict4: ImageView
+
     private lateinit var image1: ImageView
     private lateinit var image1Shadow: ImageView
 
@@ -27,6 +33,12 @@ class FabFragment : Fragment(R.layout.fragment_fab) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        predict0 = view.findViewById<ImageView>(R.id.predict0)
+        predict1 = view.findViewById<ImageView>(R.id.predict1)
+        predict2 = view.findViewById<ImageView>(R.id.predict2)
+        predict3 = view.findViewById<ImageView>(R.id.predict3)
+        predict4 = view.findViewById<ImageView>(R.id.predict4)
 
         image1 = view.findViewById<ImageView>(R.id.image1)
         image1Shadow = view.findViewById<ImageView>(R.id.image1_shadow)
@@ -61,7 +73,49 @@ class FabFragment : Fragment(R.layout.fragment_fab) {
         convert.setOnClickListener(listener)
     }
 
-    fun update(context: Context, item1: Item, item2: Item) {
+    fun update(context: Context, isDone: Boolean, results: List<Item>, item1: Item, item2: Item) {
+        predict0.setImageResource(R.drawable.symbol_question)
+        predict0.setColorFilter(context.getColor(R.color.yellow))
+
+        predict1.setImageResource(Item.EMPTY.resId)
+        predict1.setColorFilter(context.getColor(Item.EMPTY.colorId))
+
+        predict2.setImageResource(Item.EMPTY.resId)
+        predict2.setColorFilter(context.getColor(Item.EMPTY.colorId))
+
+        predict3.setImageResource(Item.EMPTY.resId)
+        predict3.setColorFilter(context.getColor(Item.EMPTY.colorId))
+
+        predict4.setImageResource(Item.EMPTY.resId)
+        predict4.setColorFilter(context.getColor(Item.EMPTY.colorId))
+
+        if (isDone) {
+            if (results.any()) {
+                predict0.setImageResource(R.drawable.symbol_check)
+                predict0.setColorFilter(context.getColor(R.color.lime))
+
+                if (results.count() > 0) {
+                    predict1.setImageResource(results[0].resId)
+                    predict1.setColorFilter(context.getColor(results[0].colorId))
+                }
+                if (results.count() > 1) {
+                    predict2.setImageResource(results[1].resId)
+                    predict2.setColorFilter(context.getColor(results[1].colorId))
+                }
+                if (results.count() > 2) {
+                    predict3.setImageResource(results[2].resId)
+                    predict3.setColorFilter(context.getColor(results[2].colorId))
+                }
+                if (results.count() > 3) {
+                    predict4.setImageResource(results[3].resId)
+                    predict4.setColorFilter(context.getColor(results[3].colorId))
+                }
+            } else {
+                predict0.setImageResource(R.drawable.symbol_cross)
+                predict0.setColorFilter(context.getColor(R.color.red))
+            }
+        }
+
         image1.setImageResource(item1.resId)
         image1.setColorFilter(context.getColor(item1.colorId))
 
