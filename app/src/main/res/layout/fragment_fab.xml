@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:gravity="end"
     android:orientation="vertical"
     tools:context=".ui.FabFragment">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:background="@drawable/balloon"
         android:gravity="center"
         android:orientation="horizontal">
@@ -65,124 +67,142 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <FrameLayout
+            android:id="@+id/image1_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center">
 
             <ImageView
-                android:id="@+id/image1_shadow"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp" />
-
-            <ImageView
-                android:id="@+id/image1"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_margin="8dp" />
-        </FrameLayout>
-
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="8dp"
-            app:srcCompat="@drawable/symbol_plus" />
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-            <ImageView
-                android:id="@+id/image2_shadow"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp" />
-
-            <ImageView
-                android:id="@+id/image2"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_margin="8dp" />
-        </FrameLayout>
-
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            app:srcCompat="@drawable/symbol_plus" />
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-            <ImageView
-                android:id="@+id/image3_shadow"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/image3"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_margin="8dp"
-                android:visibility="gone" />
+                app:srcCompat="@drawable/fab_sub" />
+
+            <ImageView
+                android:id="@+id/image1"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="12dp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/image2_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="-8dp"
+                android:layout_marginTop="16dp"
+                app:srcCompat="@drawable/symbol_plus" />
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="8dp"
+                app:srcCompat="@drawable/fab_sub" />
+
+            <ImageView
+                android:id="@+id/image2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="12dp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/image3_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="-8dp"
+                android:layout_marginTop="16dp"
+                app:srcCompat="@drawable/symbol_plus" />
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="12dp"
+                app:srcCompat="@drawable/fab_sub" />
+
+            <ImageView
+                android:id="@+id/image3"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="4dp" />
         </FrameLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <FrameLayout
+            android:id="@+id/clean_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/clean_shadow"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginStart="11dp"
-                android:layout_marginTop="11dp" />
+                android:layout_marginTop="11dp"
+                android:alpha="0.5"
+                app:srcCompat="@drawable/fab" />
 
             <ImageView
-                android:id="@+id/clean"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_margin="8dp" />
+                android:layout_margin="8dp"
+                app:srcCompat="@drawable/fab" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                app:srcCompat="@drawable/symbol_clean" />
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/convert_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/convert_shadow"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp" />
+                android:layout_marginTop="12dp"
+                android:alpha="0.5"
+                app:srcCompat="@drawable/fab" />
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_margin="8dp"
+                app:srcCompat="@drawable/fab" />
 
             <ImageView
                 android:id="@+id/convert"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_margin="8dp" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                app:srcCompat="@drawable/symbol_reload" />
         </FrameLayout>
     </LinearLayout>
 </LinearLayout>
