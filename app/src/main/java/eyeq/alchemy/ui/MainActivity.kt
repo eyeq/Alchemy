@@ -60,11 +60,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val fab = supportFragmentManager.findFragmentById(R.id.fab) as FabFragment
 
         val left = supportFragmentManager.findFragmentById(R.id.left) as HintFragment
-        left.view?.setBackgroundColor(getColor(R.color.black))
+        left.view?.setBackgroundColor(getColor(R.color.kuro))
         left.view?.visibility = View.GONE
 
         val right = supportFragmentManager.findFragmentById(R.id.right) as HistoryFragment
-        right.view?.setBackgroundColor(getColor(R.color.black))
+        right.view?.setBackgroundColor(getColor(R.color.kuro))
         right.view?.visibility = View.GONE
 
         mGestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
@@ -270,6 +270,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
         left.itemClickListener = object : HintFragment.OnItemClickListener {
             override fun onClick(recipe: Recipe) {
+                val enabled = recipe.inputs.all { item -> game.isUnlocked(item) }
+                if (!enabled) {
+                    return@onClick
+                }
+
                 val count = recipe.inputs.distinct().count()
                 val cost = count * count
 

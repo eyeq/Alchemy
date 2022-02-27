@@ -26,7 +26,7 @@ class HintAdapter(val context: Context, val hintList: List<Recipe>, val enabledL
         val view = LinearLayout(context)
         view.orientation = LinearLayout.HORIZONTAL
         if (!enabled) {
-            view.setBackgroundColor(context.getColor(R.color.kuro))
+            view.setBackgroundColor(context.getColor(R.color.sumi))
         }
 
         var i = 0
@@ -95,9 +95,5 @@ class HintAdapter(val context: Context, val hintList: List<Recipe>, val enabledL
 
     override fun getCount(): Int {
         return hintList.size
-    }
-
-    override fun isEnabled(position: Int): Boolean {
-        return enabledList[position]
     }
 }
