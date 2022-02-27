@@ -10,8 +10,8 @@ android {
         applicationId "eyeq.alchemy"
         minSdk 23
         targetSdk 30
-        versionCode 110
-        versionName "1.1.0-alpha"
+        versionCode 120
+        versionName "1.2.0-alpha"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
