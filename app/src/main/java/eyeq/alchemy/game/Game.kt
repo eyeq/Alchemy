@@ -29,7 +29,6 @@ class Game {
     fun clear() {
         unlockedRecipeList.clear()
         historyList.clear()
-        hintList.clear()
         item1 = Item.EMPTY
         item2 = Item.EMPTY
         item3 = Item.EMPTY
@@ -48,7 +47,9 @@ class Game {
     }
 
     fun load(preferences: SharedPreferences): List<Item> {
-        clear()
+        unlockedRecipeList.clear()
+        historyList.clear()
+        hintList.clear()
 
         val histories = preferences.getString("histories", "")!!
         for (s in histories.split(',')) {
@@ -68,6 +69,7 @@ class Game {
         for (s in hintItemss.split(',')) {
             hintList.addAll(Item.values().filter { it.name == s })
         }
+        hintList.sortBy { Item.values().indexOf(it) }
 
         return getUnlockedItemList().filter { !previousItems.contains(it) }
     }
