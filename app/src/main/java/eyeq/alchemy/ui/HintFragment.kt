@@ -34,10 +34,6 @@ class HintFragment : Fragment(R.layout.fragment_hint) {
         }
     }
 
-    fun setAdsEnabled(value: Boolean) {
-        adsButton.isEnabled = value
-    }
-
     fun setAdsOnClickListener(listener: View.OnClickListener) {
         adsButton.setOnClickListener(listener)
     }

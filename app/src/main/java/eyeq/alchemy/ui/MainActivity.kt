@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     }
                 }
 
-                return true
+                return@onFling true
             }
         })
 
@@ -228,8 +228,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         updateHint(hintTextView, left, dataStore)
         updateHistory(right)
 
-        left.setAdsEnabled(false)
         left.setAdsOnClickListener {
+            initAds(true)
             if (mRewardedAd != null) {
                 mRewardedAd?.setFullScreenContentCallback(object : FullScreenContentCallback() {
                     override fun onAdShowedFullScreenContent() {
@@ -303,23 +303,29 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            RewardedAd.load(this, BuildConfig.ADS_UNIT_ID, AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    mRewardedAd = null
-                }
-
-                override fun onAdLoaded(rewardedAd: RewardedAd) {
-                    mRewardedAd = rewardedAd
-                    left.setAdsEnabled(true)
-                }
-            })
-        }, 1000)
+        Handler(Looper.getMainLooper()).postDelayed({ initAds(false) }, 1000)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         mGestureDetector?.onTouchEvent(ev)
         return super.dispatchTouchEvent(ev)
+    }
+
+    private fun initAds(isMessage: Boolean) {
+        if (mRewardedAd != null) {
+            return
+        }
+        RewardedAd.load(this, BuildConfig.ADS_UNIT_ID, AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                if(isMessage) {
+                    Toast.makeText(this@MainActivity, adError.message, Toast.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onAdLoaded(rewardedAd: RewardedAd) {
+                mRewardedAd = rewardedAd
+            }
+        })
     }
 
     private fun updateHint(hintTextView: TextView, hintFragment: HintFragment, preferences: SharedPreferences) {
