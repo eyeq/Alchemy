@@ -39,6 +39,12 @@ class HistoryAdapter(val context: Context, val historyList: List<History>, val i
             view.addView(symbol, symbolLayoutParams)
             i += 1
         }
+        if(result.isEmpty()) {
+            val image = ImageView(context)
+            image.setImageResource(R.drawable.symbol_cross)
+            image.setColorFilter(context.getColor(R.color.red))
+            view.addView(image, imageLayoutParams)
+        }
         for (recipe in result) {
             val image = ImageView(context)
             image.setImageResource(recipe.result.resId)
