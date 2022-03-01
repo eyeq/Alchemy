@@ -23,7 +23,6 @@ class Recipe(val result: Item, vararg _inputs: Item) {
             Recipe(Item.EARTH, Item.COLD, Item.DRY),
             Recipe(Item.WATER, Item.ELEMENTAL_VOID, Item.ELEMENTAL_WATER),
             Recipe(Item.WATER, Item.COLD, Item.WET),
-            Recipe(Item.WATER, Item.STEAM, Item.COLD),
             Recipe(Item.WATER, Item.ICE, Item.HOT),
             Recipe(Item.AIR, Item.ELEMENTAL_VOID, Item.ELEMENTAL_AIR),
             Recipe(Item.AIR, Item.HOT, Item.WET),
