@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="end"
-    android:orientation="vertical"
     tools:context=".ui.FabFragment">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:background="@drawable/balloon"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:gravity="end"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/sub"
+        app:layout_constraintEnd_toStartOf="@id/main">
 
         <ImageView
             android:id="@+id/predict0"
@@ -65,90 +64,93 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/sub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:gravity="end"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/main"
+        app:layout_constraintEnd_toStartOf="@id/main">
 
         <FrameLayout
             android:id="@+id/image1_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_margin="8dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="16dp"
                 app:srcCompat="@drawable/fab_sub" />
 
             <ImageView
                 android:id="@+id/image1"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_margin="12dp" />
+                android:layout_margin="24dp" />
         </FrameLayout>
 
         <FrameLayout
             android:id="@+id/image2_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="-8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="28dp"
                 app:srcCompat="@drawable/symbol_plus" />
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_margin="8dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="16dp"
                 app:srcCompat="@drawable/fab_sub" />
 
             <ImageView
                 android:id="@+id/image2"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_margin="12dp" />
+                android:layout_margin="24dp" />
         </FrameLayout>
 
         <FrameLayout
             android:id="@+id/image3_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="-8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="28dp"
                 app:srcCompat="@drawable/symbol_plus" />
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_margin="12dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="16dp"
                 app:srcCompat="@drawable/fab_sub" />
 
             <ImageView
                 android:id="@+id/image3"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_margin="4dp" />
+                android:layout_margin="24dp" />
         </FrameLayout>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:gravity="end"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <FrameLayout
             android:id="@+id/clean_button"
@@ -156,24 +158,24 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginStart="11dp"
-                android:layout_marginTop="11dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
                 android:alpha="0.5"
                 app:srcCompat="@drawable/fab" />
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_margin="8dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_margin="16dp"
                 app:srcCompat="@drawable/fab" />
 
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
                 app:srcCompat="@drawable/symbol_clean" />
         </FrameLayout>
 
@@ -183,26 +185,26 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
                 android:alpha="0.5"
                 app:srcCompat="@drawable/fab" />
 
             <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_margin="8dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_margin="16dp"
                 app:srcCompat="@drawable/fab" />
 
             <ImageView
                 android:id="@+id/convert"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="32dp"
                 app:srcCompat="@drawable/symbol_reload" />
         </FrameLayout>
     </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
