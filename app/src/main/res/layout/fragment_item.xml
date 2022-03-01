@@ -16,22 +16,10 @@
         app:tabMinWidth="120dp"
         app:tabMode="scrollable" />
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/flex"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/flex"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="8dp"
-            android:paddingTop="8dp"
-            android:paddingRight="8dp"
-            android:paddingBottom="168dp"
-            app:alignContent="flex_start"
-            app:alignItems="flex_start"
-            app:flexWrap="wrap" />
-    </ScrollView>
+        android:padding="8dp"/>
 </LinearLayout>

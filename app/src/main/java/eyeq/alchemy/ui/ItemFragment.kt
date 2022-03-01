@@ -3,21 +3,18 @@ package eyeq.alchemy.ui
 import android.content.Context
 import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
-import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
-import com.google.android.flexbox.FlexboxLayout
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.*
 import com.google.android.material.tabs.TabLayout
 import eyeq.alchemy.R
 import eyeq.alchemy.game.Group
 import eyeq.alchemy.game.Item
+
 
 class ItemFragment : Fragment(R.layout.fragment_item) {
 
@@ -26,9 +23,9 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
     }
 
     private lateinit var tabLayout: TabLayout
-    private lateinit var flexboxLayout: FlexboxLayout
+    private lateinit var flexboxLayout: RecyclerView
 
-    private var map = mutableMapOf<Item, View>()
+    private var _itemList = listOf<Item>()
 
     var selectedTab = Group.ALL
 
@@ -46,7 +43,7 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
                         selectedTab = group
                     }
                 }
-                updateVisible()
+                updateFlex()
 
                 tabSelectedListener?.onTabSelected(tab)
             }
@@ -60,10 +57,18 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
             }
         })
 
-        flexboxLayout = view.findViewById<FlexboxLayout>(R.id.flex)
+        val layoutManager = FlexboxLayoutManager(context)
+        layoutManager.alignItems = AlignItems.FLEX_START
+        layoutManager.flexWrap = FlexWrap.WRAP
+
+        flexboxLayout = view.findViewById<RecyclerView>(R.id.flex)
+        flexboxLayout.layoutManager = layoutManager
+        flexboxLayout.adapter = ItemAdapter()
     }
 
-    fun update(context: Context, imageLayoutParams: ViewGroup.LayoutParams, shadowLayoutParams: ViewGroup.LayoutParams, textLayoutParams: ViewGroup.LayoutParams, textSize: Float, groupList: List<Group>, itemList: List<Item>) {
+    fun update(context: Context, groupList: List<Group>, itemList: List<Item>, marginBottom: Int) {
+        _itemList = itemList
+
         val temp = selectedTab
         tabLayout.removeAllTabs()
 
@@ -90,56 +95,18 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
             tab.background = res
         }
 
-
         flexboxLayout.setBackgroundColor(context.getColor(R.color.black))
-
-        flexboxLayout.removeAllViews()
-
-        map.clear()
-        for (item in itemList) {
-            val image = ImageView(context)
-            image.setImageResource(item.resId)
-            image.setColorFilter(context.getColor(item.colorId))
-
-            val shadow = ImageView(context)
-            shadow.setImageResource(item.resId)
-            shadow.setColorFilter(context.getColor(item.colorId))
-            shadow.alpha = 0.5f
-
-            image.isClickable = true
-            image.setOnClickListener {
+        (flexboxLayout.adapter as ItemAdapter).marginBottom = marginBottom
+        (flexboxLayout.adapter as ItemAdapter).itemClickListener = object : ItemAdapter.OnItemClickListener {
+            override fun onClick(item: Item) {
                 itemClickListener?.onClick(item)
             }
-
-            val frame = FrameLayout(context)
-            frame.addView(shadow, shadowLayoutParams)
-            frame.addView(image, imageLayoutParams)
-
-            val text = TextView(context)
-            text.setText(item.textId)
-            text.setTextColor(context.getColor(R.color.white))
-            text.textSize = textSize
-            text.gravity = Gravity.CENTER_HORIZONTAL
-
-            val sub = LinearLayout(context)
-            sub.orientation = LinearLayout.VERTICAL
-            sub.addView(frame)
-            sub.addView(text, textLayoutParams)
-            flexboxLayout.addView(sub)
-
-            map[item] = sub
         }
-
-        updateVisible()
+        updateFlex()
     }
 
-    private fun updateVisible() {
-        for ((k, v) in map) {
-            if (selectedTab == Group.ALL || selectedTab == k.group) {
-                v.visibility = View.VISIBLE
-            } else {
-                v.visibility = View.GONE
-            }
-        }
+    private fun updateFlex() {
+        val itemList = _itemList.filter { selectedTab == Group.ALL || selectedTab == it.group }
+        (flexboxLayout.adapter as ItemAdapter).setData(itemList)
     }
 }

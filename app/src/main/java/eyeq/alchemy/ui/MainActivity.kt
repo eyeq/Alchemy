@@ -363,16 +363,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun updateFlex(main: ItemFragment) {
-        val imageLayoutParams = ViewGroup.MarginLayoutParams(64f.dpToPx().toInt(), 64f.dpToPx().toInt())
-        imageLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
-        val shadowLayoutParams = ViewGroup.MarginLayoutParams(64f.dpToPx().toInt(), 64f.dpToPx().toInt())
-        shadowLayoutParams.setMargins(12f.dpToPx().toInt(), 12f.dpToPx().toInt(), 0f.dpToPx().toInt(), 0f.dpToPx().toInt())
-
-        val textLayoutParams = ViewGroup.MarginLayoutParams(64f.dpToPx().toInt(), 28f.dpToPx().toInt())
-        textLayoutParams.setMargins(8f.dpToPx().toInt(), 0f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
-        main.update(this, imageLayoutParams, shadowLayoutParams, textLayoutParams, 12f, game.getUnlockedGroupList(), game.getUnlockedItemList())
+        main.update(this, game.getUnlockedGroupList(), game.getUnlockedItemList(), 168f.dpToPx().toInt())
     }
 
     private fun updatePot(fabFragment: FabFragment) {
