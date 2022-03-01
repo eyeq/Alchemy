@@ -123,6 +123,7 @@ class Game {
         val target = Item.values()
             .filter { Recipe.canMake(it) }
             .filter { !unlocked.contains(it) && !hintList.contains(it) }
+            .sortedBy { !Recipe.getRecipeListByResult(it).first().inputs.all { input -> isUnlocked(input) } }
         if (target.any()) {
             val recipes = Recipe.getRecipeListByResult(target.first())
             for (recipe in recipes) {

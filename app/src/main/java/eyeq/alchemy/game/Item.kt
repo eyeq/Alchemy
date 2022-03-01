@@ -5,6 +5,7 @@ import eyeq.alchemy.R
 enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: Int) {
     EMPTY(Group.ALL, R.drawable.item_empty, R.color.transparent, R.string.item_empty),
 
+    // Group.ELEMENTAL
     ELEMENTAL_VOID(Group.ELEMENTAL, R.drawable.emoji_u26aa, R.color.gray, R.string.item_elemental_void),
     ELEMENTAL_EARTH(Group.ELEMENTAL, R.drawable.emoji_u26aa, R.color.bluish_green, R.string.item_elemental_earth),
     ELEMENTAL_WATER(Group.ELEMENTAL, R.drawable.emoji_u26aa, R.color.cyan, R.string.item_elemental_water),
@@ -17,6 +18,12 @@ enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: 
     ELEMENTAL_DARK(Group.ELEMENTAL, R.drawable.emoji_u26aa, R.color.blue, R.string.item_elemental_dark),
     ELEMENTAL_LIGHT(Group.ELEMENTAL, R.drawable.emoji_u26aa, R.color.yellow, R.string.item_elemental_light),
 
+    // Group.MATERIAL
+    HOT(Group.MATERIAL, R.drawable.emoji_u25ab, R.color.red, R.string.item_hot),
+    WET(Group.MATERIAL, R.drawable.emoji_u25ab, R.color.blue, R.string.item_wet),
+    COLD(Group.MATERIAL, R.drawable.emoji_u25ab, R.color.cyan, R.string.item_cold),
+    DRY(Group.MATERIAL, R.drawable.emoji_u25ab, R.color.yellow, R.string.item_dry),
+
     EARTH(Group.MATERIAL, R.drawable.soil, R.color.transparent, R.string.item_earth),
     WATER(Group.MATERIAL, R.drawable.emoji_u1f4a7, R.color.transparent, R.string.item_water),
     AIR(Group.MATERIAL, R.drawable.emoji_u1f4ad, R.color.transparent, R.string.item_air),
@@ -27,11 +34,6 @@ enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: 
     THUNDER(Group.MATERIAL, R.drawable.emoji_u1f329, R.color.transparent, R.string.item_thunder),
     SPACE(Group.MATERIAL, R.drawable.galaxy, R.color.transparent, R.string.item_space),
     TIME(Group.MATERIAL, R.drawable.emoji_u1f505, R.color.transparent, R.string.item_time),
-
-    HOT(Group.MATERIAL, R.drawable.emoji_u25ab, R.color.red, R.string.item_hot),
-    WET(Group.MATERIAL, R.drawable.emoji_u25ab, R.color.blue, R.string.item_wet),
-    COLD(Group.MATERIAL, R.drawable.emoji_u25ab, R.color.cyan, R.string.item_cold),
-    DRY(Group.MATERIAL, R.drawable.emoji_u25ab, R.color.yellow, R.string.item_dry),
 
     VIBRATION(Group.MATERIAL, R.drawable.emoji_u3030, R.color.transparent, R.string.item_vibration),
     SOUND(Group.MATERIAL, R.drawable.emoji_u1f50a, R.color.transparent, R.string.item_sound),
@@ -57,6 +59,20 @@ enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: 
     SKY(Group.MATERIAL, R.drawable.cloudy, R.color.transparent, R.string.item_sky),
     STAR(Group.MATERIAL, R.drawable.emoji_u2b50, R.color.transparent, R.string.item_star),
 
+    GRAVEL(Group.MATERIAL, R.drawable.stone, R.color.transparent, R.string.item_gravel),
+    COAL(Group.MATERIAL, R.drawable.coal, R.color.transparent, R.string.item_coal),
+    DIAMOND(Group.MATERIAL, R.drawable.emoji_u1f48e, R.color.transparent, R.string.item_diamond),
+    WAVE(Group.NATURE, R.drawable.emoji_u1f30a, R.color.transparent, R.string.item_wave),
+    LIFE(Group.MATERIAL, R.drawable.emoji_u1f300, R.color.transparent, R.string.item_life),
+    STEM(Group.MATERIAL, R.drawable.emoji_u1f33f, R.color.transparent, R.string.item_stem),
+    ROOT(Group.MATERIAL, R.drawable.roots, R.color.transparent, R.string.item_root),
+    FLOWER(Group.MATERIAL, R.drawable.flower, R.color.transparent, R.string.item_flower),
+    SEED(Group.MATERIAL, R.drawable.seeds, R.color.transparent, R.string.item_seed),
+    TREE(Group.MATERIAL, R.drawable.emoji_u1f333, R.color.transparent, R.string.item_tree),
+    ANIMAL(Group.MATERIAL, R.drawable.emoji_u1f435, R.color.transparent, R.string.item_animal),
+    EGG(Group.MATERIAL, R.drawable.emoji_u1f95a, R.color.transparent, R.string.item_egg),
+
+    // Group.NATURE
     SUN(Group.NATURE, R.drawable.emoji_u2600, R.color.transparent, R.string.item_sun),
     PLANET(Group.NATURE, R.drawable.emoji_u1fa90, R.color.transparent, R.string.item_planet),
     PLANET_MERCURY(Group.NATURE, R.drawable.mercury, R.color.transparent, R.string.item_planet_mercury),
@@ -95,19 +111,6 @@ enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: 
     CAVE(Group.NATURE, R.drawable.cave, R.color.transparent, R.string.item_cave),
     GLACIER(Group.NATURE, R.drawable.glacier, R.color.transparent, R.string.item_glacier),
     ICEBERG(Group.NATURE, R.drawable.iceberg, R.color.transparent, R.string.item_iceberg),
-
-    GRAVEL(Group.MATERIAL, R.drawable.stone, R.color.transparent, R.string.item_gravel),
-    COAL(Group.MATERIAL, R.drawable.coal, R.color.transparent, R.string.item_coal),
-    DIAMOND(Group.MATERIAL, R.drawable.emoji_u1f48e, R.color.transparent, R.string.item_diamond),
-    WAVE(Group.NATURE, R.drawable.emoji_u1f30a, R.color.transparent, R.string.item_wave),
-    LIFE(Group.MATERIAL, R.drawable.emoji_u1f300, R.color.transparent, R.string.item_life),
-    STEM(Group.MATERIAL, R.drawable.emoji_u1f33f, R.color.transparent, R.string.item_stem),
-    ROOT(Group.MATERIAL, R.drawable.roots, R.color.transparent, R.string.item_root),
-    FLOWER(Group.MATERIAL, R.drawable.flower, R.color.transparent, R.string.item_flower),
-    SEED(Group.MATERIAL, R.drawable.seeds, R.color.transparent, R.string.item_seed),
-    TREE(Group.MATERIAL, R.drawable.emoji_u1f333, R.color.transparent, R.string.item_tree),
-    ANIMAL(Group.MATERIAL, R.drawable.emoji_u1f435, R.color.transparent, R.string.item_animal),
-    EGG(Group.MATERIAL, R.drawable.emoji_u1f95a, R.color.transparent, R.string.item_egg),
 
     FOREST(Group.NATURE, R.drawable.forest, R.color.transparent, R.string.item_forest),
     JUNGLE(Group.NATURE, R.drawable.jungle, R.color.transparent, R.string.item_jungle),
