@@ -68,25 +68,28 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         right.view?.visibility = View.GONE
 
         mGestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            private val SWIPE_MIN_Y = 120f.dpToPx()
             private val SWIPE_VELOCITY_THRESHOLD = 100
             private val SWIPE_THRESHOLD = 100
 
             override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-                val diffY = e2.y - e1.y
-                val diffX = e2.x - e1.x
-                if (abs(diffX) > abs(diffY)) {
-                    if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (diffX > 0) {
-                            if(right.view?.visibility == View.VISIBLE) {
-                                right.view?.visibility = View.GONE
+                if (SWIPE_MIN_Y < e1.y && SWIPE_MIN_Y < e2.y) {
+                    val diffY = e2.y - e1.y
+                    val diffX = e2.x - e1.x
+                    if (abs(diffX) > abs(diffY)) {
+                        if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                            if (diffX > 0) {
+                                if(right.view?.visibility == View.VISIBLE) {
+                                    right.view?.visibility = View.GONE
+                                } else {
+                                    left.view?.visibility = View.VISIBLE
+                                }
                             } else {
-                                left.view?.visibility = View.VISIBLE
-                            }
-                        } else {
-                            if( left.view?.visibility == View.VISIBLE) {
-                                left.view?.visibility = View.GONE
-                            } else {
-                                right.view?.visibility = View.VISIBLE
+                                if( left.view?.visibility == View.VISIBLE) {
+                                    left.view?.visibility = View.GONE
+                                } else {
+                                    right.view?.visibility = View.VISIBLE
+                                }
                             }
                         }
                     }
