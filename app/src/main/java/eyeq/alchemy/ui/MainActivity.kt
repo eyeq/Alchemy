@@ -104,8 +104,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             popup.menu.setGroupDividerEnabled(true)
         }
         popup.menu.add(1, 1, 1, R.string.menu_restart)
-        popup.menu.add(2, 2, 2, R.string.menu_credit)
-        popup.menu.add(2, 3, 3, R.string.menu_version)
+        popup.menu.add(2, 2, 2, R.string.menu_hint)
+        popup.menu.add(2, 3, 3, R.string.menu_history)
+        popup.menu.add(3, 4, 4, R.string.menu_credit)
+        popup.menu.add(3, 5, 5, R.string.menu_version)
         popup.setOnMenuItemClickListener {
             when (it!!.itemId) {
                 1 -> {
@@ -127,9 +129,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     builder.show()
                 }
                 2 -> {
-                    CreditDialogFragment().show(supportFragmentManager, "simple")
+                    left.view?.visibility = View.VISIBLE
+                    right.view?.visibility = View.GONE
                 }
                 3 -> {
+                    left.view?.visibility = View.GONE
+                    right.view?.visibility = View.VISIBLE
+                }
+                4 -> {
+                    CreditDialogFragment().show(supportFragmentManager, "simple")
+                }
+                5 -> {
                     val recipeCount = Recipe.getCount()
                     val itemCount = Item.values().filter { item -> Recipe.canMake(item) }.count()
                     VersionDialogFragment(recipeCount, itemCount).show(supportFragmentManager, "simple")

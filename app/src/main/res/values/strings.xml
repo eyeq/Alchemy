@@ -1,7 +1,10 @@
 <resources>
     <string name="menu_restart">RESTART</string>
+    <string name="menu_hint">HINT</string>
+    <string name="menu_history">HISTORY</string>
     <string name="menu_credit">CREDIT</string>
     <string name="menu_version">VERSION</string>
+
     <string name="watch_ads">WATCH ADS</string>
     <string name="give_a_hint">Give a Hint!</string>
     <string name="history">History</string>
