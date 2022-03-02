@@ -233,7 +233,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             main.selectedTab = selected.first()
         }
 
-        game.load(dataStore)
+        val newUnlocked = game.load(dataStore)
+        if (newUnlocked.isNotEmpty()) {
+            UnlockedDialogFragment(newUnlocked).show(supportFragmentManager, "simple")
+        }
 
         updateCount(countTextView, main.selectedTab)
         updateFlex(main)
