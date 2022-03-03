@@ -377,14 +377,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun updateHistory(historyFragment: HistoryFragment) {
-        val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
-        imageLayoutParams.setMargins(2f.dpToPx().toInt(), 8f.dpToPx().toInt(), 2f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
-        val symbolLayoutParams = ViewGroup.MarginLayoutParams(16f.dpToPx().toInt(), 32f.dpToPx().toInt())
-        symbolLayoutParams.setMargins(0f.dpToPx().toInt(), 8f.dpToPx().toInt(), 0f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
         val historyList = game.getHistoryList().reversed()
-        historyFragment.update(this, historyList, imageLayoutParams, symbolLayoutParams)
+        historyFragment.update(historyList)
     }
 
     private fun Float.pxToDp(): Float = (this / resources.displayMetrics.density)

@@ -1,58 +1,118 @@
 package eyeq.alchemy.ui
 
-import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import android.widget.LinearLayout
 import eyeq.alchemy.R
 import eyeq.alchemy.game.History
 import eyeq.alchemy.game.Item
 import eyeq.alchemy.game.Recipe
 
-class HistoryAdapter(val context: Context, val historyList: List<History>, val imageLayoutParams: ViewGroup.LayoutParams, val symbolLayoutParams: ViewGroup.LayoutParams) : BaseAdapter() {
+class HistoryAdapter : BaseAdapter() {
+
+    private var historyList = listOf<History>()
+
+    fun setData(list: List<History>) {
+        historyList = list
+        notifyDataSetChanged()
+    }
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val history = historyList[position]
 
         val inputs = listOf<Item>(history.item1, history.item2, history.item3).sortedBy { it != Item.EMPTY } // 右詰め
         val result = Recipe.getRecipeListByInputs(history.item1, history.item2, history.item3)
 
-        val view = LinearLayout(context)
+        val context = parent?.context
+        val layout : View
+        if (convertView == null) {
+            val inflater = LayoutInflater.from(context)
+            layout = inflater.inflate(R.layout.view_history, parent, false)
+        } else {
+            layout = convertView
+        }
+        context!!
+
+        val input1 = layout.findViewById<ImageView>(R.id.input1)
+        val input2 = layout.findViewById<ImageView>(R.id.input2)
+        val input3 = layout.findViewById<ImageView>(R.id.input3)
+
+        val symbol1 = layout.findViewById<ImageView>(R.id.symbol1)
+        val symbol2 = layout.findViewById<ImageView>(R.id.symbol2)
+        val symbol3 = layout.findViewById<ImageView>(R.id.symbol3)
 
         var i = 0
         for (item in inputs) {
-            val image = ImageView(context)
-            image.setImageResource(item.resId)
-            image.setColorFilter(context.getColor(item.colorId))
-
-            val symbol = ImageView(context)
-            if (i == 2) {
-                symbol.setImageResource(R.drawable.symbol_arrow)
-                symbol.setColorFilter(context.getColor(R.color.white))
-            } else if (item != Item.EMPTY) {
-                symbol.setImageResource(R.drawable.symbol_plus)
-                symbol.setColorFilter(context.getColor(R.color.white))
+            var input = input1
+            var symbol = symbol1
+            when(i) {
+                0 -> {
+                    input = input1
+                    symbol = symbol1
+                }
+                1 -> {
+                    input = input2
+                    symbol = symbol2
+                }
+                2 -> {
+                    input = input3
+                    symbol = symbol3
+                }
             }
 
-            view.addView(image, imageLayoutParams)
-            view.addView(symbol, symbolLayoutParams)
+            input.setImageResource(item.resId)
+            input.setColorFilter(context.getColor(item.colorId))
+
+            if (item != Item.EMPTY) {
+                symbol.visibility = View.VISIBLE
+            } else {
+                symbol.visibility = View.INVISIBLE
+            }
+
             i += 1
         }
+
+        val result1 = layout.findViewById<ImageView>(R.id.result1)
+        val result2 = layout.findViewById<ImageView>(R.id.result2)
+        val result3 = layout.findViewById<ImageView>(R.id.result3)
+        val result4 = layout.findViewById<ImageView>(R.id.result4)
+
+        result1.setImageDrawable(null)
+        result2.setImageDrawable(null)
+        result3.setImageDrawable(null)
+        result4.setImageDrawable(null)
         if(result.isEmpty()) {
-            val image = ImageView(context)
-            image.setImageResource(R.drawable.symbol_cross)
-            image.setColorFilter(context.getColor(R.color.red))
-            view.addView(image, imageLayoutParams)
-        }
-        for (recipe in result) {
-            val image = ImageView(context)
-            image.setImageResource(recipe.result.resId)
-            image.setColorFilter(context.getColor(recipe.result.colorId))
-            view.addView(image, imageLayoutParams)
+            result1.setImageResource(R.drawable.symbol_cross)
+            result1.setColorFilter(context.getColor(R.color.red))
         }
 
-        return view
+        i = 0
+        for (recipe in result) {
+            var image = result1
+            when(i) {
+                0 -> {
+                    image = result1
+                }
+                1 -> {
+                    image = result2
+                }
+                2 -> {
+                    image = result3
+                }
+                3 -> {
+                    image = result4
+                }
+            }
+
+            image.setImageResource(recipe.result.resId)
+            image.setColorFilter(context.getColor(recipe.result.colorId))
+
+            i += 1
+        }
+
+        return layout
     }
 
     override fun getItem(position: Int): Any {
