@@ -1,6 +1,5 @@
 package eyeq.alchemy.ui
 
-import android.R
 import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
@@ -17,7 +16,7 @@ class CreditDialogFragment : DialogFragment() {
 
         val alertDialog = dialog as AlertDialog?
         if (alertDialog != null) {
-            val textView = alertDialog.findViewById<TextView>(R.id.message)
+            val textView = alertDialog.findViewById<TextView>(android.R.id.message)
             textView?.movementMethod = LinkMovementMethod.getInstance()
         }
     }
