@@ -1,42 +1,34 @@
 package eyeq.alchemy.ui
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.view.Gravity
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import eyeq.alchemy.R
 import eyeq.alchemy.game.Recipe
 
 class BalloonFragment : Fragment(R.layout.fragment_balloon) {
 
-    fun addBalloon(context: Context, subLayoutParams: ViewGroup.LayoutParams, imageLayoutParams: ViewGroup.LayoutParams, textLayoutParams: ViewGroup.LayoutParams, textSize: Float, recipe: Recipe) {
-        val image = ImageView(context)
+    fun addBalloon(recipe: Recipe) {
+        val parent = view as ViewGroup
+
+        val context = requireContext()
+        val inflater = LayoutInflater.from(context)
+        val layout = inflater.inflate(R.layout.view_balloon, parent, false)
+
+        val image = layout.findViewById<ImageView>(R.id.image)
         image.setImageResource(recipe.result.resId)
         image.setColorFilter(context.getColor(recipe.result.colorId))
 
-        val text = TextView(context)
+        val text = layout.findViewById<TextView>(R.id.text)
         text.setText(recipe.result.textId)
-        text.setTextColor(context.getColor(R.color.white))
-        text.textSize = textSize
-        text.gravity = Gravity.CENTER_VERTICAL
 
-        val sub = LinearLayout(context)
-        sub.orientation = LinearLayout.HORIZONTAL
-        sub.background = ContextCompat.getDrawable(context, R.drawable.balloon)
-        sub.addView(image, imageLayoutParams)
-        sub.addView(text, textLayoutParams)
-
-        val linearLayout = view as LinearLayout
-        linearLayout.addView(sub, subLayoutParams)
-
+        parent.addView(layout)
         Handler(Looper.getMainLooper()).postDelayed({
-            linearLayout.removeView(sub)
+            parent.removeView(layout)
         }, 4000)
     }
 }

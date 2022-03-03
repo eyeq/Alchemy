@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import eyeq.alchemy.R
 import eyeq.alchemy.game.Item
 
-
 class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -32,8 +31,8 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
-        val view = inflater.inflate(R.layout.view_item, parent, false)
-        return ViewHolder(view)
+        val layout = inflater.inflate(R.layout.view_item, parent, false)
+        return ViewHolder(layout)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -57,7 +56,6 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         image.setColorFilter(context.getColor(item.colorId))
 
         text.setText(item.textId)
-        text.setTextColor(context.getColor(R.color.white))
 
         // bottomMargin
         if (position == itemList.lastIndex) {

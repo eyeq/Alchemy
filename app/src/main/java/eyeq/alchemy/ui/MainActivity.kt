@@ -166,7 +166,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 textLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
 
                 for (recipe in results) {
-                    balloon.addBalloon(this, subLayoutParams, imageLayoutParams, textLayoutParams, 12f, recipe)
+                    balloon.addBalloon(recipe)
                 }
 
                 game.item1 = Item.EMPTY
