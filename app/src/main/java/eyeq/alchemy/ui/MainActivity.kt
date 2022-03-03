@@ -39,19 +39,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val dataStore: SharedPreferences = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
 
         val hintTextView = findViewById<TextView>(R.id.hint)
-        hintTextView.textSize = 14f
-
         val countTextView = findViewById<TextView>(R.id.count)
-        countTextView.textSize = 14f
-
         val menu = findViewById<ImageView>(R.id.menu)
-        menu.setImageResource(R.drawable.symbol_menu)
-        menu.setColorFilter(getColor(R.color.white))
-
-        val menuShadow = findViewById<ImageView>(R.id.menu_shadow)
-        menuShadow.setImageResource(R.drawable.symbol_menu)
-        menuShadow.setColorFilter(getColor(R.color.white))
-        menuShadow.alpha = 0.5f
 
         val main = supportFragmentManager.findFragmentById(R.id.main) as ItemFragment
 
