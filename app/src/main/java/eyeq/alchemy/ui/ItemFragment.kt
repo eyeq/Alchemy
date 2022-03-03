@@ -15,7 +15,6 @@ import eyeq.alchemy.R
 import eyeq.alchemy.game.Group
 import eyeq.alchemy.game.Item
 
-
 class ItemFragment : Fragment(R.layout.fragment_item) {
 
     interface OnItemClickListener {
@@ -23,6 +22,8 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
     }
 
     private lateinit var tabLayout: TabLayout
+
+    private lateinit var itemAdapter: ItemAdapter
     private lateinit var flexboxLayout: RecyclerView
 
     private var _itemList = listOf<Item>()
@@ -57,13 +58,15 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
             }
         })
 
+        itemAdapter = ItemAdapter()
+
         val layoutManager = FlexboxLayoutManager(context)
         layoutManager.alignItems = AlignItems.FLEX_START
         layoutManager.flexWrap = FlexWrap.WRAP
 
         flexboxLayout = view.findViewById<RecyclerView>(R.id.flex)
         flexboxLayout.layoutManager = layoutManager
-        flexboxLayout.adapter = ItemAdapter()
+        flexboxLayout.adapter = itemAdapter
     }
 
     fun update(context: Context, groupList: List<Group>, itemList: List<Item>, marginBottom: Int) {
@@ -96,8 +99,8 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
         }
 
         flexboxLayout.setBackgroundColor(context.getColor(R.color.black))
-        (flexboxLayout.adapter as ItemAdapter).marginBottom = marginBottom
-        (flexboxLayout.adapter as ItemAdapter).itemClickListener = object : ItemAdapter.OnItemClickListener {
+        itemAdapter.marginBottom = marginBottom
+        itemAdapter.itemClickListener = object : ItemAdapter.OnItemClickListener {
             override fun onClick(item: Item) {
                 itemClickListener?.onClick(item)
             }
@@ -107,6 +110,6 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
 
     private fun updateFlex() {
         val itemList = _itemList.filter { selectedTab == Group.ALL || selectedTab == it.group }
-        (flexboxLayout.adapter as ItemAdapter).setData(itemList)
+        itemAdapter.setData(itemList)
     }
 }

@@ -1,9 +1,7 @@
 package eyeq.alchemy.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
 import androidx.fragment.app.Fragment
@@ -18,6 +16,8 @@ class HintFragment : Fragment(R.layout.fragment_hint) {
 
     private lateinit var adsButton: Button
     private lateinit var hintButton: Button
+
+    private lateinit var hintAdapter: HintAdapter
     private lateinit var hintListView: ListView
 
     var itemClickListener: OnItemClickListener? = null
@@ -28,7 +28,10 @@ class HintFragment : Fragment(R.layout.fragment_hint) {
         adsButton = view.findViewById<Button>(R.id.ads_button)
         hintButton = view.findViewById<Button>(R.id.hint_button)
 
+        hintAdapter = HintAdapter()
+
         hintListView = view.findViewById<ListView>(R.id.hint_list)
+        hintListView.adapter = hintAdapter
         hintListView.setOnItemClickListener { parent, view, position, l ->
             itemClickListener?.onClick(parent.getItemAtPosition(position) as Recipe)
         }
@@ -42,7 +45,7 @@ class HintFragment : Fragment(R.layout.fragment_hint) {
         hintButton.setOnClickListener(listener)
     }
 
-    fun update(context: Context, hintList: List<Recipe>, enabledList: List<Boolean>, imageLayoutParams: ViewGroup.LayoutParams, symbolLayoutParams: ViewGroup.LayoutParams, textLayoutParams: ViewGroup.LayoutParams, alphabetSize: Float, textSize: Float) {
-        hintListView.adapter = HintAdapter(context, hintList, enabledList, imageLayoutParams, symbolLayoutParams, textLayoutParams, alphabetSize, textSize)
+    fun update(hintList: List<Recipe>, enabledList: List<Boolean>) {
+        hintAdapter.setData(hintList, enabledList)
     }
 }

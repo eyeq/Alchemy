@@ -350,20 +350,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun updateHint(hintTextView: TextView, hintFragment: HintFragment, preferences: SharedPreferences) {
-        val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
-        imageLayoutParams.setMargins(2f.dpToPx().toInt(), 8f.dpToPx().toInt(), 2f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
-        val symbolLayoutParams = ViewGroup.MarginLayoutParams(16f.dpToPx().toInt(), 32f.dpToPx().toInt())
-        symbolLayoutParams.setMargins(0f.dpToPx().toInt(), 8f.dpToPx().toInt(), 0f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
-        val  textLayoutParams = ViewGroup.MarginLayoutParams(80f.dpToPx().toInt(), 32f.dpToPx().toInt())
-        textLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
         hintTextView.text = game.getHints(preferences).toString()
 
         val hintList = game.getHintList().map { Recipe.getRecipeListByResult(it).first() }
         val enabledList = hintList.map { it.inputs.all { item -> game.isUnlocked(item) } }
-        hintFragment.update(this, hintList, enabledList, imageLayoutParams, symbolLayoutParams, textLayoutParams, 24f.dpToPx().pxToSp(), 12f)
+        hintFragment.update(hintList, enabledList)
     }
 
     private fun updateCount(countTextView: TextView, selectedTab: Group) {
