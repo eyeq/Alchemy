@@ -7,11 +7,10 @@ import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import eyeq.alchemy.R
 import eyeq.alchemy.game.Item
 import eyeq.util.CharSequenceExtensions
 
-class UnlockedDialogFragment(private val itemList: List<Item>) : DialogFragment() {
+class UnlockedDialogFragment(private val itemList: List<Item>, private val backgroundColor: Int) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
@@ -26,7 +25,7 @@ class UnlockedDialogFragment(private val itemList: List<Item>) : DialogFragment(
         adapter.setData(itemList)
 
         val view = RecyclerView(context)
-        view.setBackgroundColor(context.getColor(R.color.black))
+        view.setBackgroundColor(backgroundColor)
         view.layoutManager = layoutManager
         view.adapter = adapter
 

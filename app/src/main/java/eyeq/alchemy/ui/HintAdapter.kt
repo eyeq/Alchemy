@@ -13,17 +13,17 @@ import eyeq.alchemy.game.Recipe
 class HintAdapter : BaseAdapter() {
 
     private var hintList = listOf<Recipe>()
-    private var enabledList = listOf<Boolean>()
+    private var backgroundColorList = listOf<Int>()
 
-    fun setData(list: List<Recipe>, enabled: List<Boolean>) {
+    fun setData(list: List<Recipe>, backgroundColor: List<Int>) {
         hintList = list
-        enabledList = enabled
+        backgroundColorList = backgroundColor
         notifyDataSetChanged()
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val recipe = hintList[position]
-        val enabled = enabledList[position]
+        val backgroundColor = backgroundColorList[position]
 
         var inputs = recipe.inputs.toMutableList()
         while(inputs.count() < 3) {
@@ -41,9 +41,7 @@ class HintAdapter : BaseAdapter() {
         }
         context!!
 
-        if (!enabled) {
-            layout.setBackgroundColor(context.getColor(R.color.sumi))
-        }
+        layout.setBackgroundColor(backgroundColor)
 
         val input1 = layout.findViewById<TextView>(R.id.input1)
         val input2 = layout.findViewById<TextView>(R.id.input2)

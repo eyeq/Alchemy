@@ -10,6 +10,7 @@ import android.text.Html.ImageGetter
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
 import com.google.android.gms.ads.AdError
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onStart() {
         super.onStart()
 
+        val context: Context = this
         val userSettings: SharedPreferences = getSharedPreferences("UserSettings", Context.MODE_PRIVATE)
         val dataStore: SharedPreferences = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
 
@@ -43,6 +45,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val menu = findViewById<ImageView>(R.id.menu)
 
         val main = supportFragmentManager.findFragmentById(R.id.main) as ItemFragment
+        main.view?.setBackgroundColor(getColor(R.color.black))
+        main.tabTextColorNormal = getColor(R.color.silver)
+        main.tabTextColorSelected = getColor(R.color.white)
+        main.tabBackgroundColor = getColor(R.color.sumi)
+        main.tabBackgroundNormal = ContextCompat.getDrawable(context, R.color.kuro)
+        main.tabBackgroundSelected = ContextCompat.getDrawable(context, R.color.sumi)
 
         val balloon = supportFragmentManager.findFragmentById(R.id.balloon) as BalloonFragment
 
@@ -56,7 +64,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         right.view?.setBackgroundColor(getColor(R.color.kuro))
         right.view?.visibility = View.GONE
 
-        mGestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+        mGestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
             private val SWIPE_MIN_Y = 120f.dpToPx()
             private val SWIPE_VELOCITY_THRESHOLD = 100
             private val SWIPE_THRESHOLD = 100
@@ -88,7 +96,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         })
 
-        val popup = PopupMenu(this@MainActivity, menu)
+        val popup = PopupMenu(context, menu)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             popup.menu.setGroupDividerEnabled(true)
         }
@@ -100,7 +108,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         popup.setOnMenuItemClickListener {
             when (it!!.itemId) {
                 1 -> {
-                    val builder = AlertDialog.Builder(this)
+                    val builder = AlertDialog.Builder(context)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle("Confirm")
                         .setMessage("Are you sure you want to delete discovered items?")
@@ -224,7 +232,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         val newUnlocked = game.load(dataStore)
         if (newUnlocked.isNotEmpty()) {
-            UnlockedDialogFragment(newUnlocked).show(supportFragmentManager, "simple")
+            UnlockedDialogFragment(newUnlocked, getColor(R.color.black)).show(supportFragmentManager, "simple")
         }
 
         updateCount(countTextView, main.selectedTab)
@@ -234,7 +242,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         updateHistory(right)
 
         left.setAdsOnClickListener {
-            initAds(true)
+            initAds(context, true)
             if (mRewardedAd != null) {
                 mRewardedAd?.setFullScreenContentCallback(object : FullScreenContentCallback() {
                     override fun onAdShowedFullScreenContent() {
@@ -242,16 +250,16 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                     override fun onAdDismissedFullScreenContent() {
                         mRewardedAd = null
-                        Toast.makeText(this@MainActivity, "Failed to watch ads.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Failed to watch ads.", Toast.LENGTH_LONG).show()
                     }
 
                     override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                         mRewardedAd = null
-                        Toast.makeText(this@MainActivity, "Failed to watch ads.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Failed to watch ads.", Toast.LENGTH_LONG).show()
                     }
                 })
 
-                mRewardedAd?.show(this@MainActivity) {
+                mRewardedAd?.show(this) {
                     game.addHints(dataStore, it.amount)
                     updateHint(hintTextView, left, dataStore)
                 }
@@ -260,12 +268,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         left.setHintOnClickListener {
             if (!game.isHintable()) {
-                Toast.makeText(this@MainActivity, "You already have all hints.", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "You already have all hints.", Toast.LENGTH_LONG).show()
                 return@setHintOnClickListener
             }
 
             if (!game.addHints(dataStore, -1)) {
-                Toast.makeText(this@MainActivity, "You need to watch ads.", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "You need to watch ads.", Toast.LENGTH_LONG).show()
                 return@setHintOnClickListener
             }
 
@@ -292,13 +300,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                     drawable
                 }
 
-                val builder = AlertDialog.Builder(this@MainActivity)
+                val builder = AlertDialog.Builder(context)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("Confirm")
                     .setMessage(CharSequenceExtensions.trimTrailingWhitespace(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT, imageGetter, null)))
                     .setPositiveButton("unlock") { dialog, id ->
                         if (!game.addHints(dataStore, -cost)) {
-                            Toast.makeText(this@MainActivity, "You need to watch ads.", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "You need to watch ads.", Toast.LENGTH_LONG).show()
                             return@setPositiveButton
                         }
 
@@ -313,7 +321,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
 
-        Handler(Looper.getMainLooper()).postDelayed({ initAds(false) }, 1000)
+        Handler(Looper.getMainLooper()).postDelayed({ initAds(context, false) }, 1000)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
@@ -321,14 +329,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun initAds(isMessage: Boolean) {
+    private fun initAds(context: Context, isMessage: Boolean) {
         if (mRewardedAd != null) {
             return
         }
-        RewardedAd.load(this, BuildConfig.ADS_UNIT_ID, AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
+        RewardedAd.load(context, BuildConfig.ADS_UNIT_ID, AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 if(isMessage) {
-                    Toast.makeText(this@MainActivity, adError.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, adError.message, Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -342,8 +350,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         hintTextView.text = game.getHints(preferences).toString()
 
         val hintList = game.getHintList().map { Recipe.getRecipeListByResult(it).first() }
-        val enabledList = hintList.map { it.inputs.all { item -> game.isUnlocked(item) } }
-        hintFragment.update(hintList, enabledList)
+        val backgroundColorList = hintList.map { it.inputs.all { item -> game.isUnlocked(item) } }
+            .map { if (it) getColor(R.color.sumi) else getColor(R.color.kuro) }
+        hintFragment.update(hintList, backgroundColorList)
     }
 
     private fun updateCount(countTextView: TextView, selectedTab: Group) {
@@ -356,13 +365,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun updateFlex(main: ItemFragment) {
-        main.update(this, game.getUnlockedGroupList(), game.getUnlockedItemList(), 168f.dpToPx().toInt())
+        main.update(game.getUnlockedGroupList(), game.getUnlockedItemList(), 168f.dpToPx().toInt())
     }
 
     private fun updatePot(fabFragment: FabFragment) {
         val isDone = game.getHistoryList().contains(History(game.item1, game.item2, game.item3))
         val recipes = Recipe.getRecipeListByInputs(game.item1, game.item2, game.item3)
-        fabFragment.update(this, isDone, recipes.map { it.result }, game.item1, game.item2)
+        fabFragment.update(isDone, recipes.map { it.result }, game.item1, game.item2)
     }
 
     private fun updateHistory(historyFragment: HistoryFragment) {

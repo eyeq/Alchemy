@@ -1,12 +1,8 @@
 package eyeq.alchemy.ui
 
-import android.content.Context
-import android.graphics.drawable.StateListDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.*
@@ -14,6 +10,7 @@ import com.google.android.material.tabs.TabLayout
 import eyeq.alchemy.R
 import eyeq.alchemy.game.Group
 import eyeq.alchemy.game.Item
+import eyeq.util.setTabBackgrounds
 
 class ItemFragment : Fragment(R.layout.fragment_item) {
 
@@ -27,6 +24,12 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
     private lateinit var flexboxLayout: RecyclerView
 
     private var _itemList = listOf<Item>()
+
+    var tabTextColorNormal: Int? = null
+    var tabTextColorSelected: Int? = null
+    var tabBackgroundColor: Int? = null
+    var tabBackgroundNormal: Drawable? = null
+    var tabBackgroundSelected: Drawable? = null
 
     var selectedTab = Group.ALL
 
@@ -69,7 +72,7 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
         flexboxLayout.adapter = itemAdapter
     }
 
-    fun update(context: Context, groupList: List<Group>, itemList: List<Item>, marginBottom: Int) {
+    fun update(groupList: List<Group>, itemList: List<Item>, marginBottom: Int) {
         _itemList = itemList
 
         val temp = selectedTab
@@ -89,16 +92,14 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
             }
         }
 
-        tabLayout.setBackgroundColor(context.getColor(R.color.sumi))
-        tabLayout.setTabTextColors(context.getColor(R.color.silver), context.getColor(R.color.white))
-        for (tab in (tabLayout.getChildAt(0) as LinearLayout).children) {
-            val res = StateListDrawable()
-            res.addState(intArrayOf(android.R.attr.state_selected), ContextCompat.getDrawable(context, R.color.kuro))
-            res.addState(intArrayOf(), ContextCompat.getDrawable(context, R.color.sumi))
-            tab.background = res
+        if (tabTextColorNormal != null && tabTextColorSelected != null) {
+            tabLayout.setTabTextColors(tabTextColorNormal!!, tabTextColorSelected!!)
         }
+        if (tabBackgroundColor != null) {
+            tabLayout.setBackgroundColor(tabBackgroundColor!!)
+        }
+        tabLayout.setTabBackgrounds(tabBackgroundNormal, tabBackgroundSelected)
 
-        flexboxLayout.setBackgroundColor(context.getColor(R.color.black))
         itemAdapter.marginBottom = marginBottom
         itemAdapter.itemClickListener = object : ItemAdapter.OnItemClickListener {
             override fun onClick(item: Item) {

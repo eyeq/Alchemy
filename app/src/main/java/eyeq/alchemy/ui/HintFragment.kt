@@ -45,7 +45,7 @@ class HintFragment : Fragment(R.layout.fragment_hint) {
         hintButton.setOnClickListener(listener)
     }
 
-    fun update(hintList: List<Recipe>, enabledList: List<Boolean>) {
-        hintAdapter.setData(hintList, enabledList)
+    fun update(hintList: List<Recipe>, backgroundColorList: List<Int>) {
+        hintAdapter.setData(hintList, backgroundColorList)
     }
 }

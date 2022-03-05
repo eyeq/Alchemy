@@ -3,7 +3,6 @@ package eyeq.alchemy.ui
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -72,21 +71,16 @@ class FabFragment : Fragment(R.layout.fragment_fab) {
         convertButton.setOnClickListener(listener)
     }
 
-    fun update(context: Context, isDone: Boolean, results: List<Item>, item1: Item, item2: Item) {
+    fun update(isDone: Boolean, results: List<Item>, item1: Item, item2: Item) {
+        val context = requireContext()
+
         predict0.setImageResource(R.drawable.symbol_question)
         predict0.setColorFilter(context.getColor(R.color.yellow))
 
-        predict1.setImageResource(Item.EMPTY.resId)
-        predict1.setColorFilter(context.getColor(Item.EMPTY.colorId))
-
-        predict2.setImageResource(Item.EMPTY.resId)
-        predict2.setColorFilter(context.getColor(Item.EMPTY.colorId))
-
-        predict3.setImageResource(Item.EMPTY.resId)
-        predict3.setColorFilter(context.getColor(Item.EMPTY.colorId))
-
-        predict4.setImageResource(Item.EMPTY.resId)
-        predict4.setColorFilter(context.getColor(Item.EMPTY.colorId))
+        predict1.setImageDrawable(null)
+        predict2.setImageDrawable(null)
+        predict3.setImageDrawable(null)
+        predict4.setImageDrawable(null)
 
         if (isDone) {
             if (results.any()) {
