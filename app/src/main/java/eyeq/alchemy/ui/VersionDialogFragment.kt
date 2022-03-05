@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
 import eyeq.alchemy.BuildConfig
-import eyeq.util.CharSequenceExtensions
+import eyeq.util.trimTrailingWhitespace
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,7 +36,8 @@ class VersionDialogFragment(private val recipeCount: Int, private val itemCount:
 
         val builder = AlertDialog.Builder(requireContext())
             .setTitle("About")
-            .setMessage(CharSequenceExtensions.trimTrailingWhitespace(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)))
+            .setMessage(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                .trimTrailingWhitespace())
             .setPositiveButton("close") { dialog, id -> }
 
         return builder.create()

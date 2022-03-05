@@ -23,7 +23,7 @@ import com.google.android.material.tabs.TabLayout
 import eyeq.alchemy.BuildConfig
 import eyeq.alchemy.R
 import eyeq.alchemy.game.*
-import eyeq.util.CharSequenceExtensions
+import eyeq.util.trimTrailingWhitespace
 import kotlin.math.abs
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
@@ -303,7 +303,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 val builder = AlertDialog.Builder(context)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle("Confirm")
-                    .setMessage(CharSequenceExtensions.trimTrailingWhitespace(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT, imageGetter, null)))
+                    .setMessage(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT, imageGetter, null)
+                        .trimTrailingWhitespace())
                     .setPositiveButton("unlock") { dialog, id ->
                         if (!game.addHints(dataStore, -cost)) {
                             Toast.makeText(context, "You need to watch ads.", Toast.LENGTH_LONG).show()

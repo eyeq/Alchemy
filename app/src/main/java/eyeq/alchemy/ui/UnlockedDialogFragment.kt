@@ -8,7 +8,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import eyeq.alchemy.game.Item
-import eyeq.util.CharSequenceExtensions
+import eyeq.util.trimTrailingWhitespace
 
 class UnlockedDialogFragment(private val itemList: List<Item>, private val backgroundColor: Int) : DialogFragment() {
 
@@ -31,7 +31,8 @@ class UnlockedDialogFragment(private val itemList: List<Item>, private val backg
 
         val builder = AlertDialog.Builder(context)
             .setTitle("Unlocked")
-            .setMessage(CharSequenceExtensions.trimTrailingWhitespace(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)))
+            .setMessage(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                .trimTrailingWhitespace())
             .setView(view)
             .setPositiveButton("close") { dialog, id -> }
 

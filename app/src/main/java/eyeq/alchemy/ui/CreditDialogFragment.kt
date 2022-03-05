@@ -7,7 +7,7 @@ import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.DialogFragment
-import eyeq.util.CharSequenceExtensions
+import eyeq.util.trimTrailingWhitespace
 
 class CreditDialogFragment : DialogFragment() {
 
@@ -40,7 +40,8 @@ class CreditDialogFragment : DialogFragment() {
 
         val builder = AlertDialog.Builder(requireContext())
             .setTitle("Credit")
-            .setMessage(CharSequenceExtensions.trimTrailingWhitespace(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)))
+            .setMessage(HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                .trimTrailingWhitespace())
             .setPositiveButton("close") { dialog, id -> }
 
         return builder.create()
