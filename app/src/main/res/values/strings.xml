@@ -9,6 +9,14 @@
     <string name="give_a_hint">Give a Hint!</string>
     <string name="history">History</string>
 
+    <string name="sort_default">DEFAULT</string>
+    <string name="sort_ordinal">ORDINAL</string>
+    <string name="sort_alphabet">ALPHABET</string>
+    <string name="sort_emoji_code">EMOJI CODE</string>
+    <string name="sort_unlocked_recipes">RECIPES</string>
+    <string name="sort_discovered">DISCOVERED</string>
+    <string name="sort_last_used">LAST USED</string>
+
     <string name="group_all">All</string>
     <string name="group_elemental">Elemental</string>
     <string name="group_material">Material</string>

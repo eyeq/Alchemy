@@ -27,6 +27,19 @@ import eyeq.util.trimTrailingWhitespace
 import kotlin.math.abs
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
+
+    private enum class SortOrder(val textId: Int) {
+        DEFAULT(R.string.sort_default),
+        ORDINAL(R.string.sort_ordinal),
+        ALPHABET(R.string.sort_alphabet),
+        EMOJI_CODE(R.string.sort_emoji_code),
+        UNLOCKED_RECIPES(R.string.sort_unlocked_recipes),
+        DISCOVERED(R.string.sort_discovered),
+        LAST_USED(R.string.sort_last_used),
+        ;
+    }
+
+    private var selectedSortOrder = SortOrder.DEFAULT
     private var mGestureDetector: GestureDetector? = null
 
     private var mRewardedAd: RewardedAd? = null
@@ -39,6 +52,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val context: Context = this
         val userSettings: SharedPreferences = getSharedPreferences("UserSettings", Context.MODE_PRIVATE)
         val dataStore: SharedPreferences = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
+
+        val sortList = SortOrder.values().map { getText(it.textId).toString() }
+        val spinnerAdapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, sortList.toTypedArray())
+
+        val spinner = findViewById<Spinner>(R.id.spinner)
+        spinner.adapter = spinnerAdapter
 
         val hintTextView = findViewById<TextView>(R.id.hint)
         val countTextView = findViewById<TextView>(R.id.count)
@@ -168,19 +187,35 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                 game.item1 = Item.EMPTY
                 game.item2 = Item.EMPTY
-
-                updateCount(countTextView, main.selectedTab)
-                updateFlex(main)
-                updateHint(hintTextView, left, dataStore)
             }
 
+            updateCount(countTextView, main.selectedTab)
             updatePot(fab)
+            updateFlex(main)
+            updateHint(hintTextView, left, dataStore)
             updateHistory(right)
         }
 
         menu.isClickable = true
         menu.setOnClickListener {
             popup.show()
+        }
+
+        val selectedSort = SortOrder.values().filter { it.name == userSettings.getString("selectedSort", "") }
+        if (selectedSort.any()) {
+            selectedSortOrder = selectedSort.first()
+            spinner.setSelection(SortOrder.values().indexOf(selectedSortOrder))
+        }
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
+                selectedSortOrder = SortOrder.values()[position]
+                updateFlex(main)
+
+                userSettings.edit().putString("selectedSort", selectedSortOrder.name).apply()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
         }
 
         main.tabSelectedListener = object : TabLayout.OnTabSelectedListener {
@@ -376,7 +411,44 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun updateFlex(main: ItemFragment) {
-        main.update(game.getUnlockedGroupList(), game.getUnlockedItemList(), 168f.dpToPx().toInt())
+        var itemList = game.getUnlockedItemList()
+
+        when (selectedSortOrder) {
+            SortOrder.ORDINAL -> {
+                itemList = itemList.sortedWith(compareBy<Item> {
+                    val recipeList = game.getUnlockedRecipeList()
+
+                    var i = 0
+                    val inputs = mutableListOf(it)
+                    while (!inputs.contains(Item.ELEMENTAL_VOID)) {
+                        inputs.addAll(recipeList.filter { recipe -> inputs.contains(recipe.result) }
+                            .flatMap { recipe -> recipe.inputs })
+                        i += 1
+                    }
+                    i
+                })
+            }
+            SortOrder.ALPHABET -> {
+                itemList = itemList.sortedWith(compareBy { getText(it.textId).toString() })
+            }
+            SortOrder.EMOJI_CODE -> {
+                itemList = itemList.sortedWith(compareBy {
+                    val text = resources.getResourceEntryName(it.resId).toString()
+                    if (text.startsWith("emoji")) text else "z"
+                })
+            }
+            SortOrder.UNLOCKED_RECIPES -> {
+                itemList = itemList.sortedWith(compareByDescending { game.getUnlockedRecipeList().count { recipe -> recipe.inputs.contains(it) } })
+            }
+            SortOrder.DISCOVERED -> {
+                itemList = itemList.sortedWith(compareBy {  game.getHistoryRecipeList().indexOfFirst { recipe -> recipe.result == it } })
+            }
+            SortOrder.LAST_USED -> {
+                itemList = itemList.sortedWith(compareByDescending { game.getHistoryList().indexOfLast { history -> history.item1 == it || history.item2 == it || history.item3 == it } })
+            }
+        }
+
+        main.update(game.getUnlockedGroupList(), itemList, 168f.dpToPx().toInt())
     }
 
     private fun updatePot(fabFragment: FabFragment) {

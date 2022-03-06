@@ -14,6 +14,10 @@ class Game {
         return historyList.toList()
     }
 
+    fun getHistoryRecipeList(): List<Recipe> {
+        return unlockedRecipeList.toList()
+    }
+
     fun getHintList(): List<Item> {
         return hintList.filter { item -> !unlockedRecipeList.any { it.result == item } }
     }
