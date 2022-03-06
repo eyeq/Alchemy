@@ -12,7 +12,13 @@ import eyeq.alchemy.game.Recipe
 
 class HistoryAdapter : BaseAdapter() {
 
+    interface OnItemClickListener {
+        fun onClick(item: Item)
+    }
+
     private var historyList = listOf<History>()
+
+    var itemClickListener: OnItemClickListener? = null
 
     fun setData(list: List<History>) {
         historyList = list
@@ -64,6 +70,10 @@ class HistoryAdapter : BaseAdapter() {
 
             input.setImageResource(item.resId)
             input.setColorFilter(context.getColor(item.colorId))
+            input.isClickable = true
+            input.setOnClickListener {
+                itemClickListener?.onClick(item)
+            }
 
             if (item != Item.EMPTY) {
                 symbol.visibility = View.VISIBLE
@@ -106,8 +116,13 @@ class HistoryAdapter : BaseAdapter() {
                 }
             }
 
-            image.setImageResource(recipe.result.resId)
-            image.setColorFilter(context.getColor(recipe.result.colorId))
+            val item = recipe.result
+            image.setImageResource(item.resId)
+            image.setColorFilter(context.getColor(item.colorId))
+            image.isClickable = true
+            image.setOnClickListener {
+                itemClickListener?.onClick(item)
+            }
 
             i += 1
         }

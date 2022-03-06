@@ -2,6 +2,7 @@ package eyeq.alchemy.ui
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ListView
@@ -17,6 +18,16 @@ class RecipeDialogFragment(private val recipeList: List<Recipe>, private val ite
         val context = requireContext()
 
         val adapter = HistoryAdapter()
+        adapter.itemClickListener = object : HistoryAdapter.OnItemClickListener {
+            override fun onClick(item: Item) {
+                if (item != Item.EMPTY && item != itemStack.first()) {
+                    itemStack.addFirst(item)
+
+                    dialog?.setTitle(context.getText(item.textId))
+                    adapter.setData(getHistoryList())
+                }
+            }
+        }
         adapter.setData(getHistoryList())
 
         val listView = ListView(context)
@@ -31,6 +42,19 @@ class RecipeDialogFragment(private val recipeList: List<Recipe>, private val ite
             .setMessage("")
             .setView(view)
             .setPositiveButton("close") { dialog, id -> }
+            .setOnKeyListener { dialog, keyCode, keyEvent ->
+                if (keyEvent.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    itemStack.removeFirst()
+                    if (itemStack.isNotEmpty()) {
+                        val item = itemStack.first()
+
+                        getDialog()?.setTitle(context.getText(item.textId))
+                        adapter.setData(getHistoryList())
+                        return@setOnKeyListener true
+                    }
+                }
+                return@setOnKeyListener false
+            }
 
         return builder.create()
     }
