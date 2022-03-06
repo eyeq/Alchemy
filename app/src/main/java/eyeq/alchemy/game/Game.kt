@@ -26,6 +26,10 @@ class Game {
         return Item.values().filter { isUnlocked(it) }
     }
 
+    fun getUnlockedRecipeList(): List<Recipe> {
+        return Recipe.recipes.filter { isUnlocked(it) }
+    }
+
     fun clear() {
         unlockedRecipeList.clear()
         historyList.clear()

@@ -204,6 +204,16 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 updatePot(fab)
             }
         }
+        main.itemLongClickListener = object : ItemFragment.OnItemLongClickListener {
+            override fun onLongClick(item: Item): Boolean {
+                val recipeList = game.getUnlockedRecipeList()
+                val itemStack = ArrayDeque<Item>()
+                itemStack.add(item)
+
+                RecipeDialogFragment(recipeList, itemStack, getColor(R.color.black), 320f.dpToPx().toInt()).show(supportFragmentManager, "simple")
+                return true
+            }
+        }
 
         fab.setImage1OnClickListener {
             game.item1 = Item.EMPTY

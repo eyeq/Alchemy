@@ -18,10 +18,15 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onClick(item: Item)
     }
 
+    interface OnItemLongClickListener {
+        fun onLongClick(item: Item): Boolean
+    }
+
     private var itemList = listOf<Item>()
 
     var marginBottom = 0
     var itemClickListener: OnItemClickListener? = null
+    var itemLongClickListener: OnItemLongClickListener? = null
 
     fun setData(list: List<Item>) {
         itemList = list
@@ -47,6 +52,9 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         button.isClickable = true
         button.setOnClickListener {
             itemClickListener?.onClick(item)
+        }
+        button.setOnLongClickListener {
+            itemLongClickListener?.onLongClick(item) == true
         }
 
         shadow.setImageResource(item.resId)

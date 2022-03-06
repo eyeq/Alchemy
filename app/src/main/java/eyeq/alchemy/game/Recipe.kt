@@ -4,7 +4,7 @@ class Recipe(val result: Item, vararg _inputs: Item) {
     val inputs = _inputs.toList()
 
     companion object {
-        private val recipes = mutableListOf<Recipe>(
+        val recipes = listOf<Recipe>(
             Recipe(Item.ELEMENTAL_VOID),
 
             Recipe(Item.ELEMENTAL_EARTH, Item.ELEMENTAL_VOID, Item.ELEMENTAL_VOID),

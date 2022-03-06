@@ -13,7 +13,6 @@ import eyeq.util.trimTrailingWhitespace
 class UnlockedDialogFragment(private val itemList: List<Item>, private val backgroundColor: Int) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
         val context = requireContext()
 
         val html = "<p>With the update of world, you found the items.</p>";

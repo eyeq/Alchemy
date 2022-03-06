@@ -18,6 +18,10 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
         fun onClick(item: Item)
     }
 
+    interface OnItemLongClickListener {
+        fun onLongClick(item: Item): Boolean
+    }
+
     private lateinit var tabLayout: TabLayout
 
     private lateinit var itemAdapter: ItemAdapter
@@ -35,6 +39,7 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
 
     var tabSelectedListener: TabLayout.OnTabSelectedListener? = null
     var itemClickListener: OnItemClickListener? = null
+    var itemLongClickListener: OnItemLongClickListener? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -104,6 +109,11 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
         itemAdapter.itemClickListener = object : ItemAdapter.OnItemClickListener {
             override fun onClick(item: Item) {
                 itemClickListener?.onClick(item)
+            }
+        }
+        itemAdapter.itemLongClickListener = object : ItemAdapter.OnItemLongClickListener {
+            override fun onLongClick(item: Item): Boolean {
+                return itemLongClickListener?.onLongClick(item) == true
             }
         }
         updateFlex()
