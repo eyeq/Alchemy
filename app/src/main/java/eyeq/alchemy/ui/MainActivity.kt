@@ -115,6 +115,28 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         })
 
+        val unlock = fun(history: History) {
+            val results = game.unlock(history)
+            game.save(dataStore)
+
+            if (results.isEmpty()) {
+                fab.vibrate()
+            } else {
+                for (recipe in results) {
+                    balloon.addBalloon(recipe)
+                }
+
+                game.item1 = Item.EMPTY
+                game.item2 = Item.EMPTY
+            }
+
+            updateCount(countTextView, main.selectedTab)
+            updatePot(fab)
+            updateFlex(main)
+            updateHint(hintTextView, left, dataStore)
+            updateHistory(right)
+        }
+
         val popup = PopupMenu(context, menu)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             popup.menu.setGroupDividerEnabled(true)
@@ -163,37 +185,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
 
             true
-        }
-
-        val unlock = fun(history: History) {
-            val results = game.unlock(history)
-            game.save(dataStore)
-
-            if (results.isEmpty()) {
-                fab.vibrate()
-            } else {
-                val subLayoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                subLayoutParams.setMargins(2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt(), 2f.dpToPx().toInt())
-
-                val imageLayoutParams = ViewGroup.MarginLayoutParams(32f.dpToPx().toInt(), 32f.dpToPx().toInt())
-                imageLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
-                val  textLayoutParams = ViewGroup.MarginLayoutParams(80f.dpToPx().toInt(), 32f.dpToPx().toInt())
-                textLayoutParams.setMargins(8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt(), 8f.dpToPx().toInt())
-
-                for (recipe in results) {
-                    balloon.addBalloon(recipe)
-                }
-
-                game.item1 = Item.EMPTY
-                game.item2 = Item.EMPTY
-            }
-
-            updateCount(countTextView, main.selectedTab)
-            updatePot(fab)
-            updateFlex(main)
-            updateHint(hintTextView, left, dataStore)
-            updateHistory(right)
         }
 
         menu.isClickable = true
@@ -254,37 +245,18 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             game.item1 = Item.EMPTY
             updatePot(fab)
         }
-
         fab.setImage2OnClickListener {
             game.item2 = Item.EMPTY
             updatePot(fab)
         }
-
         fab.setCleanOnClickListener {
             game.item1 = Item.EMPTY
             game.item2 = Item.EMPTY
             updatePot(fab)
         }
-
         fab.setConvertOnClickListener {
             unlock(History(game.item1, game.item2, game.item3))
         }
-
-        val selected = Group.values().filter { it.name == userSettings.getString("selectedTab", "") }
-        if (selected.any()) {
-            main.selectedTab = selected.first()
-        }
-
-        val newUnlocked = game.load(dataStore)
-        if (newUnlocked.isNotEmpty()) {
-            UnlockedDialogFragment(newUnlocked, getColor(R.color.black)).show(supportFragmentManager, "simple")
-        }
-
-        updateCount(countTextView, main.selectedTab)
-        updateFlex(main)
-        updatePot(fab)
-        updateHint(hintTextView, left, dataStore)
-        updateHistory(right)
 
         left.setAdsOnClickListener {
             initAds(context, true)
@@ -310,7 +282,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 }
             }
         }
-
         left.setHintOnClickListener {
             if (!game.isHintable()) {
                 Toast.makeText(context, "You already have all hints.", Toast.LENGTH_LONG).show()
@@ -366,6 +337,22 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 builder.show()
             }
         }
+
+        val selected = Group.values().filter { it.name == userSettings.getString("selectedTab", "") }
+        if (selected.any()) {
+            main.selectedTab = selected.first()
+        }
+
+        val newUnlocked = game.load(dataStore)
+        if (newUnlocked.isNotEmpty()) {
+            UnlockedDialogFragment(newUnlocked, getColor(R.color.black)).show(supportFragmentManager, "simple")
+        }
+
+        updateCount(countTextView, main.selectedTab)
+        updateFlex(main)
+        updatePot(fab)
+        updateHint(hintTextView, left, dataStore)
+        updateHistory(right)
 
         Handler(Looper.getMainLooper()).postDelayed({ initAds(context, false) }, 1000)
     }
