@@ -115,6 +115,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         })
 
+        val selectItem = fun(item: Item) {
+            if (game.item1 == Item.EMPTY) {
+                game.item1 = item
+            } else if (game.item2 == Item.EMPTY) {
+                game.item2 = item
+            }
+            updatePot(fab)
+        }
+
         val unlock = fun(history: History) {
             val results = game.unlock(history)
             game.save(dataStore)
@@ -222,12 +231,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
         main.itemClickListener = object : ItemFragment.OnItemClickListener {
             override fun onClick(item: Item) {
-                if (game.item1 == Item.EMPTY) {
-                    game.item1 = item
-                } else if (game.item2 == Item.EMPTY) {
-                    game.item2 = item
-                }
-                updatePot(fab)
+                selectItem(item)
             }
         }
         main.itemLongClickListener = object : ItemFragment.OnItemLongClickListener {
@@ -338,6 +342,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
 
+        right.itemClickListener = object : HistoryFragment.OnItemClickListener {
+            override fun onClick(item: Item) {
+                selectItem(item)
+            }
+        }
+
+        // init
         val selected = Group.values().filter { it.name == userSettings.getString("selectedTab", "") }
         if (selected.any()) {
             main.selectedTab = selected.first()
