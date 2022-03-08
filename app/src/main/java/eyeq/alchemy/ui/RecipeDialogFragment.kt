@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -23,7 +23,9 @@ class RecipeDialogFragment(private val recipeList: List<Recipe>, private val ite
                 if (item != Item.EMPTY && item != itemStack.first()) {
                     itemStack.addFirst(item)
 
-                    dialog?.setTitle(context.getText(item.textId))
+                    val dialog = dialog as? AlertDialog
+                    dialog?.setTitle(context.getString(item.textId))
+                    dialog?.setMessage(context.getString(item.quoteId) + "\n")
                     adapter.setData(getHistoryList())
                 }
             }
@@ -34,12 +36,13 @@ class RecipeDialogFragment(private val recipeList: List<Recipe>, private val ite
         listView.setBackgroundColor(backgroundColor)
         listView.adapter = adapter
 
-        val view = LinearLayout(context)
+        val view = FrameLayout(context)
         view.addView(listView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height))
 
+        val item = itemStack.first()
         val builder = AlertDialog.Builder(context)
-            .setTitle(itemStack.first().textId)
-            .setMessage("")
+            .setTitle(context.getString(item.textId))
+            .setMessage(context.getString(item.quoteId) + "\n")
             .setView(view)
             .setPositiveButton("close") { dialog, id -> }
             .setOnKeyListener { dialog, keyCode, keyEvent ->
