@@ -3,7 +3,7 @@ package eyeq.alchemy.game
 import eyeq.alchemy.R
 
 enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: Int, val quoteId: Int) {
-    EMPTY(Group.ALL, R.drawable.item_empty, R.color.transparent, R.string.item_empty, R.string.quote_elemental_void),
+    EMPTY(Group.ALL, R.drawable.item_empty, R.color.transparent, R.string.empty, R.string.empty),
 
     // ELEMENTAL
     ELEMENTAL_VOID(Group.ELEMENTAL, R.drawable.emoji_u26aa, R.color.gray, R.string.item_elemental_void, R.string.quote_elemental_void),
@@ -28,7 +28,7 @@ enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: 
     WATER(Group.MATERIAL, R.drawable.emoji_u1f4a7, R.color.transparent, R.string.item_water, R.string.quote_water),
     AIR(Group.MATERIAL, R.drawable.emoji_u1f4ad, R.color.transparent, R.string.item_air, R.string.quote_air),
     FIRE(Group.MATERIAL, R.drawable.emoji_u1f525, R.color.transparent, R.string.item_fire, R.string.quote_fire),
-    METAL(Group.MATERIAL, R.drawable.gold, R.color.transparent, R.string.item_metal, R.string.quote_metal),
+    METAL(Group.MATERIAL, R.drawable.mineral, R.color.transparent, R.string.item_metal, R.string.quote_metal),
     ICE(Group.MATERIAL, R.drawable.emoji_u1f9ca, R.color.transparent, R.string.item_ice, R.string.quote_ice),
     PLANT(Group.MATERIAL, R.drawable.emoji_u1f331, R.color.transparent, R.string.item_plant, R.string.quote_plant),
     ANIMAL(Group.MATERIAL, R.drawable.emoji_u1f435, R.color.transparent, R.string.item_animal, R.string.quote_animal),
@@ -44,6 +44,9 @@ enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: 
     GRAVEL(Group.MATERIAL, R.drawable.stone, R.color.transparent, R.string.item_gravel, R.string.quote_gravel),
     COAL(Group.MATERIAL, R.drawable.coal, R.color.transparent, R.string.item_coal, R.string.quote_coal),
     DIAMOND(Group.MATERIAL, R.drawable.emoji_u1f48e, R.color.transparent, R.string.item_diamond, R.string.quote_diamond),
+    CLAY(Group.MATERIAL, R.drawable.pile, R.color.red_translucent, R.string.item_clay, R.string.quote_clay),
+    PIGMENT(Group.MATERIAL, R.drawable.powder, R.color.transparent, R.string.item_pigment, R.string.quote_pigment),
+    DYE(Group.MATERIAL, R.drawable.spot, R.color.transparent, R.string.item_dye, R.string.quote_dye),
 
     // - WATER or ICE
     STEAM(Group.MATERIAL, R.drawable.emoji_u2668, R.color.transparent, R.string.item_steam, R.string.quote_steam),
@@ -51,35 +54,69 @@ enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: 
     BUBBLE(Group.MATERIAL, R.drawable.emoji_u1fae7, R.color.transparent, R.string.item_bubble, R.string.quote_bubble),
     WAVE(Group.MATERIAL, R.drawable.emoji_u1f30a, R.color.transparent, R.string.item_wave, R.string.quote_wave),
     LIFE(Group.MATERIAL, R.drawable.emoji_u1f300, R.color.transparent, R.string.item_life, R.string.quote_life),
+    DNA(Group.MATERIAL, R.drawable.emoji_u1f9ec, R.color.transparent, R.string.item_dna, R.string.quote_dna),
+    CELL(Group.MATERIAL, R.drawable.emoji_u1f9a0, R.color.transparent, R.string.item_cell, R.string.quote_cell),
 
-    // - AIR or PLANT
+    SICKNESS(Group.MATERIAL, R.drawable.emoji_u1f480, R.color.transparent, R.string.item_sickness, R.string.quote_sickness),
+    INJURY(Group.MATERIAL, R.drawable.emoji_u2764_200d_1fa79, R.color.transparent, R.string.item_injury, R.string.quote_injury),
+    SENESCENCE(Group.MATERIAL, R.drawable.walking_stick, R.color.transparent, R.string.item_senescence, R.string.quote_senescence),
+    DISEASE(Group.MATERIAL, R.drawable.emoji_u1f47f, R.color.transparent, R.string.item_disease, R.string.quote_disease),
+    POISON(Group.MATERIAL, R.drawable.emoji_u2695, R.color.transparent, R.string.item_poison, R.string.quote_poison),
+
+    // - AIR or PLANT or ANIMAL
     VIBRATION(Group.MATERIAL, R.drawable.emoji_u3030, R.color.transparent, R.string.item_vibration, R.string.quote_vibration),
     SOUND(Group.MATERIAL, R.drawable.emoji_u1f50a, R.color.transparent, R.string.item_sound, R.string.quote_sound),
     WIND(Group.MATERIAL, R.drawable.wind, R.color.transparent, R.string.item_wind, R.string.quote_wind),
+    SMOKE(Group.MATERIAL, R.drawable.smoke, R.color.black_translucent, R.string.item_smoke, R.string.quote_smoke),
+
     LEAF(Group.MATERIAL, R.drawable.emoji_u1f343, R.color.transparent, R.string.item_leaf, R.string.quote_leaf),
     ASH(Group.MATERIAL, R.drawable.pile, R.color.gray_translucent, R.string.item_ash, R.string.quote_ash),
     LYE(Group.MATERIAL, R.drawable.emoji_u1f95b, R.color.gray_translucent, R.string.item_lye, R.string.quote_lye),
-    SMOKE(Group.MATERIAL, R.drawable.smoke, R.color.black_translucent, R.string.item_smoke, R.string.quote_smoke),
+    STEM(Group.MATERIAL, R.drawable.emoji_u1f33f, R.color.transparent, R.string.item_stem, R.string.quote_stem),
+    ROOT(Group.MATERIAL, R.drawable.roots, R.color.transparent, R.string.item_root, R.string.quote_root),
+    FLOWER(Group.MATERIAL, R.drawable.flower, R.color.transparent, R.string.item_flower, R.string.quote_flower),
+    SEED(Group.MATERIAL, R.drawable.seeds, R.color.transparent, R.string.item_seed, R.string.quote_seed),
+    TREE(Group.MATERIAL, R.drawable.emoji_u1f333, R.color.transparent, R.string.item_tree, R.string.quote_tree),
+    STICK(Group.MATERIAL, R.drawable.branch, R.color.transparent, R.string.item_stick, R.string.quote_stick),
+    STRING(Group.MATERIAL, R.drawable.emoji_u1f9f5, R.color.transparent, R.string.item_string, R.string.quote_string),
+    STUMP(Group.MATERIAL, R.drawable.stump, R.color.transparent, R.string.item_stump, R.string.quote_stump),
+    WOOD(Group.MATERIAL, R.drawable.emoji_u1fab5, R.color.transparent, R.string.item_wood, R.string.quote_wood),
+    FIREWOOD(Group.MATERIAL, R.drawable.wood, R.color.transparent, R.string.item_firewood, R.string.quote_firewood),
+
+    EGG(Group.MATERIAL, R.drawable.emoji_u1f95a, R.color.transparent, R.string.item_egg, R.string.quote_egg),
+    HEAD(Group.MATERIAL, R.drawable.emoji_u1f9b3, R.color.transparent, R.string.item_head, R.string.quote_head),
+    FOOT(Group.MATERIAL, R.drawable.emoji_u1f9b6, R.color.transparent, R.string.item_foot, R.string.quote_foot),
+    HAND(Group.MATERIAL, R.drawable.emoji_u1f590, R.color.transparent, R.string.item_hand, R.string.quote_hand),
+    FLIPPER(Group.MATERIAL, R.drawable.whale, R.color.transparent, R.string.item_flipper, R.string.quote_flipper),
+    WING(Group.MATERIAL, R.drawable.wing, R.color.transparent, R.string.item_wing, R.string.quote_wing),
+    TAIL(Group.MATERIAL, R.drawable.meat, R.color.transparent, R.string.item_tail, R.string.quote_tail),
+    BLOOD(Group.MATERIAL, R.drawable.emoji_u1fa78, R.color.transparent, R.string.item_blood, R.string.quote_blood),
+    BONE(Group.MATERIAL, R.drawable.emoji_u1f9b4, R.color.transparent, R.string.item_bone, R.string.quote_bone),
+    HORN(Group.MATERIAL, R.drawable.cornucopia, R.color.transparent, R.string.item_horn, R.string.quote_horn),
+    MEAT(Group.MATERIAL, R.drawable.emoji_u1f969, R.color.transparent, R.string.item_meat, R.string.quote_meat),
+    FUR(Group.MATERIAL, R.drawable.fur, R.color.transparent, R.string.item_fur, R.string.quote_fur),
+    OIL(Group.MATERIAL, R.drawable.fat, R.color.transparent, R.string.item_oil, R.string.quote_oil),
 
     // - FIRE or THUNDER
     ELECTRICITY(Group.MATERIAL, R.drawable.emoji_u26a1, R.color.transparent, R.string.item_electricity, R.string.quote_electricity),
     MAGNET(Group.MATERIAL, R.drawable.emoji_u1f9f2, R.color.transparent, R.string.item_magnet, R.string.quote_magnet),
 
     // - SPACE or TIME
+    MIND(Group.MATERIAL, R.drawable.emoji_u1f9e0, R.color.transparent, R.string.item_mind, R.string.quote_mind),
+    HEART(Group.MATERIAL, R.drawable.emoji_u1fac0, R.color.transparent, R.string.item_heart, R.string.quote_heart),
+
     GRAVITY(Group.MATERIAL, R.drawable.gravity, R.color.transparent, R.string.item_gravity, R.string.quote_gravity),
     DIRECTION(Group.MATERIAL, R.drawable.directions, R.color.transparent, R.string.item_direction, R.string.quote_direction),
     SKY(Group.MATERIAL, R.drawable.cloudy, R.color.transparent, R.string.item_sky, R.string.quote_sky),
     STAR(Group.MATERIAL, R.drawable.emoji_u2b50, R.color.transparent, R.string.item_star, R.string.quote_star),
-
-    STEM(Group.MATERIAL, R.drawable.emoji_u1f33f, R.color.transparent, R.string.item_stem, R.string.quote_stem),
-    ROOT(Group.MATERIAL, R.drawable.roots, R.color.transparent, R.string.item_root, R.string.quote_root),
-    FLOWER(Group.MATERIAL, R.drawable.flower, R.color.transparent, R.string.item_flower, R.string.quote_flower),
-    SEED(Group.MATERIAL, R.drawable.seeds, R.color.transparent, R.string.item_seed, R.string.quote_seed),
-    TREE(Group.MATERIAL, R.drawable.emoji_u1f333, R.color.transparent, R.string.item_tree, R.string.quote_tree),
-    EGG(Group.MATERIAL, R.drawable.emoji_u1f95a, R.color.transparent, R.string.item_egg, R.string.quote_egg),
+    PHOTON(Group.MATERIAL, R.drawable.emoji_u1f538, R.color.transparent, R.string.item_photon, R.string.quote_photon),
+    LIGHT(Group.MATERIAL, R.drawable.emoji_u2728, R.color.transparent, R.string.item_light, R.string.quote_light),
+    COLOR(Group.MATERIAL, R.drawable.rgb, R.color.transparent, R.string.item_color, R.string.quote_color),
+    GRAVITON(Group.MATERIAL, R.drawable.emoji_u1f539, R.color.transparent, R.string.item_graviton, R.string.quote_graviton),
 
     // NATURE
     SUN(Group.NATURE, R.drawable.emoji_u2600, R.color.transparent, R.string.item_sun, R.string.quote_sun),
+    MOON(Group.NATURE, R.drawable.emoji_u1f315, R.color.transparent, R.string.item_moon, R.string.quote_moon),
     PLANET(Group.NATURE, R.drawable.emoji_u1fa90, R.color.transparent, R.string.item_planet, R.string.quote_planet),
     PLANET_MERCURY(Group.NATURE, R.drawable.mercury, R.color.transparent, R.string.item_planet_mercury, R.string.quote_planet_mercury),
     PLANET_VENUS(Group.NATURE, R.drawable.venus, R.color.transparent, R.string.item_planet_venus, R.string.quote_planet_venus),
@@ -88,24 +125,23 @@ enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: 
     PLANET_SATURN(Group.NATURE, R.drawable.saturn, R.color.transparent, R.string.item_planet_saturn, R.string.quote_planet_saturn),
     PLANET_URANUS(Group.NATURE, R.drawable.uranus, R.color.transparent, R.string.item_planet_uranus, R.string.quote_planet_uranus),
     PLANET_NEPTUNE(Group.NATURE, R.drawable.neptune, R.color.transparent, R.string.item_planet_neptune, R.string.quote_planet_neptune),
-    MOON(Group.NATURE, R.drawable.emoji_u1f315, R.color.transparent, R.string.item_moon, R.string.quote_moon),
     ECLIPSE(Group.NATURE, R.drawable.emoji_u1f311, R.color.transparent, R.string.item_eclipse, R.string.quote_eclipse),
     DAY(Group.NATURE, R.drawable.emoji_u1f305, R.color.transparent, R.string.item_day, R.string.quote_day),
     NIGHT(Group.NATURE, R.drawable.emoji_u1f30c, R.color.transparent, R.string.item_night, R.string.quote_night),
     COMET(Group.NATURE, R.drawable.emoji_u2604, R.color.transparent, R.string.item_comet, R.string.quote_comet),
-    METEORITE(Group.NATURE, R.drawable.meteorite, R.color.transparent, R.string.item_meteorite, R.string.quote_meteorite),
-    METEOR(Group.NATURE, R.drawable.emoji_u1f320, R.color.transparent, R.string.item_meteor, R.string.quote_meteor),
+    METEOR(Group.NATURE, R.drawable.meteor, R.color.transparent, R.string.item_meteor, R.string.quote_meteor),
+    SHOOTING_STAR(Group.NATURE, R.drawable.shooting_star, R.color.transparent, R.string.item_shooting_star, R.string.quote_shooting_star),
     BLACK_HOLE(Group.NATURE, R.drawable.black_hole, R.color.transparent, R.string.item_black_hole, R.string.quote_black_hole),
     AURORA(Group.NATURE, R.drawable.northern_lights, R.color.transparent, R.string.item_aurora, R.string.quote_aurora),
 
     CLOUD(Group.NATURE, R.drawable.emoji_u2601, R.color.transparent, R.string.item_cloud, R.string.quote_cloud),
     RAIN(Group.NATURE, R.drawable.emoji_u1f327, R.color.transparent, R.string.item_rain, R.string.quote_rain),
-    RAINBOW(Group.NATURE, R.drawable.emoji_u1f308, R.color.transparent, R.string.item_rainbow, R.string.quote_rainbow),
     SNOW(Group.NATURE, R.drawable.emoji_u1f328, R.color.transparent, R.string.item_snow, R.string.quote_snow),
+    RAINBOW(Group.NATURE, R.drawable.emoji_u1f308, R.color.transparent, R.string.item_rainbow, R.string.quote_rainbow),
 
     VOLCANO(Group.NATURE, R.drawable.emoji_u1f30b, R.color.transparent, R.string.item_volcano, R.string.quote_volcano),
     MOUNTAIN(Group.NATURE, R.drawable.emoji_u26f0, R.color.transparent, R.string.item_mountain, R.string.quote_mountain),
-    RIVER(Group.NATURE, R.drawable.emoji_u1f3de, R.color.transparent, R.string.item_river, R.string.quote_river),
+    RIVER(Group.NATURE, R.drawable.river, R.color.transparent, R.string.item_river, R.string.quote_river),
     LAKE(Group.NATURE, R.drawable.lake, R.color.transparent, R.string.item_lake, R.string.quote_lake),
     SEA(Group.NATURE, R.drawable.ocean, R.color.transparent, R.string.item_sea, R.string.quote_sea),
     DESERT(Group.NATURE, R.drawable.emoji_u1f3dc, R.color.transparent, R.string.item_desert, R.string.quote_desert),
@@ -120,11 +156,42 @@ enum class Item(val group: Group, val resId: Int, val colorId: Int, val textId: 
     FOREST(Group.NATURE, R.drawable.forest, R.color.transparent, R.string.item_forest, R.string.quote_forest),
     JUNGLE(Group.NATURE, R.drawable.jungle, R.color.transparent, R.string.item_jungle, R.string.quote_jungle),
     LIGHTNING_STRIKE(Group.NATURE, R.drawable.lightning, R.color.transparent, R.string.item_lightning_strike, R.string.quote_lightning_strike),
+    WATERFALL(Group.MATERIAL, R.drawable.waterfall, R.color.transparent, R.string.item_waterfall, R.string.quote_waterfall),
     WHIRLPOOL(Group.NATURE, R.drawable.cyclone, R.color.transparent, R.string.item_whirlpool, R.string.quote_whirlpool),
     WHIRLWIND(Group.NATURE, R.drawable.emoji_u1f32a, R.color.transparent, R.string.item_whirlwind, R.string.quote_whirlwind),
     MIRAGE(Group.NATURE, R.drawable.mirage, R.color.transparent, R.string.item_mirage, R.string.quote_mirage),
     FOG(Group.NATURE, R.drawable.emoji_u1f32b, R.color.transparent, R.string.item_fog, R.string.quote_fog),
     FROST(Group.NATURE, R.drawable.emoji_u2744, R.color.transparent, R.string.item_frost, R.string.quote_frost),
     ICICLE(Group.NATURE, R.drawable.icicles, R.color.transparent, R.string.item_icicle, R.string.quote_icicle),
+
+    // ARTIFACT
+    BRICK(Group.ARTIFACT, R.drawable.brick, R.color.transparent, R.string.item_brick, R.string.quote_brick),
+    WALL(Group.ARTIFACT, R.drawable.emoji_u1f9f1, R.color.transparent, R.string.item_wall, R.string.quote_wall),
+    EARTHENWARE(Group.ARTIFACT, R.drawable.vase, R.color.transparent, R.string.item_earthenware, R.string.quote_earthenware),
+    POTTERY(Group.ARTIFACT, R.drawable.emoji_u26b1, R.color.transparent, R.string.item_pottery, R.string.quote_pottery),
+    GLASS(Group.ARTIFACT, R.drawable.microscope_slides, R.color.transparent, R.string.item_glass, R.string.quote_glass),
+    CONSTELLATION(Group.ARTIFACT, R.drawable.constellation, R.color.transparent, R.string.item_constellation, R.string.quote_constellation),
+    PERFUME(Group.ARTIFACT, R.drawable.perfume, R.color.transparent, R.string.item_perfume, R.string.quote_perfume),
+    TOTEM(Group.ARTIFACT, R.drawable.totem, R.color.transparent, R.string.item_totem, R.string.quote_totem),
+
+    // TOOL
+    LAMP(Group.TOOL, R.drawable.emoji_u1fa94, R.color.transparent, R.string.item_lamp, R.string.quote_lamp),
+    HAND_AXE(Group.TOOL, R.drawable.axe, R.color.transparent, R.string.item_hand_axe, R.string.quote_hand_axe),
+    SWORD(Group.TOOL, R.drawable.emoji_u1f5e1, R.color.transparent, R.string.item_sword, R.string.quote_sword),
+    KNIFE(Group.TOOL, R.drawable.emoji_u1f52a, R.color.transparent, R.string.item_knife, R.string.quote_knife),
+    AXE(Group.TOOL, R.drawable.emoji_u1fa93, R.color.transparent, R.string.item_axe, R.string.quote_axe),
+    COMPASS(Group.TOOL, R.drawable.emoji_u1f9ed, R.color.transparent, R.string.item_compass, R.string.quote_compass),
+    BONFIRE(Group.TOOL, R.drawable.bonfire, R.color.transparent, R.string.item_bonfire, R.string.quote_bonfire),
+    NEEDLE(Group.TOOL, R.drawable.needle, R.color.transparent, R.string.item_needle, R.string.quote_needle),
+    SPEAR(Group.TOOL, R.drawable.spear, R.color.transparent, R.string.item_spear, R.string.quote_spear),
+    BOW_AND_ARROW(Group.TOOL, R.drawable.emoji_u1f3f9, R.color.transparent, R.string.item_bow_and_arrow, R.string.quote_bow_and_arrow),
+    FISHING_ROD(Group.TOOL, R.drawable.emoji_u1f3a3, R.color.transparent, R.string.item_fishing_rod, R.string.quote_fishing_rod),
+
+    // TECHNOLOGY
+    PAINTING(Group.TECHNOLOGY, R.drawable.emoji_u1f5bc, R.color.transparent, R.string.item_painting, R.string.quote_painting),
+    TRAPPING(Group.TECHNOLOGY, R.drawable.emoji_u1f573, R.color.transparent, R.string.item_trapping, R.string.quote_trapping),
+
+    // FOOD
+    SALT(Group.FOOD, R.drawable.emoji_u1f9c2, R.color.transparent, R.string.item_salt, R.string.quote_salt),
     ;
 }
