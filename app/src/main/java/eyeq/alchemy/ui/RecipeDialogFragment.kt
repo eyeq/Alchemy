@@ -26,7 +26,7 @@ class RecipeDialogFragment(private val recipeList: List<Recipe>, private val ite
 
         val titleText = title.findViewById<TextView>(R.id.text)
 
-        val titleButton = title.findViewById<ImageView>(R.id.image)
+        val titleButton = title.findViewById<FrameLayout>(R.id.image)
         titleButton.isClickable = true
         titleButton.setOnClickListener {
             val text = titleText.text
