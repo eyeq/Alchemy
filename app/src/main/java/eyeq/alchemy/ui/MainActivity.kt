@@ -240,7 +240,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 val itemStack = ArrayDeque<Item>()
                 itemStack.add(item)
 
-                RecipeDialogFragment(recipeList, itemStack, getColor(R.color.black), 320f.dpToPx().toInt()).show(supportFragmentManager, "simple")
+                RecipeDialogFragment(recipeList, itemStack, getColor(R.color.black)).show(supportFragmentManager, "simple")
                 return true
             }
         }

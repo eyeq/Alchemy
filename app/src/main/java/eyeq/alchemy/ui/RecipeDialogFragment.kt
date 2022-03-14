@@ -7,7 +7,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -16,15 +15,19 @@ import eyeq.alchemy.game.History
 import eyeq.alchemy.game.Item
 import eyeq.alchemy.game.Recipe
 
-class RecipeDialogFragment(private val recipeList: List<Recipe>, private val itemStack: ArrayDeque<Item>, private val backgroundColor: Int, private val height: Int): DialogFragment() {
+class RecipeDialogFragment(private val recipeList: List<Recipe>, private val itemStack: ArrayDeque<Item>, private val backgroundColor: Int): DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val context = requireContext()
-
         val inflater = LayoutInflater.from(context)
-        val title = inflater.inflate(R.layout.view_item_title, null)
+
+        val item = itemStack.first()
+
+        // title
+        val title = inflater.inflate(R.layout.view_item_title, null, false)
 
         val titleText = title.findViewById<TextView>(R.id.text)
+        titleText.setText(item.textId)
 
         val titleButton = title.findViewById<FrameLayout>(R.id.image)
         titleButton.isClickable = true
@@ -37,31 +40,29 @@ class RecipeDialogFragment(private val recipeList: List<Recipe>, private val ite
             Toast.makeText(context, "Copied; ${text}", Toast.LENGTH_SHORT).show();
         }
 
+        // view
         val adapter = HistoryAdapter()
+        val update = fun(item: Item) {
+            titleText.setText(item.textId)
+            (dialog as AlertDialog?)?.setMessage(context.getString(item.quoteId) + "\n")
+            adapter.setData(getHistoryList())
+        }
         adapter.itemClickListener = object : HistoryAdapter.OnItemClickListener {
             override fun onClick(item: Item) {
                 if (item != Item.EMPTY && item != itemStack.first()) {
                     itemStack.addFirst(item)
-
-                    val dialog = dialog as? AlertDialog
-                    titleText.setText(item.textId)
-                    dialog?.setMessage(context.getString(item.quoteId) + "\n")
-                    adapter.setData(getHistoryList())
+                    update(itemStack.first())
                 }
             }
         }
-        adapter.setData(getHistoryList())
 
-        val listView = ListView(context)
+        val view = inflater.inflate(R.layout.view_recipe, null, false)
+        val listView = view.findViewById<ListView>(R.id.list)
         listView.setBackgroundColor(backgroundColor)
+        adapter.setData(getHistoryList())
         listView.adapter = adapter
 
-        val view = FrameLayout(context)
-        view.addView(listView, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height))
-
-        val item = itemStack.first()
-        titleText.setText(item.textId)
-
+        // dialog
         val builder = AlertDialog.Builder(context)
             .setCustomTitle(title)
             .setMessage(context.getString(item.quoteId) + "\n")
@@ -71,10 +72,7 @@ class RecipeDialogFragment(private val recipeList: List<Recipe>, private val ite
                 if (keyEvent.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                     itemStack.removeFirst()
                     if (itemStack.isNotEmpty()) {
-                        val item = itemStack.first()
-
-                        getDialog()?.setTitle(context.getText(item.textId))
-                        adapter.setData(getHistoryList())
+                        update(itemStack.first())
                         return@setOnKeyListener true
                     }
                 }
