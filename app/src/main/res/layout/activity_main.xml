@@ -99,6 +99,13 @@
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/header">
 
+        <CheckBox
+            android:id="@+id/filter_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_text"
+            android:textSize="@dimen/text_size_body" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -113,7 +120,7 @@
                 android:textSize="@dimen/text_size_body" />
 
             <Spinner
-                android:id="@+id/spinner"
+                android:id="@+id/sort_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size_body" />

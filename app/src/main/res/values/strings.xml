@@ -9,7 +9,10 @@
 
     <string name="watch_ads">WATCH ADS</string>
     <string name="give_a_hint">Give a Hint!</string>
+
     <string name="history">History</string>
+
+    <string name="filter_text">Hide items without recipes</string>
 
     <string name="sort_by">Sort by</string>
     <string name="sort_default">DEFAULT</string>

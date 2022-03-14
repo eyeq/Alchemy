@@ -39,11 +39,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         ;
     }
 
-    private var selectedSortOrder = SortOrder.DEFAULT
     private var mGestureDetector: GestureDetector? = null
 
     private var mRewardedAd: RewardedAd? = null
 
+    private var isFilter = false
+    private var selectedSortOrder = SortOrder.DEFAULT
     private val game = Game()
 
     override fun onStart() {
@@ -53,6 +54,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val userSettings: SharedPreferences = getSharedPreferences("UserSettings", Context.MODE_PRIVATE)
         val dataStore: SharedPreferences = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
 
+        isFilter = userSettings.getBoolean("isFilter", false)
+
+        val selectedSort = SortOrder.values().filter { it.name == userSettings.getString("selectedSort", "") }
+        if (selectedSort.any()) {
+            selectedSortOrder = selectedSort.first()
+        }
+
         val hintTextView = findViewById<TextView>(R.id.hint)
         val countTextView = findViewById<TextView>(R.id.count)
         val sort = findViewById<FrameLayout>(R.id.sort)
@@ -60,11 +68,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         val subHeader = findViewById<LinearLayout>(R.id.sub_header)
         subHeader.visibility = View.GONE
-        val spinner = findViewById<Spinner>(R.id.spinner)
 
+        val checkbox = findViewById<CheckBox>(R.id.filter_checkbox)
+        checkbox.isChecked = isFilter
+
+        val spinner = findViewById<Spinner>(R.id.sort_spinner)
         val sortList = SortOrder.values().map { getText(it.textId).toString() }
         val spinnerAdapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, sortList.toTypedArray())
         spinner.adapter = spinnerAdapter
+        spinner.setSelection(SortOrder.values().indexOf(selectedSortOrder))
 
         val main = supportFragmentManager.findFragmentById(R.id.main) as ItemFragment
         main.view?.setBackgroundColor(getColor(R.color.black))
@@ -213,11 +225,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             popup.show()
         }
 
-        val selectedSort = SortOrder.values().filter { it.name == userSettings.getString("selectedSort", "") }
-        if (selectedSort.any()) {
-            selectedSortOrder = selectedSort.first()
-            spinner.setSelection(SortOrder.values().indexOf(selectedSortOrder))
+        checkbox.setOnCheckedChangeListener { button, isChecked ->
+            isFilter = isChecked
+            updateFlex(main)
+
+            userSettings.edit().putBoolean("isFilter", isFilter).apply()
         }
+
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
                 selectedSortOrder = SortOrder.values()[position]
@@ -422,6 +436,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private fun updateFlex(main: ItemFragment) {
         var itemList = game.getUnlockedItemList()
+
+        if (isFilter) {
+            itemList = itemList.filter { Recipe.recipes.any { recipe -> recipe.inputs.contains(it) } }
+        }
 
         when (selectedSortOrder) {
             SortOrder.ORDINAL -> {
