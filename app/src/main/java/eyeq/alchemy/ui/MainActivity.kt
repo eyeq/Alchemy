@@ -53,15 +53,18 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val userSettings: SharedPreferences = getSharedPreferences("UserSettings", Context.MODE_PRIVATE)
         val dataStore: SharedPreferences = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
 
-        val sortList = SortOrder.values().map { getText(it.textId).toString() }
-        val spinnerAdapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, sortList.toTypedArray())
-
-        val spinner = findViewById<Spinner>(R.id.spinner)
-        spinner.adapter = spinnerAdapter
-
         val hintTextView = findViewById<TextView>(R.id.hint)
         val countTextView = findViewById<TextView>(R.id.count)
-        val menu = findViewById<ImageView>(R.id.menu)
+        val sort = findViewById<FrameLayout>(R.id.sort)
+        val menu = findViewById<FrameLayout>(R.id.menu)
+
+        val subHeader = findViewById<LinearLayout>(R.id.sub_header)
+        subHeader.visibility = View.GONE
+        val spinner = findViewById<Spinner>(R.id.spinner)
+
+        val sortList = SortOrder.values().map { getText(it.textId).toString() }
+        val spinnerAdapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, sortList.toTypedArray())
+        spinner.adapter = spinnerAdapter
 
         val main = supportFragmentManager.findFragmentById(R.id.main) as ItemFragment
         main.view?.setBackgroundColor(getColor(R.color.black))
@@ -194,6 +197,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
 
             true
+        }
+
+        sort.isClickable = true
+        sort.setOnClickListener {
+            if (subHeader.visibility == View.GONE) {
+                subHeader.visibility = View.VISIBLE
+            } else {
+                subHeader.visibility = View.GONE
+            }
         }
 
         menu.isClickable = true

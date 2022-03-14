@@ -11,6 +11,7 @@
     <string name="give_a_hint">Give a Hint!</string>
     <string name="history">History</string>
 
+    <string name="sort_by">Sort by</string>
     <string name="sort_default">DEFAULT</string>
     <string name="sort_ordinal">ORDINAL</string>
     <string name="sort_alphabet">ALPHABET</string>
