@@ -1,6 +1,5 @@
 package eyeq.alchemy.ui
 
-import androidx.appcompat.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
@@ -9,7 +8,9 @@ import android.os.Looper
 import android.text.Html.ImageGetter
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.HtmlCompat
@@ -62,6 +63,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         val hintTextView = findViewById<TextView>(R.id.hint)
+        val searchView = findViewById<SearchView>(R.id.search)
         val countTextView = findViewById<TextView>(R.id.count)
         val sort = findViewById<FrameLayout>(R.id.sort)
         val menu = findViewById<FrameLayout>(R.id.menu)
@@ -155,8 +157,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
 
             updateCount(countTextView, main.selectedTab)
+            updateFlex(main, searchView.query, isFilter, selectedSortOrder)
             updatePot(fab)
-            updateFlex(main)
             updateHint(hintTextView, left, dataStore)
             updateHistory(right)
         }
@@ -181,7 +183,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                             game.clear()
 
                             updateCount(countTextView, main.selectedTab)
-                            updateFlex(main)
+                            updateFlex(main, searchView.query, isFilter, selectedSortOrder)
                             updatePot(fab)
                             updateHint(hintTextView, left, dataStore)
                             updateHistory(right)
@@ -211,6 +213,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             true
         }
 
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                updateFlex(main, searchView.query, isFilter, selectedSortOrder)
+                return false
+            }
+        })
+
         sort.isClickable = true
         sort.setOnClickListener {
             if (subHeader.visibility == View.GONE) {
@@ -227,7 +240,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         checkbox.setOnCheckedChangeListener { button, isChecked ->
             isFilter = isChecked
-            updateFlex(main)
+            updateFlex(main, searchView.query, isFilter, selectedSortOrder)
 
             userSettings.edit().putBoolean("isFilter", isFilter).apply()
         }
@@ -235,7 +248,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
                 selectedSortOrder = SortOrder.values()[position]
-                updateFlex(main)
+                updateFlex(main, searchView.query, isFilter, selectedSortOrder)
 
                 userSettings.edit().putString("selectedSort", selectedSortOrder.name).apply()
             }
@@ -386,7 +399,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         updateCount(countTextView, main.selectedTab)
-        updateFlex(main)
+        updateFlex(main, searchView.query, isFilter, selectedSortOrder)
         updatePot(fab)
         updateHint(hintTextView, left, dataStore)
         updateHistory(right)
@@ -434,8 +447,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         countTextView.text = "${unlockedItem.count()}/${filteredItem.count()}"
     }
 
-    private fun updateFlex(main: ItemFragment) {
+    private fun updateFlex(main: ItemFragment, query: CharSequence, isFilter: Boolean, selectedSortOrder: SortOrder) {
         var itemList = game.getUnlockedItemList()
+
+        itemList = itemList.filter { getText(it.textId).contains(query, true) }
 
         if (isFilter) {
             itemList = itemList.filter { Recipe.recipes.any { recipe -> recipe.inputs.contains(it) } }
