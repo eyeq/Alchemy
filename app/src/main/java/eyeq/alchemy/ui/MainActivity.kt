@@ -44,8 +44,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private var mRewardedAd: RewardedAd? = null
 
-    private var isFilter = false
-    private var selectedSortOrder = SortOrder.DEFAULT
     private val game = Game()
 
     override fun onStart() {
@@ -55,11 +53,26 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val userSettings: SharedPreferences = getSharedPreferences("UserSettings", Context.MODE_PRIVATE)
         val dataStore: SharedPreferences = getSharedPreferences("DataStore", Context.MODE_PRIVATE)
 
-        isFilter = userSettings.getBoolean("isFilter", false)
+        fun isFilter(): Boolean {
+            return try {
+                userSettings.getBoolean("isFilter", false)
+            } catch (e: Throwable) {
+                false
+            }
+        }
+        fun setIsFilter(value: Boolean) {
+            userSettings.edit().putBoolean("isFilter", value).apply()
+        }
 
-        val selectedSort = SortOrder.values().filter { it.name == userSettings.getString("selectedSort", "") }
-        if (selectedSort.any()) {
-            selectedSortOrder = selectedSort.first()
+        fun getSelectedSort(): SortOrder {
+            return try {
+                SortOrder.values().first { it.name == userSettings.getString("selectedSort", SortOrder.DEFAULT.name) }
+            } catch (e:Throwable) {
+                SortOrder.DEFAULT
+            }
+        }
+        fun setSelectedSort(value: SortOrder) {
+            userSettings.edit().putString("selectedSort", value.name).apply()
         }
 
         val hintTextView = findViewById<TextView>(R.id.hint)
@@ -72,13 +85,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         subHeader.visibility = View.GONE
 
         val checkbox = findViewById<CheckBox>(R.id.filter_checkbox)
-        checkbox.isChecked = isFilter
+        checkbox.isChecked = isFilter()
 
         val spinner = findViewById<Spinner>(R.id.sort_spinner)
         val sortList = SortOrder.values().map { getText(it.textId).toString() }
         val spinnerAdapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, sortList.toTypedArray())
         spinner.adapter = spinnerAdapter
-        spinner.setSelection(SortOrder.values().indexOf(selectedSortOrder))
+        spinner.setSelection(SortOrder.values().indexOf(getSelectedSort()))
 
         val main = supportFragmentManager.findFragmentById(R.id.main) as ItemFragment
         main.view?.setBackgroundColor(getColor(R.color.black))
@@ -143,8 +156,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         val unlock = fun(history: History) {
             val results = game.unlock(history)
-            game.save(dataStore)
-
             if (results.isEmpty()) {
                 fab.vibrate()
             } else {
@@ -155,12 +166,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 game.item1 = Item.EMPTY
                 game.item2 = Item.EMPTY
             }
-
             updateCount(countTextView, main.selectedTab)
-            updateFlex(main, searchView.query, isFilter, selectedSortOrder)
+            updateFlex(main, searchView.query, isFilter(), getSelectedSort())
             updatePot(fab)
-            updateHint(hintTextView, left, dataStore)
+            updateHint(hintTextView, left, game.getHints(dataStore))
             updateHistory(right)
+
+            game.save(dataStore)
         }
 
         val popup = PopupMenu(context, menu)
@@ -183,9 +195,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                             game.clear()
 
                             updateCount(countTextView, main.selectedTab)
-                            updateFlex(main, searchView.query, isFilter, selectedSortOrder)
+                            updateFlex(main, searchView.query, isFilter(), getSelectedSort())
                             updatePot(fab)
-                            updateHint(hintTextView, left, dataStore)
+                            updateHint(hintTextView, left, game.getHints(dataStore))
                             updateHistory(right)
                         }
                         .setNegativeButton("cancel") { dialog, id -> }
@@ -219,7 +231,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                updateFlex(main, searchView.query, isFilter, selectedSortOrder)
+                updateFlex(main, searchView.query, isFilter(), getSelectedSort())
                 return false
             }
         })
@@ -239,18 +251,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         checkbox.setOnCheckedChangeListener { button, isChecked ->
-            isFilter = isChecked
-            updateFlex(main, searchView.query, isFilter, selectedSortOrder)
-
-            userSettings.edit().putBoolean("isFilter", isFilter).apply()
+            setIsFilter(isChecked)
+            updateFlex(main, searchView.query, isFilter(), getSelectedSort())
         }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                selectedSortOrder = SortOrder.values()[position]
-                updateFlex(main, searchView.query, isFilter, selectedSortOrder)
-
-                userSettings.edit().putString("selectedSort", selectedSortOrder.name).apply()
+                setSelectedSort(SortOrder.values()[position])
+                updateFlex(main, searchView.query, isFilter(), getSelectedSort())
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -321,7 +329,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
                 mRewardedAd?.show(this) {
                     game.addHints(dataStore, it.amount)
-                    updateHint(hintTextView, left, dataStore)
+                    updateHint(hintTextView, left, game.getHints(dataStore))
                 }
             }
         }
@@ -337,8 +345,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
 
             game.hint()
+            updateHint(hintTextView, left, game.getHints(dataStore))
+
             game.save(dataStore)
-            updateHint(hintTextView, left, dataStore)
         }
         left.itemClickListener = object : HintFragment.OnItemClickListener {
             override fun onClick(recipe: Recipe) {
@@ -399,9 +408,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         updateCount(countTextView, main.selectedTab)
-        updateFlex(main, searchView.query, isFilter, selectedSortOrder)
+        updateFlex(main, searchView.query, isFilter(), getSelectedSort())
         updatePot(fab)
-        updateHint(hintTextView, left, dataStore)
+        updateHint(hintTextView, left, game.getHints(dataStore))
         updateHistory(right)
 
         Handler(Looper.getMainLooper()).postDelayed({ initAds(context, false) }, 1000)
@@ -429,8 +438,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         })
     }
 
-    private fun updateHint(hintTextView: TextView, hintFragment: HintFragment, preferences: SharedPreferences) {
-        hintTextView.text = game.getHints(preferences).toString()
+    private fun updateHint(hintTextView: TextView, hintFragment: HintFragment, hints: Int) {
+        hintTextView.text = hints.toString()
 
         val hintList = game.getHintList().map { Recipe.getRecipeListByResult(it).first() }
         val backgroundColorList = hintList.map { it.inputs.all { item -> game.isUnlocked(item) } }
