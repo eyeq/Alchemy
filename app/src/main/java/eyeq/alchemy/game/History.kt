@@ -4,12 +4,16 @@ class History(val item1: Item, val item2: Item, val item3: Item) {
 
     companion object {
         fun parse(str: String): History? {
-            val split = str.split('|')
-            if (split.count() > 2) {
-                return History(
-                    Item.values().first { it.name == split[0] },
-                    Item.values().first { it.name == split[1] },
-                    Item.values().first { it.name == split[2] })
+            try {
+                val split = str.split('|')
+                if (split.count() > 2) {
+                    return History(
+                        Item.values().first { it.name == split[0] },
+                        Item.values().first { it.name == split[1] },
+                        Item.values().first { it.name == split[2] })
+                }
+            } catch (e: Throwable) {
+                // ignored
             }
             return null
         }
