@@ -20,7 +20,6 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.google.android.material.tabs.TabLayout
 import eyeq.alchemy.BuildConfig
 import eyeq.alchemy.R
 import eyeq.alchemy.game.*
@@ -73,6 +72,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
         fun setSelectedSort(value: SortOrder) {
             userSettings.edit().putString("selectedSort", value.name).apply()
+        }
+
+        fun getSelectedTab(): Group {
+            return try {
+                Group.values().first { it.name == userSettings.getString("selectedTab", Group.ALL.name) }
+            } catch (e:Throwable) {
+                Group.ALL
+            }
+        }
+        fun setSelectedTab(value: Group) {
+            userSettings.edit().putString("selectedTab", value.name).apply()
         }
 
         val hintTextView = findViewById<TextView>(R.id.hint)
@@ -166,8 +176,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 game.item1 = Item.EMPTY
                 game.item2 = Item.EMPTY
             }
-            updateCount(countTextView, main.selectedTab)
-            updateFlex(main, searchView.query, isFilter(), getSelectedSort())
+            updateCount(countTextView, getSelectedTab())
+            updateFlex(main, searchView.query, isFilter(), getSelectedSort(), getSelectedTab())
             updatePot(fab)
             updateHint(hintTextView, left, game.getHints(dataStore))
             updateHistory(right)
@@ -194,8 +204,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                         .setPositiveButton("restart") { dialog, id ->
                             game.clear()
 
-                            updateCount(countTextView, main.selectedTab)
-                            updateFlex(main, searchView.query, isFilter(), getSelectedSort())
+                            updateCount(countTextView, getSelectedTab())
+                            updateFlex(main, searchView.query, isFilter(), getSelectedSort(), getSelectedTab())
                             updatePot(fab)
                             updateHint(hintTextView, left, game.getHints(dataStore))
                             updateHistory(right)
@@ -231,7 +241,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                updateFlex(main, searchView.query, isFilter(), getSelectedSort())
+                updateFlex(main, searchView.query, isFilter(), getSelectedSort(), getSelectedTab())
                 return false
             }
         })
@@ -252,29 +262,24 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         checkbox.setOnCheckedChangeListener { button, isChecked ->
             setIsFilter(isChecked)
-            updateFlex(main, searchView.query, isFilter(), getSelectedSort())
+            updateFlex(main, searchView.query, isFilter(), getSelectedSort(), getSelectedTab())
         }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
                 setSelectedSort(SortOrder.values()[position])
-                updateFlex(main, searchView.query, isFilter(), getSelectedSort())
+                updateFlex(main, searchView.query, isFilter(), getSelectedSort(), getSelectedTab())
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
         }
 
-        main.tabSelectedListener = object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                updateCount(countTextView, main.selectedTab)
-
-                userSettings.edit().putString("selectedTab", main.selectedTab.name).apply()
+        main.tabSelectedListener = object : ItemFragment.OnTabSelectedListener {
+            override fun onTabSelected(group: Group) {
+                setSelectedTab(group)
+                updateCount(countTextView, getSelectedTab())
             }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-
-            override fun onTabReselected(tab: TabLayout.Tab) {}
         }
         main.itemClickListener = object : ItemFragment.OnItemClickListener {
             override fun onClick(item: Item) {
@@ -397,18 +402,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
 
         // init
-        val selected = Group.values().filter { it.name == userSettings.getString("selectedTab", "") }
-        if (selected.any()) {
-            main.selectedTab = selected.first()
-        }
-
         val newUnlocked = game.load(dataStore)
         if (newUnlocked.isNotEmpty()) {
             UnlockedDialogFragment(newUnlocked, getColor(R.color.black)).show(supportFragmentManager, "simple")
         }
 
-        updateCount(countTextView, main.selectedTab)
-        updateFlex(main, searchView.query, isFilter(), getSelectedSort())
+        updateCount(countTextView, getSelectedTab())
+        updateFlex(main, searchView.query, isFilter(), getSelectedSort(), getSelectedTab())
         updatePot(fab)
         updateHint(hintTextView, left, game.getHints(dataStore))
         updateHistory(right)
@@ -456,7 +456,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         countTextView.text = "${unlockedItem.count()}/${filteredItem.count()}"
     }
 
-    private fun updateFlex(main: ItemFragment, query: CharSequence, isFilter: Boolean, selectedSortOrder: SortOrder) {
+    private fun updateFlex(main: ItemFragment, query: CharSequence, isFilter: Boolean, selectedSortOrder: SortOrder, selectedTab: Group) {
         var itemList = game.getUnlockedItemList()
 
         itemList = itemList.filter { getText(it.textId).contains(query, true) }
@@ -500,7 +500,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
 
-        main.update(game.getUnlockedGroupList(), itemList, 168f.dpToPx().toInt())
+        main.update(game.getUnlockedGroupList(), itemList, 168f.dpToPx().toInt(), selectedTab)
     }
 
     private fun updatePot(fabFragment: FabFragment) {
