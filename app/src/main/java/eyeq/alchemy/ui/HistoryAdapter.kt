@@ -134,8 +134,20 @@ class HistoryAdapter : BaseAdapter() {
         return historyList[position]
     }
 
+    override fun hasStableIds(): Boolean {
+        return true
+    }
+
     override fun getItemId(position: Int): Long {
-        return 0
+        val history = historyList[position]
+
+        var ret = 0L
+        ret += history.item1.ordinal
+        ret *= 65536
+        ret += history.item2.ordinal
+        ret *= 65536
+        ret += history.item3.ordinal
+        return ret
     }
 
     override fun getCount(): Int {

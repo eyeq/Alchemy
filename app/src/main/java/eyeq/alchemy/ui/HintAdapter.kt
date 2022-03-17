@@ -118,8 +118,13 @@ class HintAdapter : BaseAdapter() {
         return hintList[position]
     }
 
+    override fun hasStableIds(): Boolean {
+        return true
+    }
+
     override fun getItemId(position: Int): Long {
-        return 0
+        val item = hintList[position].result
+        return item.ordinal.toLong()
     }
 
     override fun getCount(): Int {

@@ -28,6 +28,10 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var itemClickListener: OnItemClickListener? = null
     var itemLongClickListener: OnItemLongClickListener? = null
 
+    init {
+        setHasStableIds(true)
+    }
+
     fun setData(list: List<Item>) {
         itemList = list
         notifyDataSetChanged()
@@ -73,6 +77,11 @@ class ItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val params = holder.itemView.layoutParams as RecyclerView.LayoutParams
             params.bottomMargin = 0
         }
+    }
+
+    override fun getItemId(position: Int): Long {
+        val item = itemList[position]
+        return item.ordinal.toLong()
     }
 
     override fun getItemCount(): Int {
