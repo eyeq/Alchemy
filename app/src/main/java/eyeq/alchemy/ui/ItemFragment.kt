@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.*
 import com.google.android.material.tabs.TabLayout
@@ -98,7 +99,9 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 for (group in Group.values()) {
                     if (getText(group.textId) == tab.text) {
+                        flexboxLayout.itemAnimator = null
                         updateFlex(itemList, group)
+
                         tabSelectedListener?.onTabSelected(group)
                     }
                 }
@@ -112,6 +115,8 @@ class ItemFragment : Fragment(R.layout.fragment_item) {
         })
 
         itemAdapter.marginBottom = marginBottom
+
+        flexboxLayout.itemAnimator = DefaultItemAnimator()
         updateFlex(itemList, selectedTab)
     }
 
