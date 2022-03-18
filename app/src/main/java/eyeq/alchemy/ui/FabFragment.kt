@@ -1,11 +1,10 @@
 package eyeq.alchemy.ui
 
-import android.animation.Animator
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import eyeq.alchemy.R
@@ -119,21 +118,10 @@ class FabFragment : Fragment(R.layout.fragment_fab) {
     }
 
     fun vibrate() {
-        vibrate(convertButton, 20f, 10)
-    }
-
-    private fun vibrate(target: View, translate: Float, duration: Long) {
-        val animatorList: MutableList<Animator> = ArrayList()
-
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * 0.0f, translate * -1.0f).setDuration(duration * 1))
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * -1.0f, translate * 0.7f).setDuration(duration * 3))
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * 0.7f, translate * -0.5f).setDuration(duration * 6))
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * -0.5f, translate * 0.4f).setDuration(duration * 10))
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * 0.4f, translate * -0.3f).setDuration(duration * 15))
-        animatorList.add(ObjectAnimator.ofFloat(target, "translationX", translate * -0.3f, translate * 0.0f).setDuration(duration * 21))
-
-        val set = AnimatorSet()
-        set.playSequentially(animatorList)
-        set.start()
+        ObjectAnimator.ofFloat(convertButton, View.TRANSLATION_X,
+            *listOf(0f, -1f, 0.00f, 0.74f, 0f, -0.55f, 0f, 0.41f, 0f, -0.30f, 0f, 0.22f, 0f, -0.16f, 0f, 0.12f, 0f, -0.09f, 0f, 0.06f, 0f, -0.05f, 0f).map { it * 40 }.toFloatArray()).apply {
+            duration = 864
+            interpolator = DecelerateInterpolator()
+        }.start()
     }
 }
