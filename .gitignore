@@ -9,4 +9,5 @@
 .cxx
 local.properties
 /app/release/
-/app/src/main/res/drawable-v24/
+/app/src/main/res/drawable/*.png
+/app/src/main/res/drawable-v24/*.png

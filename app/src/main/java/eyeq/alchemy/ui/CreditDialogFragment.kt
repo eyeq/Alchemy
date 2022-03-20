@@ -26,6 +26,8 @@ class CreditDialogFragment : DialogFragment() {
                 "<p style='text-align: center'>eyeq</p>" +
                 "<br>" +
                 "<h6 style='text-align: center'>Image provided by</h6>" +
+                "<p style='text-align: center'>nil2</p>" +
+                "<br>" +
                 "<p style='text-align: center'>Google Note Emoji</p>" +
                 "<p style='text-align: center'><a href='https://github.com/googlefonts/noto-emoji'>github.com/googlefonts/noto-emoji</a></p>" +
                 "<p style='text-align: center'><a href='https://www.apache.org/licenses/LICENSE-2.0'>Apache License 2.0.</a></p>" +
