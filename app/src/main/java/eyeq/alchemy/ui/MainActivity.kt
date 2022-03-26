@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         val unlock = fun(history: History) {
             val results = game.unlock(history)
             if (results.isEmpty()) {
-                fab.vibrate()
+                fab.vibrate(24f.dpToPx())
             } else {
                 for (recipe in results) {
                     balloon.addBalloon(recipe)

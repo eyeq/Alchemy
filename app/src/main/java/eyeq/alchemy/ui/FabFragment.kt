@@ -117,9 +117,9 @@ class FabFragment : Fragment(R.layout.fragment_fab) {
         image3Button.visibility = View.GONE
     }
 
-    fun vibrate() {
+    fun vibrate(translate: Float) {
         ObjectAnimator.ofFloat(convertButton, View.TRANSLATION_X,
-            *listOf(0f, -1f, 0.00f, 0.74f, 0f, -0.55f, 0f, 0.41f, 0f, -0.30f, 0f, 0.22f, 0f, -0.16f, 0f, 0.12f, 0f, -0.09f, 0f, 0.06f, 0f, -0.05f, 0f).map { it * 40 }.toFloatArray()).apply {
+            *listOf(0f, -1f, 0.00f, 0.74f, 0f, -0.55f, 0f, 0.41f, 0f, -0.30f, 0f, 0.22f, 0f, -0.16f, 0f, 0.12f, 0f, -0.09f, 0f, 0.06f, 0f, -0.05f, 0f).map { it * translate }.toFloatArray()).apply {
             duration = 864
             interpolator = DecelerateInterpolator()
         }.start()
