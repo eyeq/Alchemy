@@ -32,7 +32,8 @@ class VersionDialogFragment(private val recipeCount: Int, private val itemCount:
                 "<br>" +
                 "<p>Components: ${recipeCount} recipes, ${itemCount} items</p>" +
                 "<br>" +
-                "<p>Check for updates: <a href='https://github.com/eyeq/Alchemy/releases'>GitHub</a></p>"
+                "<p>Release notes: <a href='https://github.com/eyeq/Alchemy/releases'>GitHub</a></p>" +
+                "<p>Check for updates: <a href='https://play.google.com/store/apps/details?id=eyeq.alchemy'>Google Play</a></p>"
 
         val builder = AlertDialog.Builder(requireContext())
             .setTitle("About")
