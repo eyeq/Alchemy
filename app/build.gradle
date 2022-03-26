@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "eyeq.alchemy"
-        minSdk 23
+        minSdk 26
         targetSdk 30
         versionCode 130
         versionName "1.3.0-alpha"
