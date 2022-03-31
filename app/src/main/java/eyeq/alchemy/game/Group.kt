@@ -11,5 +11,8 @@ enum class Group(val textId: Int) {
     TOOL(R.string.group_tool),
     TECHNOLOGY(R.string.group_technology),
     FOOD(R.string.group_food),
+    CREATURE(R.string.group_creature),
+    PLANT(R.string.group_plant),
+    ANIMAL(R.string.group_animal),
     ;
 }
